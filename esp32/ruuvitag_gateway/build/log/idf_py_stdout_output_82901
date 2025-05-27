@@ -1,0 +1,1714 @@
+Command: /Users/rabindramanandhar/.espressif/python_env/idf5.5_py3.12_env/bin/python /Users/rabindramanandhar/esp/esp-idf/tools/idf_monitor.py -p /dev/cu.usbserial-0001 -b 115200 --toolchain-prefix xtensa-esp32-elf- --target esp32 --revision 0 /Users/rabindramanandhar/Documents/Rabindra/Thesis/IoT-Data-Pipeline/esp32/ruuvitag_gateway/build/ruuvitag_gateway.elf /Users/rabindramanandhar/Documents/Rabindra/Thesis/IoT-Data-Pipeline/esp32/ruuvitag_gateway/build/bootloader/bootloader.elf -m '/Users/rabindramanandhar/.espressif/python_env/idf5.5_py3.12_env/bin/python' '/Users/rabindramanandhar/esp/esp-idf/tools/idf.py'
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:6380
+ho 0 tail 12 room 4
+load:0x40078000,len:15904
+load:0x40080400,len:3860
+entry 0x40080638
+[0;32mI (29) boot: ESP-IDF v5.5-dev-3510-gaaebc37467 2nd stage bootloader[0m
+[0;32mI (29) boot: compile time May 23 2025 15:43:30[0m
+[0;32mI (29) boot: Multicore bootloader[0m
+[0;32mI (32) boot: chip revision: v3.1[0m
+[0;32mI (35) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (39) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (42) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (46) boot: Enabling RNG early entropy source...[0m
+[0;32mI (50) boot: Partition Table:[0m
+[0;32mI (53) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (59) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (66) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (72) boot:  2 factory          factory app      00 00 00010000 001e0000[0m
+[0;32mI (79) boot: End of partition table[0m
+[0;32mI (82) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=30368h (197480) map[0m
+[0;32mI (157) esp_image: segment 1: paddr=00040390 vaddr=3ff80000 size=0001ch (    28) load[0m
+[0;32mI (157) esp_image: segment 2: paddr=000403b4 vaddr=3ffbdb60 size=0573ch ( 22332) load[0m
+[0;32mI (169) esp_image: segment 3: paddr=00045af8 vaddr=40080000 size=0a520h ( 42272) load[0m
+[0;32mI (186) esp_image: segment 4: paddr=00050020 vaddr=400d0020 size=ec52ch (967980) map[0m
+[0;32mI (517) esp_image: segment 5: paddr=0013c554 vaddr=4008a520 size=14e74h ( 85620) load[0m
+[0;32mI (566) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (566) boot: Disabling RNG early entropy source...[0m
+[0;32mI (576) cpu_start: Multicore app[0m
+[0;32mI (585) cpu_start: Pro cpu start user code[0m
+[0;32mI (585) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (585) app_init: Application information:[0m
+[0;32mI (585) app_init: Project name:     ruuvitag_gateway[0m
+[0;32mI (589) app_init: App version:      05fcb2a[0m
+[0;32mI (593) app_init: Compile time:     May 23 2025 15:43:14[0m
+[0;32mI (598) app_init: ELF file SHA256:  2e3475664...[0m
+[0;32mI (603) app_init: ESP-IDF:          v5.5-dev-3510-gaaebc37467[0m
+[0;32mI (608) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (612) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (616) efuse_init: Chip rev:         v3.1[0m
+[0;32mI (620) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (626) heap_init: At 3FFAFF10 len 000000F0 (0 KiB): DRAM[0m
+[0;32mI (631) heap_init: At 3FFB6388 len 00001C78 (7 KiB): DRAM[0m
+[0;32mI (636) heap_init: At 3FFB9A20 len 00004108 (16 KiB): DRAM[0m
+[0;32mI (642) heap_init: At 3FFCB560 len 00014AA0 (82 KiB): DRAM[0m
+[0;32mI (647) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (652) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (658) heap_init: At 4009F394 len 00000C6C (3 KiB): IRAM[0m
+[0;33mW (664) spi_flash: boya detected but related driver is not linked, please check option `SPI_FLASH_SUPPORT_BOYA_CHIP`[0m
+[0;32mI (673) spi_flash: detected chip: generic[0m
+[0;32mI (677) spi_flash: flash io: dio[0m
+[0;33mW (680) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (693) coexist: coex firmware version: 777f317b1[0m
+[0;32mI (697) main_task: Started on CPU0[0m
+[0;32mI (707) main_task: Calling app_main()[0m
+[0;32mI (737) wifi:wifi driver task: 3ffcf4c4, prio:23, stack:6656, core=0[0m
+[0;32mI (747) wifi:wifi firmware version: 448230adee[0m
+[0;32mI (747) wifi:wifi certification version: v7.0[0m
+[0;32mI (747) wifi:config NVS flash: enabled[0m
+[0;32mI (747) wifi:config nano formatting: disabled[0m
+[0;32mI (757) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (757) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (757) wifi:Init management short buffer num: 32[0m
+[0;32mI (767) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (767) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (777) wifi:Init static rx buffer num: 10[0m
+[0;32mI (777) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (787) wifi_init: rx ba win: 6[0m
+[0;32mI (787) wifi_init: accept mbox: 6[0m
+[0;32mI (787) wifi_init: tcpip mbox: 32[0m
+[0;32mI (787) wifi_init: udp mbox: 6[0m
+[0;32mI (797) wifi_init: tcp mbox: 6[0m
+[0;32mI (797) wifi_init: tcp tx win: 5760[0m
+[0;32mI (797) wifi_init: tcp rx win: 5760[0m
+[0;32mI (807) wifi_init: tcp mss: 1440[0m
+[0;32mI (807) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (807) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (817) phy_init: phy_version 4860,6b7a6e5,Feb  6 2025,14:47:07[0m
+[0;32mI (897) wifi:mode : sta (fc:e8:c0:7d:c7:a0)[0m
+[0;32mI (907) wifi:enable tsf[0m
+[0;32mI (907) RUUVITAG: WiFi initialization completed, connecting to rabindra[0m
+[0;32mI (907) RUUVITAG: Waiting for WiFi connection...[0m
+[0;32mI (917) wifi:new:<5,0>, old:<1,0>, ap:<255,255>, sta:<5,0>, prof:1, snd_ch_cfg:0x0[0m
+[0;32mI (927) wifi:state: init -> auth (0xb0)[0m
+[0;32mI (937) wifi:state: auth -> assoc (0x0)[0m
+[0;32mI (947) wifi:state: assoc -> run (0x10)[0m
+[0;32mI (947) wifi:state: run -> init (0x2c0)[0m
+[0;32mI (967) wifi:new:<5,0>, old:<5,0>, ap:<255,255>, sta:<5,0>, prof:1, snd_ch_cfg:0x0[0m
+[0;32mI (967) RUUVITAG: WiFi Disconnected. Reason: 2[0m
+[0;33mW (1247) wifi:tx null, bss is null[0m
+[0;32mI (6377) RUUVITAG: WiFi Disconnected. Reason: 205[0m
+[0;32mI (9647) wifi:new:<2,0>, old:<5,0>, ap:<255,255>, sta:<2,0>, prof:1, snd_ch_cfg:0x0[0m
+[0;32mI (9647) wifi:state: init -> auth (0xb0)[0m
+[0;32mI (9717) wifi:state: auth -> assoc (0x0)[0m
+[0;32mI (9737) wifi:state: assoc -> run (0x10)[0m
+[0;32mI (9847) wifi:connected with rabindra, aid = 21, channel 2, BW20, bssid = fc:34:97:70:81:c8[0m
+[0;32mI (9847) wifi:security: WPA2-PSK, phy: bgn, rssi: -55[0m
+[0;32mI (9897) wifi:pm start, type: 1[0m
+
+[0;32mI (9897) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us[0m
+[0;32mI (9937) wifi:<ba-add>idx:0 (ifx:0, fc:34:97:70:81:c8), tid:6, ssn:1, winSize:64[0m
+[0;32mI (9947) wifi:AP's beacon interval = 102400 us, DTIM period = 1[0m
+[0;32mI (10727) wifi:<ba-add>idx:1 (ifx:0, fc:34:97:70:81:c8), tid:0, ssn:1, winSize:64[0m
+[0;32mI (10997) esp_netif_handlers: sta ip: 192.168.50.127, mask: 255.255.255.0, gw: 192.168.50.1[0m
+[0;32mI (10997) RUUVITAG: Connected with IP Address:192.168.50.127[0m
+[0;32mI (10997) BTDM_INIT: BT controller compile version [42e1f02][0m
+[0;32mI (11007) BTDM_INIT: Bluetooth MAC: fc:e8:c0:7d:c7:a2[0m
+[0;32mI (11107) RUUVITAG: MQTT Connected to broker[0m
+[0;32mI (11317) RUUVITAG: Bluetooth initialized successfully[0m
+[0;32mI (11317) RUUVITAG: RuuviTag Gateway started[0m
+[0;32mI (11327) RUUVITAG: BLE scan parameters set, starting scan[0m
+[0;32mI (11327) RUUVITAG: BLE scan started successfully[0m
+[0;32mI (11637) RUUVITAG: Added new RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.75%, Pressure: 101044.00 Pa[0m
+[0;32mI (11647) RUUVITAG: Published data to MQTT, msg_id=41968[0m
+[0;32mI (14207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101046.00 Pa[0m
+[0;32mI (14217) RUUVITAG: Published data to MQTT, msg_id=8786[0m
+[0;32mI (15507) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101046.00 Pa[0m
+[0;32mI (15507) RUUVITAG: Published data to MQTT, msg_id=29739[0m
+[0;32mI (19347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.75%, Pressure: 101047.00 Pa[0m
+[0;32mI (19357) RUUVITAG: Published data to MQTT, msg_id=34848[0m
+[0;32mI (20637) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.75%, Pressure: 101047.00 Pa[0m
+[0;32mI (20647) RUUVITAG: Published data to MQTT, msg_id=11121[0m
+[0;32mI (23207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.78%, Pressure: 101047.00 Pa[0m
+[0;32mI (23217) RUUVITAG: Published data to MQTT, msg_id=15654[0m
+[0;32mI (27057) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.77%, Pressure: 101045.00 Pa[0m
+[0;32mI (27067) RUUVITAG: Published data to MQTT, msg_id=5795[0m
+[0;32mI (28357) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.77%, Pressure: 101045.00 Pa[0m
+[0;32mI (28357) RUUVITAG: Published data to MQTT, msg_id=11148[0m
+[0;32mI (32217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.78%, Pressure: 101046.00 Pa[0m
+[0;32mI (32217) RUUVITAG: Published data to MQTT, msg_id=46276[0m
+[0;32mI (36067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.75%, Pressure: 101040.00 Pa[0m
+[0;32mI (36067) RUUVITAG: Published data to MQTT, msg_id=59663[0m
+[0;32mI (37337) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.74%, Pressure: 101045.00 Pa[0m
+[0;32mI (37347) RUUVITAG: Published data to MQTT, msg_id=14389[0m
+[0;32mI (38637) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.74%, Pressure: 101045.00 Pa[0m
+[0;32mI (38637) RUUVITAG: Published data to MQTT, msg_id=49064[0m
+[0;32mI (41197) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.77%, Pressure: 101043.00 Pa[0m
+[0;32mI (41207) RUUVITAG: Published data to MQTT, msg_id=20151[0m
+[0;32mI (42497) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101049.00 Pa[0m
+[0;32mI (42507) RUUVITAG: Published data to MQTT, msg_id=11518[0m
+[0;32mI (45047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.76%, Pressure: 101047.00 Pa[0m
+[0;32mI (45057) RUUVITAG: Published data to MQTT, msg_id=64096[0m
+[0;32mI (46337) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.76%, Pressure: 101047.00 Pa[0m
+[0;32mI (46347) RUUVITAG: Published data to MQTT, msg_id=44689[0m
+[0;32mI (48917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.75%, Pressure: 101047.00 Pa[0m
+[0;32mI (48917) RUUVITAG: Published data to MQTT, msg_id=21986[0m
+[0;32mI (50267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.78%, Pressure: 101047.00 Pa[0m
+[0;32mI (50267) RUUVITAG: Published data to MQTT, msg_id=19988[0m
+[0;32mI (52757) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.76%, Pressure: 101044.00 Pa[0m
+[0;32mI (52767) RUUVITAG: Published data to MQTT, msg_id=36306[0m
+[0;32mI (54047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.76%, Pressure: 101044.00 Pa[0m
+[0;32mI (54047) RUUVITAG: Published data to MQTT, msg_id=58876[0m
+[0;32mI (57907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.76%, Pressure: 101044.00 Pa[0m
+[0;32mI (57907) RUUVITAG: Published data to MQTT, msg_id=54450[0m
+[0;32mI (59197) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.76%, Pressure: 101044.00 Pa[0m
+[0;32mI (59207) RUUVITAG: Published data to MQTT, msg_id=32562[0m
+[0;32mI (61757) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.77%, Pressure: 101044.00 Pa[0m
+[0;32mI (61757) RUUVITAG: Published data to MQTT, msg_id=10500[0m
+[0;32mI (65607) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.76%, Pressure: 101048.00 Pa[0m
+[0;32mI (65607) RUUVITAG: Published data to MQTT, msg_id=31026[0m
+[0;32mI (66917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.76%, Pressure: 101048.00 Pa[0m
+[0;32mI (66917) RUUVITAG: Published data to MQTT, msg_id=16825[0m
+[0;32mI (68177) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101049.00 Pa[0m
+[0;32mI (68177) RUUVITAG: Published data to MQTT, msg_id=60313[0m
+[0;32mI (69457) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101049.00 Pa[0m
+[0;32mI (69467) RUUVITAG: Published data to MQTT, msg_id=55194[0m
+[0;32mI (70747) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101054.00 Pa[0m
+[0;32mI (70747) RUUVITAG: Published data to MQTT, msg_id=30140[0m
+[0;32mI (74607) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.78%, Pressure: 101054.00 Pa[0m
+[0;32mI (74617) RUUVITAG: Published data to MQTT, msg_id=62871[0m
+[0;32mI (75887) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.74%, Pressure: 101049.00 Pa[0m
+[0;32mI (75897) RUUVITAG: Published data to MQTT, msg_id=14977[0m
+[0;32mI (79747) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.78%, Pressure: 101044.00 Pa[0m
+[0;32mI (79747) RUUVITAG: Published data to MQTT, msg_id=10919[0m
+[0;32mI (83597) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 42.74%, Pressure: 101040.00 Pa[0m
+[0;32mI (83597) RUUVITAG: Published data to MQTT, msg_id=30840[0m
+[0;32mI (91307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.75%, Pressure: 101054.00 Pa[0m
+[0;32mI (91317) RUUVITAG: Published data to MQTT, msg_id=43713[0m
+[0;32mI (92607) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.75%, Pressure: 101054.00 Pa[0m
+[0;32mI (92617) RUUVITAG: Published data to MQTT, msg_id=64983[0m
+[0;32mI (93877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.76%, Pressure: 101054.00 Pa[0m
+[0;32mI (93887) RUUVITAG: Published data to MQTT, msg_id=1636[0m
+[0;32mI (96447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.75%, Pressure: 101068.00 Pa[0m
+[0;32mI (96457) RUUVITAG: Published data to MQTT, msg_id=38282[0m
+[0;32mI (97747) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.75%, Pressure: 101068.00 Pa[0m
+[0;32mI (97747) RUUVITAG: Published data to MQTT, msg_id=30728[0m
+[0;32mI (99017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.39°C, Humidity: 42.75%, Pressure: 101050.00 Pa[0m
+[0;32mI (99017) RUUVITAG: Published data to MQTT, msg_id=39739[0m
+[0;32mI (100317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.39°C, Humidity: 42.75%, Pressure: 101050.00 Pa[0m
+[0;32mI (100317) RUUVITAG: Published data to MQTT, msg_id=22299[0m
+[0;32mI (109297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.76%, Pressure: 101055.00 Pa[0m
+[0;32mI (109297) RUUVITAG: Published data to MQTT, msg_id=41724[0m
+[0;32mI (113207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.78%, Pressure: 101048.00 Pa[0m
+[0;32mI (113217) RUUVITAG: Published data to MQTT, msg_id=14659[0m
+[0;32mI (114437) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101047.00 Pa[0m
+[0;32mI (114447) RUUVITAG: Published data to MQTT, msg_id=5352[0m
+[0;32mI (117007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.74%, Pressure: 101046.00 Pa[0m
+[0;32mI (117007) RUUVITAG: Published data to MQTT, msg_id=30534[0m
+[0;32mI (120867) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.76%, Pressure: 101042.00 Pa[0m
+[0;32mI (120867) RUUVITAG: Published data to MQTT, msg_id=35387[0m
+[0;32mI (122147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.76%, Pressure: 101045.00 Pa[0m
+[0;32mI (122157) RUUVITAG: Published data to MQTT, msg_id=17813[0m
+[0;32mI (123467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.76%, Pressure: 101045.00 Pa[0m
+[0;32mI (123467) RUUVITAG: Published data to MQTT, msg_id=28684[0m
+[0;32mI (126007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.76%, Pressure: 101045.00 Pa[0m
+[0;32mI (126017) RUUVITAG: Published data to MQTT, msg_id=63784[0m
+[0;32mI (133717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.76%, Pressure: 101045.00 Pa[0m
+[0;32mI (133717) RUUVITAG: Published data to MQTT, msg_id=24766[0m
+[0;32mI (134997) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.78%, Pressure: 101040.00 Pa[0m
+[0;32mI (135007) RUUVITAG: Published data to MQTT, msg_id=45446[0m
+[0;32mI (136297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.78%, Pressure: 101040.00 Pa[0m
+[0;32mI (136297) RUUVITAG: Published data to MQTT, msg_id=3093[0m
+[0;32mI (138857) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.76%, Pressure: 101041.00 Pa[0m
+[0;32mI (138867) RUUVITAG: Published data to MQTT, msg_id=60248[0m
+[0;32mI (142717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 42.77%, Pressure: 101047.00 Pa[0m
+[0;32mI (142717) RUUVITAG: Published data to MQTT, msg_id=55789[0m
+[0;32mI (146567) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.76%, Pressure: 101047.00 Pa[0m
+[0;32mI (146567) RUUVITAG: Published data to MQTT, msg_id=46965[0m
+[0;32mI (147847) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.80%, Pressure: 101049.00 Pa[0m
+[0;32mI (147847) RUUVITAG: Published data to MQTT, msg_id=61861[0m
+[0;32mI (151717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.75%, Pressure: 101055.00 Pa[0m
+[0;32mI (151717) RUUVITAG: Published data to MQTT, msg_id=9400[0m
+[0;32mI (155557) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.78%, Pressure: 101050.00 Pa[0m
+[0;32mI (155557) RUUVITAG: Published data to MQTT, msg_id=49427[0m
+[0;32mI (159407) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.78%, Pressure: 101049.00 Pa[0m
+[0;32mI (159417) RUUVITAG: Published data to MQTT, msg_id=57068[0m
+[0;32mI (160697) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 42.78%, Pressure: 101053.00 Pa[0m
+[0;32mI (160707) RUUVITAG: Published data to MQTT, msg_id=57707[0m
+[0;32mI (161987) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 42.78%, Pressure: 101053.00 Pa[0m
+[0;32mI (161997) RUUVITAG: Published data to MQTT, msg_id=28621[0m
+[0;32mI (163267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.77%, Pressure: 101051.00 Pa[0m
+[0;32mI (163277) RUUVITAG: Published data to MQTT, msg_id=11903[0m
+[0;32mI (168407) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.77%, Pressure: 101054.00 Pa[0m
+[0;32mI (168417) RUUVITAG: Published data to MQTT, msg_id=57054[0m
+[0;32mI (173547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101054.00 Pa[0m
+[0;32mI (173547) RUUVITAG: Published data to MQTT, msg_id=5501[0m
+[0;32mI (176117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.75%, Pressure: 101044.00 Pa[0m
+[0;32mI (176117) RUUVITAG: Published data to MQTT, msg_id=782[0m
+[0;32mI (177417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.75%, Pressure: 101044.00 Pa[0m
+[0;32mI (177417) RUUVITAG: Published data to MQTT, msg_id=1628[0m
+[0;32mI (178687) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.75%, Pressure: 101044.00 Pa[0m
+[0;32mI (178697) RUUVITAG: Published data to MQTT, msg_id=44229[0m
+[0;32mI (181257) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.75%, Pressure: 101038.00 Pa[0m
+[0;32mI (181267) RUUVITAG: Published data to MQTT, msg_id=52353[0m
+[0;32mI (182547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.75%, Pressure: 101038.00 Pa[0m
+[0;32mI (182547) RUUVITAG: Published data to MQTT, msg_id=44017[0m
+[0;32mI (186397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.77%, Pressure: 101044.00 Pa[0m
+[0;32mI (186407) RUUVITAG: Published data to MQTT, msg_id=47033[0m
+[0;32mI (187687) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.77%, Pressure: 101044.00 Pa[0m
+[0;32mI (187687) RUUVITAG: Published data to MQTT, msg_id=38279[0m
+[0;32mI (188957) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101044.00 Pa[0m
+[0;32mI (188967) RUUVITAG: Published data to MQTT, msg_id=30546[0m
+[0;32mI (190267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101044.00 Pa[0m
+[0;32mI (190277) RUUVITAG: Published data to MQTT, msg_id=57260[0m
+[0;32mI (191537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.76%, Pressure: 101047.00 Pa[0m
+[0;32mI (191547) RUUVITAG: Published data to MQTT, msg_id=35387[0m
+[0;32mI (194097) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.78%, Pressure: 101049.00 Pa[0m
+[0;32mI (194107) RUUVITAG: Published data to MQTT, msg_id=31232[0m
+[0;32mI (197967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.78%, Pressure: 101049.00 Pa[0m
+[0;32mI (197967) RUUVITAG: Published data to MQTT, msg_id=59829[0m
+[0;32mI (199247) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.75%, Pressure: 101053.00 Pa[0m
+[0;32mI (199247) RUUVITAG: Published data to MQTT, msg_id=51953[0m
+[0;32mI (200537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.75%, Pressure: 101053.00 Pa[0m
+[0;32mI (200547) RUUVITAG: Published data to MQTT, msg_id=9488[0m
+[0;32mI (203107) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.80%, Pressure: 101047.00 Pa[0m
+[0;32mI (203117) RUUVITAG: Published data to MQTT, msg_id=11247[0m
+[0;32mI (206957) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.78%, Pressure: 101051.00 Pa[0m
+[0;32mI (206967) RUUVITAG: Published data to MQTT, msg_id=40085[0m
+[0;32mI (208247) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.78%, Pressure: 101051.00 Pa[0m
+[0;32mI (208257) RUUVITAG: Published data to MQTT, msg_id=1210[0m
+[0;32mI (210817) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 42.77%, Pressure: 101047.00 Pa[0m
+[0;32mI (210817) RUUVITAG: Published data to MQTT, msg_id=13404[0m
+[0;32mI (213377) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.78%, Pressure: 101044.00 Pa[0m
+[0;32mI (213387) RUUVITAG: Published data to MQTT, msg_id=17989[0m
+[0;32mI (214657) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.79%, Pressure: 101041.00 Pa[0m
+[0;32mI (214667) RUUVITAG: Published data to MQTT, msg_id=38334[0m
+[0;32mI (215947) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.79%, Pressure: 101041.00 Pa[0m
+[0;32mI (215957) RUUVITAG: Published data to MQTT, msg_id=15677[0m
+[0;32mI (219807) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.78%, Pressure: 101047.00 Pa[0m
+[0;32mI (219807) RUUVITAG: Published data to MQTT, msg_id=2221[0m
+[0;32mI (224947) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.76%, Pressure: 101049.00 Pa[0m
+[0;32mI (224947) RUUVITAG: Published data to MQTT, msg_id=44067[0m
+[0;32mI (226237) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.76%, Pressure: 101049.00 Pa[0m
+[0;32mI (226247) RUUVITAG: Published data to MQTT, msg_id=10599[0m
+[0;32mI (227507) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.79%, Pressure: 101045.00 Pa[0m
+[0;32mI (227517) RUUVITAG: Published data to MQTT, msg_id=9028[0m
+[0;32mI (228797) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.79%, Pressure: 101045.00 Pa[0m
+[0;32mI (228807) RUUVITAG: Published data to MQTT, msg_id=43505[0m
+[0;32mI (232667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.77%, Pressure: 101054.00 Pa[0m
+[0;32mI (232677) RUUVITAG: Published data to MQTT, msg_id=45186[0m
+[0;32mI (233947) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.77%, Pressure: 101054.00 Pa[0m
+[0;32mI (233947) RUUVITAG: Published data to MQTT, msg_id=23772[0m
+[0;32mI (236507) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.77%, Pressure: 101054.00 Pa[0m
+[0;32mI (236517) RUUVITAG: Published data to MQTT, msg_id=61713[0m
+[0;32mI (239087) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.76%, Pressure: 101053.00 Pa[0m
+[0;32mI (239087) RUUVITAG: Published data to MQTT, msg_id=57352[0m
+[0;32mI (240367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.77%, Pressure: 101051.00 Pa[0m
+[0;32mI (240367) RUUVITAG: Published data to MQTT, msg_id=8443[0m
+[0;32mI (241667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.77%, Pressure: 101051.00 Pa[0m
+[0;32mI (241677) RUUVITAG: Published data to MQTT, msg_id=53841[0m
+[0;32mI (244217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.76%, Pressure: 101055.00 Pa[0m
+[0;32mI (244227) RUUVITAG: Published data to MQTT, msg_id=38420[0m
+[0;32mI (245517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.76%, Pressure: 101051.00 Pa[0m
+[0;32mI (245527) RUUVITAG: Published data to MQTT, msg_id=59316[0m
+[0;32mI (253217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 42.78%, Pressure: 101045.00 Pa[0m
+[0;32mI (253227) RUUVITAG: Published data to MQTT, msg_id=14815[0m
+[0;32mI (258357) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.78%, Pressure: 101043.00 Pa[0m
+[0;32mI (258357) RUUVITAG: Published data to MQTT, msg_id=4385[0m
+[0;32mI (262217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.77%, Pressure: 101040.00 Pa[0m
+[0;32mI (262217) RUUVITAG: Published data to MQTT, msg_id=4043[0m
+[0;32mI (266057) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.74%, Pressure: 101045.00 Pa[0m
+[0;32mI (266067) RUUVITAG: Published data to MQTT, msg_id=4486[0m
+[0;32mI (267347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.74%, Pressure: 101045.00 Pa[0m
+[0;32mI (267347) RUUVITAG: Published data to MQTT, msg_id=63960[0m
+[0;32mI (275067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.76%, Pressure: 101045.00 Pa[0m
+[0;32mI (275077) RUUVITAG: Published data to MQTT, msg_id=50806[0m
+[0;32mI (276347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 42.78%, Pressure: 101040.00 Pa[0m
+[0;32mI (276347) RUUVITAG: Published data to MQTT, msg_id=29885[0m
+[0;32mI (278907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.78%, Pressure: 101045.00 Pa[0m
+[0;32mI (278917) RUUVITAG: Published data to MQTT, msg_id=34786[0m
+[0;32mI (280217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.78%, Pressure: 101045.00 Pa[0m
+[0;32mI (280227) RUUVITAG: Published data to MQTT, msg_id=30619[0m
+[0;32mI (284047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.77%, Pressure: 101039.00 Pa[0m
+[0;32mI (284057) RUUVITAG: Published data to MQTT, msg_id=42967[0m
+[0;32mI (287907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.79%, Pressure: 101040.00 Pa[0m
+[0;32mI (287917) RUUVITAG: Published data to MQTT, msg_id=63292[0m
+[0;32mI (293067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.78%, Pressure: 101045.00 Pa[0m
+[0;32mI (293077) RUUVITAG: Published data to MQTT, msg_id=50332[0m
+[0;32mI (296897) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 42.78%, Pressure: 101044.00 Pa[0m
+[0;32mI (296907) RUUVITAG: Published data to MQTT, msg_id=31783[0m
+[0;32mI (298187) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 42.78%, Pressure: 101044.00 Pa[0m
+[0;32mI (298197) RUUVITAG: Published data to MQTT, msg_id=49498[0m
+[0;32mI (299467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 42.79%, Pressure: 101044.00 Pa[0m
+[0;32mI (299477) RUUVITAG: Published data to MQTT, msg_id=33166[0m
+[0;32mI (300767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 42.79%, Pressure: 101044.00 Pa[0m
+[0;32mI (300777) RUUVITAG: Published data to MQTT, msg_id=13831[0m
+[0;32mI (302047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.77%, Pressure: 101045.00 Pa[0m
+[0;32mI (302047) RUUVITAG: Published data to MQTT, msg_id=59532[0m
+[0;32mI (304607) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.79%, Pressure: 101054.00 Pa[0m
+[0;32mI (304617) RUUVITAG: Published data to MQTT, msg_id=44324[0m
+[0;32mI (305897) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.79%, Pressure: 101054.00 Pa[0m
+[0;32mI (305907) RUUVITAG: Published data to MQTT, msg_id=372[0m
+[0;32mI (307177) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.79%, Pressure: 101047.00 Pa[0m
+[0;32mI (307187) RUUVITAG: Published data to MQTT, msg_id=16887[0m
+[0;32mI (308467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.79%, Pressure: 101047.00 Pa[0m
+[0;32mI (308477) RUUVITAG: Published data to MQTT, msg_id=60926[0m
+[0;32mI (309767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.78%, Pressure: 101048.00 Pa[0m
+[0;32mI (309777) RUUVITAG: Published data to MQTT, msg_id=20013[0m
+[0;32mI (312317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.79%, Pressure: 101044.00 Pa[0m
+[0;32mI (312327) RUUVITAG: Published data to MQTT, msg_id=44513[0m
+[0;32mI (313607) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.79%, Pressure: 101044.00 Pa[0m
+[0;32mI (313607) RUUVITAG: Published data to MQTT, msg_id=33187[0m
+[0;32mI (317467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 42.79%, Pressure: 101049.00 Pa[0m
+[0;32mI (317467) RUUVITAG: Published data to MQTT, msg_id=39588[0m
+[0;32mI (318767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 42.79%, Pressure: 101049.00 Pa[0m
+[0;32mI (318777) RUUVITAG: Published data to MQTT, msg_id=42338[0m
+[0;32mI (321317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.81%, Pressure: 101045.00 Pa[0m
+[0;32mI (321317) RUUVITAG: Published data to MQTT, msg_id=45889[0m
+[0;32mI (322607) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.79%, Pressure: 101041.00 Pa[0m
+[0;32mI (322607) RUUVITAG: Published data to MQTT, msg_id=60904[0m
+[0;32mI (330307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.77%, Pressure: 101039.00 Pa[0m
+[0;32mI (330317) RUUVITAG: Published data to MQTT, msg_id=11091[0m
+[0;32mI (334167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.78%, Pressure: 101044.00 Pa[0m
+[0;32mI (334177) RUUVITAG: Published data to MQTT, msg_id=6193[0m
+[0;32mI (335457) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.79%, Pressure: 101044.00 Pa[0m
+[0;32mI (335457) RUUVITAG: Published data to MQTT, msg_id=55530[0m
+[0;32mI (336747) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.79%, Pressure: 101044.00 Pa[0m
+[0;32mI (336747) RUUVITAG: Published data to MQTT, msg_id=30474[0m
+[0;32mI (339317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.77%, Pressure: 101045.00 Pa[0m
+[0;32mI (339327) RUUVITAG: Published data to MQTT, msg_id=23405[0m
+[0;32mI (348297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.81%, Pressure: 101045.00 Pa[0m
+[0;32mI (348307) RUUVITAG: Published data to MQTT, msg_id=18314[0m
+[0;32mI (352157) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.78%, Pressure: 101038.00 Pa[0m
+[0;32mI (352167) RUUVITAG: Published data to MQTT, msg_id=13508[0m
+[0;32mI (353447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 42.81%, Pressure: 101040.00 Pa[0m
+[0;32mI (353447) RUUVITAG: Published data to MQTT, msg_id=60584[0m
+[0;32mI (356007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.81%, Pressure: 101041.00 Pa[0m
+[0;32mI (356017) RUUVITAG: Published data to MQTT, msg_id=38455[0m
+[0;32mI (357297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.81%, Pressure: 101041.00 Pa[0m
+[0;32mI (357307) RUUVITAG: Published data to MQTT, msg_id=29240[0m
+[0;32mI (361147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 42.82%, Pressure: 101038.00 Pa[0m
+[0;32mI (361157) RUUVITAG: Published data to MQTT, msg_id=61241[0m
+[0;32mI (363717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.82%, Pressure: 101040.00 Pa[0m
+[0;32mI (363727) RUUVITAG: Published data to MQTT, msg_id=11143[0m
+[0;32mI (365007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.82%, Pressure: 101040.00 Pa[0m
+[0;32mI (365007) RUUVITAG: Published data to MQTT, msg_id=51253[0m
+[0;32mI (370157) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.81%, Pressure: 101035.00 Pa[0m
+[0;32mI (370157) RUUVITAG: Published data to MQTT, msg_id=63996[0m
+[0;32mI (372717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.80%, Pressure: 101035.00 Pa[0m
+[0;32mI (372727) RUUVITAG: Published data to MQTT, msg_id=9814[0m
+[0;32mI (373997) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.81%, Pressure: 101040.00 Pa[0m
+[0;32mI (373997) RUUVITAG: Published data to MQTT, msg_id=28734[0m
+[0;32mI (377857) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.80%, Pressure: 101037.00 Pa[0m
+[0;32mI (377857) RUUVITAG: Published data to MQTT, msg_id=24365[0m
+[0;32mI (381707) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.81%, Pressure: 101038.00 Pa[0m
+[0;32mI (381717) RUUVITAG: Published data to MQTT, msg_id=53591[0m
+[0;32mI (383007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.81%, Pressure: 101038.00 Pa[0m
+[0;32mI (383007) RUUVITAG: Published data to MQTT, msg_id=61204[0m
+[0;32mI (385567) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.82%, Pressure: 101040.00 Pa[0m
+[0;32mI (385567) RUUVITAG: Published data to MQTT, msg_id=51946[0m
+[0;32mI (386847) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 42.83%, Pressure: 101038.00 Pa[0m
+[0;32mI (386857) RUUVITAG: Published data to MQTT, msg_id=453[0m
+[0;32mI (389417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.83%, Pressure: 101047.00 Pa[0m
+[0;32mI (389427) RUUVITAG: Published data to MQTT, msg_id=13815[0m
+[0;32mI (390707) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.83%, Pressure: 101047.00 Pa[0m
+[0;32mI (390717) RUUVITAG: Published data to MQTT, msg_id=36355[0m
+[0;32mI (394557) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 42.82%, Pressure: 101041.00 Pa[0m
+[0;32mI (394567) RUUVITAG: Published data to MQTT, msg_id=47085[0m
+[0;32mI (398417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.79%, Pressure: 101045.00 Pa[0m
+[0;32mI (398427) RUUVITAG: Published data to MQTT, msg_id=53250[0m
+[0;32mI (399707) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.79%, Pressure: 101049.00 Pa[0m
+[0;32mI (399717) RUUVITAG: Published data to MQTT, msg_id=57582[0m
+[0;32mI (402267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.83%, Pressure: 101050.00 Pa[0m
+[0;32mI (402277) RUUVITAG: Published data to MQTT, msg_id=49019[0m
+[0;32mI (403557) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.83%, Pressure: 101050.00 Pa[0m
+[0;32mI (403567) RUUVITAG: Published data to MQTT, msg_id=61105[0m
+[0;32mI (407407) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.83%, Pressure: 101047.00 Pa[0m
+[0;32mI (407407) RUUVITAG: Published data to MQTT, msg_id=27294[0m
+[0;32mI (411267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.83%, Pressure: 101047.00 Pa[0m
+[0;32mI (411277) RUUVITAG: Published data to MQTT, msg_id=22524[0m
+[0;32mI (412547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.82%, Pressure: 101040.00 Pa[0m
+[0;32mI (412547) RUUVITAG: Published data to MQTT, msg_id=52115[0m
+[0;32mI (415117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.81%, Pressure: 101036.00 Pa[0m
+[0;32mI (415127) RUUVITAG: Published data to MQTT, msg_id=49511[0m
+[0;32mI (416407) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.81%, Pressure: 101036.00 Pa[0m
+[0;32mI (416417) RUUVITAG: Published data to MQTT, msg_id=40224[0m
+[0;32mI (420257) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.84%, Pressure: 101046.00 Pa[0m
+[0;32mI (420257) RUUVITAG: Published data to MQTT, msg_id=38149[0m
+[0;32mI (421547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.84%, Pressure: 101046.00 Pa[0m
+[0;32mI (421557) RUUVITAG: Published data to MQTT, msg_id=38372[0m
+[0;32mI (424117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.84%, Pressure: 101048.00 Pa[0m
+[0;32mI (424127) RUUVITAG: Published data to MQTT, msg_id=3958[0m
+[0;32mI (425397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.82%, Pressure: 101040.00 Pa[0m
+[0;32mI (425397) RUUVITAG: Published data to MQTT, msg_id=4867[0m
+[0;32mI (427967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.82%, Pressure: 101045.00 Pa[0m
+[0;32mI (427977) RUUVITAG: Published data to MQTT, msg_id=52747[0m
+[0;32mI (429277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.82%, Pressure: 101045.00 Pa[0m
+[0;32mI (429277) RUUVITAG: Published data to MQTT, msg_id=46083[0m
+[0;32mI (433107) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.82%, Pressure: 101042.00 Pa[0m
+[0;32mI (433117) RUUVITAG: Published data to MQTT, msg_id=25511[0m
+[0;32mI (436967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.83%, Pressure: 101042.00 Pa[0m
+[0;32mI (436977) RUUVITAG: Published data to MQTT, msg_id=46704[0m
+[0;32mI (440817) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.84%, Pressure: 101038.00 Pa[0m
+[0;32mI (440817) RUUVITAG: Published data to MQTT, msg_id=8022[0m
+[0;32mI (442097) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.84%, Pressure: 101038.00 Pa[0m
+[0;32mI (442107) RUUVITAG: Published data to MQTT, msg_id=52471[0m
+[0;32mI (445977) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.85%, Pressure: 101044.00 Pa[0m
+[0;32mI (445977) RUUVITAG: Published data to MQTT, msg_id=32507[0m
+[0;32mI (447247) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.85%, Pressure: 101044.00 Pa[0m
+[0;32mI (447247) RUUVITAG: Published data to MQTT, msg_id=50152[0m
+[0;32mI (452377) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.85%, Pressure: 101040.00 Pa[0m
+[0;32mI (452387) RUUVITAG: Published data to MQTT, msg_id=7492[0m
+[0;32mI (453667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 42.86%, Pressure: 101038.00 Pa[0m
+[0;32mI (453677) RUUVITAG: Published data to MQTT, msg_id=58570[0m
+[0;32mI (454967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 42.86%, Pressure: 101038.00 Pa[0m
+[0;32mI (454977) RUUVITAG: Published data to MQTT, msg_id=42099[0m
+[0;32mI (458807) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 42.87%, Pressure: 101037.00 Pa[0m
+[0;32mI (458817) RUUVITAG: Published data to MQTT, msg_id=14975[0m
+[0;32mI (461367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.86%, Pressure: 101041.00 Pa[0m
+[0;32mI (461377) RUUVITAG: Published data to MQTT, msg_id=42448[0m
+[0;32mI (466517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.86%, Pressure: 101041.00 Pa[0m
+[0;32mI (466517) RUUVITAG: Published data to MQTT, msg_id=50565[0m
+[0;32mI (467797) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.86%, Pressure: 101041.00 Pa[0m
+[0;32mI (467807) RUUVITAG: Published data to MQTT, msg_id=45825[0m
+[0;32mI (471667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 42.87%, Pressure: 101041.00 Pa[0m
+[0;32mI (471667) RUUVITAG: Published data to MQTT, msg_id=18050[0m
+[0;32mI (472947) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 42.87%, Pressure: 101041.00 Pa[0m
+[0;32mI (472957) RUUVITAG: Published data to MQTT, msg_id=33140[0m
+[0;32mI (475517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.87%, Pressure: 101036.00 Pa[0m
+[0;32mI (475517) RUUVITAG: Published data to MQTT, msg_id=14723[0m
+[0;32mI (478087) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.87%, Pressure: 101037.00 Pa[0m
+[0;32mI (478087) RUUVITAG: Published data to MQTT, msg_id=37043[0m
+[0;32mI (479367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.88%, Pressure: 101039.00 Pa[0m
+[0;32mI (479367) RUUVITAG: Published data to MQTT, msg_id=14868[0m
+[0;32mI (480647) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.88%, Pressure: 101039.00 Pa[0m
+[0;32mI (480657) RUUVITAG: Published data to MQTT, msg_id=59827[0m
+[0;32mI (484517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.85%, Pressure: 101040.00 Pa[0m
+[0;32mI (484527) RUUVITAG: Published data to MQTT, msg_id=63185[0m
+[0;32mI (487077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.86%, Pressure: 101042.00 Pa[0m
+[0;32mI (487077) RUUVITAG: Published data to MQTT, msg_id=57296[0m
+[0;32mI (489647) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.85%, Pressure: 101039.00 Pa[0m
+[0;32mI (489657) RUUVITAG: Published data to MQTT, msg_id=5613[0m
+[0;32mI (492217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.88%, Pressure: 101041.00 Pa[0m
+[0;32mI (492217) RUUVITAG: Published data to MQTT, msg_id=8459[0m
+[0;32mI (493497) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.88%, Pressure: 101041.00 Pa[0m
+[0;32mI (493497) RUUVITAG: Published data to MQTT, msg_id=29674[0m
+[0;32mI (497357) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.87%, Pressure: 101040.00 Pa[0m
+[0;32mI (497357) RUUVITAG: Published data to MQTT, msg_id=12703[0m
+[0;32mI (498647) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.87%, Pressure: 101040.00 Pa[0m
+[0;32mI (498647) RUUVITAG: Published data to MQTT, msg_id=40793[0m
+[0;32mI (501217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.89%, Pressure: 101035.00 Pa[0m
+[0;32mI (501227) RUUVITAG: Published data to MQTT, msg_id=17809[0m
+[0;32mI (503787) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.88%, Pressure: 101038.00 Pa[0m
+[0;32mI (503797) RUUVITAG: Published data to MQTT, msg_id=45285[0m
+[0;32mI (505067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.89%, Pressure: 101039.00 Pa[0m
+[0;32mI (505077) RUUVITAG: Published data to MQTT, msg_id=39919[0m
+[0;32mI (506357) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.89%, Pressure: 101039.00 Pa[0m
+[0;32mI (506357) RUUVITAG: Published data to MQTT, msg_id=42620[0m
+[0;32mI (510207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.92%, Pressure: 101042.00 Pa[0m
+[0;32mI (510217) RUUVITAG: Published data to MQTT, msg_id=58055[0m
+[0;32mI (512777) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.93%, Pressure: 101041.00 Pa[0m
+[0;32mI (512777) RUUVITAG: Published data to MQTT, msg_id=31998[0m
+[0;32mI (515347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.94%, Pressure: 101041.00 Pa[0m
+[0;32mI (515357) RUUVITAG: Published data to MQTT, msg_id=565[0m
+[0;32mI (517997) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.96%, Pressure: 101041.00 Pa[0m
+[0;32mI (518007) RUUVITAG: Published data to MQTT, msg_id=609[0m
+[0;32mI (519197) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.96%, Pressure: 101041.00 Pa[0m
+[0;32mI (519207) RUUVITAG: Published data to MQTT, msg_id=21210[0m
+[0;32mI (521777) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 42.94%, Pressure: 101040.00 Pa[0m
+[0;32mI (521777) RUUVITAG: Published data to MQTT, msg_id=30555[0m
+[0;32mI (524347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.96%, Pressure: 101039.00 Pa[0m
+[0;32mI (524357) RUUVITAG: Published data to MQTT, msg_id=38106[0m
+[0;32mI (525627) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.96%, Pressure: 101043.00 Pa[0m
+[0;32mI (525627) RUUVITAG: Published data to MQTT, msg_id=65339[0m
+[1;31mE (526257) mqtt_client: esp_mqtt_handle_transport_read_error: transport_read(): EOF[0m
+[1;31mE (526257) mqtt_client: esp_mqtt_handle_transport_read_error: transport_read() error: errno=128[0m
+[1;31mE (526267) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_TCP_CLOSED_FIN[0m
+[1;31mE (526267) mqtt_client: mqtt_process_receive: mqtt_message_receive() returned -2[0m
+[0;32mI (526277) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (526907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.96%, Pressure: 101043.00 Pa[0m
+[0;32mI (526907) RUUVITAG: Published data to MQTT, msg_id=63369[0m
+[0;32mI (532047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.95%, Pressure: 101038.00 Pa[0m
+[0;32mI (532057) RUUVITAG: Published data to MQTT, msg_id=11777[0m
+[1;31mE (533837) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (533837) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (533837) mqtt_client: Error transport connect[0m
+[1;31mE (533837) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (533847) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (535897) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.95%, Pressure: 101038.00 Pa[0m
+[0;32mI (535907) RUUVITAG: Published data to MQTT, msg_id=9467[0m
+[0;32mI (538497) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.94%, Pressure: 101040.00 Pa[0m
+[0;32mI (538497) RUUVITAG: Published data to MQTT, msg_id=10533[0m
+[0;32mI (539767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.94%, Pressure: 101040.00 Pa[0m
+[0;32mI (539767) RUUVITAG: Published data to MQTT, msg_id=25394[0m
+[1;31mE (541407) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (541407) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (541407) mqtt_client: Error transport connect[0m
+[1;31mE (541407) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (541417) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (544897) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.94%, Pressure: 101041.00 Pa[0m
+[0;32mI (544897) RUUVITAG: Published data to MQTT, msg_id=36455[0m
+[0;32mI (547477) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 42.94%, Pressure: 101036.00 Pa[0m
+[0;32mI (547477) RUUVITAG: Published data to MQTT, msg_id=7621[0m
+[0;32mI (548757) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.92%, Pressure: 101037.00 Pa[0m
+[0;32mI (548757) RUUVITAG: Published data to MQTT, msg_id=32318[0m
+[1;31mE (548977) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (548987) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (548987) mqtt_client: Error transport connect[0m
+[1;31mE (548987) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (548997) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (551317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.94%, Pressure: 101036.00 Pa[0m
+[0;32mI (551317) RUUVITAG: Published data to MQTT, msg_id=3955[0m
+[0;32mI (552607) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.94%, Pressure: 101036.00 Pa[0m
+[0;32mI (552607) RUUVITAG: Published data to MQTT, msg_id=20038[0m
+[1;31mE (556507) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (556507) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (556507) mqtt_client: Error transport connect[0m
+[1;31mE (556507) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (556517) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (557757) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.95%, Pressure: 101038.00 Pa[0m
+[0;32mI (557767) RUUVITAG: Published data to MQTT, msg_id=29264[0m
+[0;32mI (560327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.90%, Pressure: 101037.00 Pa[0m
+[0;32mI (560327) RUUVITAG: Published data to MQTT, msg_id=24018[0m
+[0;32mI (561617) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.93%, Pressure: 101037.00 Pa[0m
+[0;32mI (561617) RUUVITAG: Published data to MQTT, msg_id=44381[0m
+[1;31mE (564037) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (564047) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (564047) mqtt_client: Error transport connect[0m
+[1;31mE (564047) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (564057) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (565467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 42.92%, Pressure: 101040.00 Pa[0m
+[0;32mI (565467) RUUVITAG: Published data to MQTT, msg_id=44508[0m
+[0;32mI (569307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 42.96%, Pressure: 101040.00 Pa[0m
+[0;32mI (569317) RUUVITAG: Published data to MQTT, msg_id=57421[0m
+[1;31mE (571627) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (571627) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (571627) mqtt_client: Error transport connect[0m
+[1;31mE (571627) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (571637) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (571887) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.94%, Pressure: 101038.00 Pa[0m
+[0;32mI (571887) RUUVITAG: Published data to MQTT, msg_id=31190[0m
+[0;32mI (573167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.94%, Pressure: 101038.00 Pa[0m
+[0;32mI (573177) RUUVITAG: Published data to MQTT, msg_id=42917[0m
+[0;32mI (574447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.91%, Pressure: 101039.00 Pa[0m
+[0;32mI (574457) RUUVITAG: Published data to MQTT, msg_id=33936[0m
+[1;31mE (576727) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (576737) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (576737) mqtt_client: Error transport connect[0m
+[1;31mE (576737) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (576747) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (578317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 42.92%, Pressure: 101038.00 Pa[0m
+[0;32mI (578317) RUUVITAG: Published data to MQTT, msg_id=34872[0m
+[1;31mE (584317) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (584317) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (584317) mqtt_client: Error transport connect[0m
+[1;31mE (584327) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (584327) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (586027) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.93%, Pressure: 101037.00 Pa[0m
+[0;32mI (586027) RUUVITAG: Published data to MQTT, msg_id=10921[0m
+[0;32mI (587297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.95%, Pressure: 101038.00 Pa[0m
+[0;32mI (587307) RUUVITAG: Published data to MQTT, msg_id=2398[0m
+[1;31mE (589427) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (589427) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (589427) mqtt_client: Error transport connect[0m
+[1;31mE (589437) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (589447) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (589877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.99%, Pressure: 101037.00 Pa[0m
+[0;32mI (589877) RUUVITAG: Published data to MQTT, msg_id=12504[0m
+[0;32mI (591167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.99%, Pressure: 101037.00 Pa[0m
+[0;32mI (591167) RUUVITAG: Published data to MQTT, msg_id=34972[0m
+[0;32mI (592447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.00%, Pressure: 101042.00 Pa[0m
+[0;32mI (592447) RUUVITAG: Published data to MQTT, msg_id=3064[0m
+[0;32mI (595017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.00%, Pressure: 101041.00 Pa[0m
+[0;32mI (595017) RUUVITAG: Published data to MQTT, msg_id=16318[0m
+[0;32mI (596307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.00%, Pressure: 101041.00 Pa[0m
+[0;32mI (596307) RUUVITAG: Published data to MQTT, msg_id=21166[0m
+[1;31mE (596957) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (596957) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (596957) mqtt_client: Error transport connect[0m
+[1;31mE (596957) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (596967) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (598867) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 42.97%, Pressure: 101038.00 Pa[0m
+[0;32mI (598867) RUUVITAG: Published data to MQTT, msg_id=59629[0m
+[0;32mI (600147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.97%, Pressure: 101042.00 Pa[0m
+[0;32mI (600147) RUUVITAG: Published data to MQTT, msg_id=20456[0m
+[0;32mI (602717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.99%, Pressure: 101038.00 Pa[0m
+[0;32mI (602717) RUUVITAG: Published data to MQTT, msg_id=62600[0m
+[0;32mI (604007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 42.99%, Pressure: 101038.00 Pa[0m
+[0;32mI (604017) RUUVITAG: Published data to MQTT, msg_id=16217[0m
+[1;31mE (604587) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (604587) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (604587) mqtt_client: Error transport connect[0m
+[1;31mE (604587) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (604597) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (609157) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.96%, Pressure: 101041.00 Pa[0m
+[0;32mI (609157) RUUVITAG: Published data to MQTT, msg_id=44275[0m
+[1;31mE (609617) esp-tls: [sock=54] delayed connect error: Connection reset by peer[0m
+[1;31mE (609617) transport_base: Failed to open a new connection: 32772[0m
+[1;31mE (609617) mqtt_client: Error transport connect[0m
+[1;31mE (609617) RUUVITAG: MQTT Error: ESP_ERR_ESP_TLS_FAILED_CONNECT_TO_HOST[0m
+[0;32mI (609627) RUUVITAG: MQTT Disconnected from broker.[0m
+[0;32mI (611717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 42.98%, Pressure: 101042.00 Pa[0m
+[0;32mI (611717) RUUVITAG: Published data to MQTT, msg_id=44112[0m
+[0;32mI (613007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 42.98%, Pressure: 101045.00 Pa[0m
+[0;32mI (613007) RUUVITAG: Published data to MQTT, msg_id=57776[0m
+[0;32mI (615577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.99%, Pressure: 101045.00 Pa[0m
+[0;32mI (615577) RUUVITAG: Published data to MQTT, msg_id=14874[0m
+[0;32mI (616857) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 42.99%, Pressure: 101045.00 Pa[0m
+[0;32mI (616857) RUUVITAG: Published data to MQTT, msg_id=31427[0m
+[0;32mI (617227) RUUVITAG: MQTT Connected to broker[0m
+[0;32mI (619427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.01%, Pressure: 101040.00 Pa[0m
+[0;32mI (619437) RUUVITAG: Published data to MQTT, msg_id=44229[0m
+[0;32mI (620707) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.01%, Pressure: 101041.00 Pa[0m
+[0;32mI (620717) RUUVITAG: Published data to MQTT, msg_id=46385[0m
+[0;32mI (624567) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.01%, Pressure: 101045.00 Pa[0m
+[0;32mI (624567) RUUVITAG: Published data to MQTT, msg_id=64886[0m
+[0;32mI (625877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.02%, Pressure: 101038.00 Pa[0m
+[0;32mI (625887) RUUVITAG: Published data to MQTT, msg_id=33854[0m
+[0;32mI (629707) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.01%, Pressure: 101037.00 Pa[0m
+[0;32mI (629717) RUUVITAG: Published data to MQTT, msg_id=5296[0m
+[0;32mI (637417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.02%, Pressure: 101038.00 Pa[0m
+[0;32mI (637427) RUUVITAG: Published data to MQTT, msg_id=49540[0m
+[0;32mI (638697) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.03%, Pressure: 101037.00 Pa[0m
+[0;32mI (638707) RUUVITAG: Published data to MQTT, msg_id=29804[0m
+[0;32mI (641277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.01%, Pressure: 101036.00 Pa[0m
+[0;32mI (641287) RUUVITAG: Published data to MQTT, msg_id=11923[0m
+[0;32mI (646407) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.03%, Pressure: 101041.00 Pa[0m
+[0;32mI (646417) RUUVITAG: Published data to MQTT, msg_id=14603[0m
+[0;32mI (654127) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.05%, Pressure: 101043.00 Pa[0m
+[0;32mI (654127) RUUVITAG: Published data to MQTT, msg_id=35231[0m
+[0;32mI (655417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.05%, Pressure: 101043.00 Pa[0m
+[0;32mI (655417) RUUVITAG: Published data to MQTT, msg_id=42751[0m
+[0;32mI (659267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.04%, Pressure: 101037.00 Pa[0m
+[0;32mI (659277) RUUVITAG: Published data to MQTT, msg_id=13745[0m
+[0;32mI (664397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.08%, Pressure: 101037.00 Pa[0m
+[0;32mI (664407) RUUVITAG: Published data to MQTT, msg_id=9078[0m
+[0;32mI (666967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.12%, Pressure: 101036.00 Pa[0m
+[0;32mI (666977) RUUVITAG: Published data to MQTT, msg_id=31721[0m
+[0;32mI (668257) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.12%, Pressure: 101036.00 Pa[0m
+[0;32mI (668267) RUUVITAG: Published data to MQTT, msg_id=33062[0m
+[0;32mI (675967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 43.15%, Pressure: 101036.00 Pa[0m
+[0;32mI (675977) RUUVITAG: Published data to MQTT, msg_id=30164[0m
+[0;32mI (677247) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.12%, Pressure: 101031.00 Pa[0m
+[0;32mI (677257) RUUVITAG: Published data to MQTT, msg_id=7264[0m
+[0;32mI (679827) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (679827) RUUVITAG: Published data to MQTT, msg_id=49114[0m
+[0;32mI (681117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (681117) RUUVITAG: Published data to MQTT, msg_id=40881[0m
+[0;32mI (684957) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.10%, Pressure: 101035.00 Pa[0m
+[0;32mI (684967) RUUVITAG: Published data to MQTT, msg_id=38576[0m
+[0;32mI (686247) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.10%, Pressure: 101035.00 Pa[0m
+[0;32mI (686257) RUUVITAG: Published data to MQTT, msg_id=29551[0m
+[0;32mI (688827) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.09%, Pressure: 101040.00 Pa[0m
+[0;32mI (688827) RUUVITAG: Published data to MQTT, msg_id=42350[0m
+[0;32mI (692667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.08%, Pressure: 101038.00 Pa[0m
+[0;32mI (692677) RUUVITAG: Published data to MQTT, msg_id=62722[0m
+[0;32mI (693967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.08%, Pressure: 101038.00 Pa[0m
+[0;32mI (693967) RUUVITAG: Published data to MQTT, msg_id=3843[0m
+[0;32mI (697807) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.06%, Pressure: 101038.00 Pa[0m
+[0;32mI (697807) RUUVITAG: Published data to MQTT, msg_id=53172[0m
+[0;32mI (700377) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.06%, Pressure: 101035.00 Pa[0m
+[0;32mI (700387) RUUVITAG: Published data to MQTT, msg_id=19734[0m
+[0;32mI (701667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.06%, Pressure: 101035.00 Pa[0m
+[0;32mI (701677) RUUVITAG: Published data to MQTT, msg_id=46012[0m
+[0;32mI (705517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.07%, Pressure: 101040.00 Pa[0m
+[0;32mI (705517) RUUVITAG: Published data to MQTT, msg_id=16581[0m
+[0;32mI (706807) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.07%, Pressure: 101040.00 Pa[0m
+[0;32mI (706807) RUUVITAG: Published data to MQTT, msg_id=49640[0m
+[0;32mI (710657) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.08%, Pressure: 101035.00 Pa[0m
+[0;32mI (710667) RUUVITAG: Published data to MQTT, msg_id=53261[0m
+[0;32mI (713227) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.08%, Pressure: 101032.00 Pa[0m
+[0;32mI (713237) RUUVITAG: Published data to MQTT, msg_id=7088[0m
+[0;32mI (714517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.08%, Pressure: 101032.00 Pa[0m
+[0;32mI (714527) RUUVITAG: Published data to MQTT, msg_id=24621[0m
+[0;32mI (718367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.08%, Pressure: 101041.00 Pa[0m
+[0;32mI (718367) RUUVITAG: Published data to MQTT, msg_id=55041[0m
+[0;32mI (731217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.09%, Pressure: 101037.00 Pa[0m
+[0;32mI (731227) RUUVITAG: Published data to MQTT, msg_id=8038[0m
+[0;32mI (732527) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.09%, Pressure: 101037.00 Pa[0m
+[0;32mI (732527) RUUVITAG: Published data to MQTT, msg_id=51088[0m
+[0;32mI (736377) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.08%, Pressure: 101044.00 Pa[0m
+[0;32mI (736387) RUUVITAG: Published data to MQTT, msg_id=21409[0m
+[0;32mI (737657) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.08%, Pressure: 101044.00 Pa[0m
+[0;32mI (737657) RUUVITAG: Published data to MQTT, msg_id=13421[0m
+[0;32mI (738927) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.07%, Pressure: 101044.00 Pa[0m
+[0;32mI (738937) RUUVITAG: Published data to MQTT, msg_id=41813[0m
+[0;32mI (744067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.07%, Pressure: 101044.00 Pa[0m
+[0;32mI (744067) RUUVITAG: Published data to MQTT, msg_id=13909[0m
+[0;32mI (745357) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.07%, Pressure: 101044.00 Pa[0m
+[0;32mI (745357) RUUVITAG: Published data to MQTT, msg_id=30066[0m
+[0;32mI (747927) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.09%, Pressure: 101039.00 Pa[0m
+[0;32mI (747937) RUUVITAG: Published data to MQTT, msg_id=50796[0m
+[0;32mI (749227) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.11%, Pressure: 101037.00 Pa[0m
+[0;32mI (749237) RUUVITAG: Published data to MQTT, msg_id=46508[0m
+[0;32mI (751767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.19%, Pressure: 101033.00 Pa[0m
+[0;32mI (751777) RUUVITAG: Published data to MQTT, msg_id=37476[0m
+[0;32mI (758207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.23%, Pressure: 101041.00 Pa[0m
+[0;32mI (758217) RUUVITAG: Published data to MQTT, msg_id=15803[0m
+[0;32mI (760767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.22%, Pressure: 101045.00 Pa[0m
+[0;32mI (760777) RUUVITAG: Published data to MQTT, msg_id=61689[0m
+[0;32mI (762057) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.19%, Pressure: 101041.00 Pa[0m
+[0;32mI (762067) RUUVITAG: Published data to MQTT, msg_id=36252[0m
+[0;32mI (764627) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.20%, Pressure: 101040.00 Pa[0m
+[0;32mI (764637) RUUVITAG: Published data to MQTT, msg_id=27212[0m
+[0;32mI (765917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.20%, Pressure: 101040.00 Pa[0m
+[0;32mI (765917) RUUVITAG: Published data to MQTT, msg_id=5614[0m
+[0;32mI (769767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.17%, Pressure: 101033.00 Pa[0m
+[0;32mI (769777) RUUVITAG: Published data to MQTT, msg_id=35129[0m
+[0;32mI (771057) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.17%, Pressure: 101033.00 Pa[0m
+[0;32mI (771057) RUUVITAG: Published data to MQTT, msg_id=2776[0m
+[0;32mI (774907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.15%, Pressure: 101033.00 Pa[0m
+[0;32mI (774907) RUUVITAG: Published data to MQTT, msg_id=15104[0m
+[0;32mI (777477) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.17%, Pressure: 101035.00 Pa[0m
+[0;32mI (777487) RUUVITAG: Published data to MQTT, msg_id=20010[0m
+[0;32mI (783927) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (783937) RUUVITAG: Published data to MQTT, msg_id=7975[0m
+[0;32mI (787757) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.14%, Pressure: 101032.00 Pa[0m
+[0;32mI (787757) RUUVITAG: Published data to MQTT, msg_id=25886[0m
+[0;32mI (791617) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101036.00 Pa[0m
+[0;32mI (791627) RUUVITAG: Published data to MQTT, msg_id=7240[0m
+[0;32mI (795467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101039.00 Pa[0m
+[0;32mI (795477) RUUVITAG: Published data to MQTT, msg_id=39200[0m
+[0;32mI (796757) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101039.00 Pa[0m
+[0;32mI (796767) RUUVITAG: Published data to MQTT, msg_id=44765[0m
+[0;32mI (799327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.10%, Pressure: 101037.00 Pa[0m
+[0;32mI (799327) RUUVITAG: Published data to MQTT, msg_id=43653[0m
+[0;32mI (800607) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101042.00 Pa[0m
+[0;32mI (800617) RUUVITAG: Published data to MQTT, msg_id=48380[0m
+[0;32mI (803177) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.12%, Pressure: 101042.00 Pa[0m
+[0;32mI (803177) RUUVITAG: Published data to MQTT, msg_id=21749[0m
+[0;32mI (804477) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.12%, Pressure: 101042.00 Pa[0m
+[0;32mI (804487) RUUVITAG: Published data to MQTT, msg_id=49070[0m
+[0;32mI (808317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.12%, Pressure: 101040.00 Pa[0m
+[0;32mI (808327) RUUVITAG: Published data to MQTT, msg_id=29533[0m
+[0;32mI (812177) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.12%, Pressure: 101035.00 Pa[0m
+[0;32mI (812187) RUUVITAG: Published data to MQTT, msg_id=5759[0m
+[0;32mI (813457) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.15%, Pressure: 101033.00 Pa[0m
+[0;32mI (813467) RUUVITAG: Published data to MQTT, msg_id=38120[0m
+[0;32mI (816027) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.16%, Pressure: 101036.00 Pa[0m
+[0;32mI (816037) RUUVITAG: Published data to MQTT, msg_id=41842[0m
+[0;32mI (817317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.16%, Pressure: 101036.00 Pa[0m
+[0;32mI (817317) RUUVITAG: Published data to MQTT, msg_id=41400[0m
+[0;32mI (819877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.15%, Pressure: 101036.00 Pa[0m
+[0;32mI (819887) RUUVITAG: Published data to MQTT, msg_id=21538[0m
+[0;32mI (822457) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (822457) RUUVITAG: Published data to MQTT, msg_id=32315[0m
+[0;32mI (825017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.12%, Pressure: 101033.00 Pa[0m
+[0;32mI (825027) RUUVITAG: Published data to MQTT, msg_id=59989[0m
+[0;32mI (826307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (826317) RUUVITAG: Published data to MQTT, msg_id=34268[0m
+[0;32mI (828877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (828887) RUUVITAG: Published data to MQTT, msg_id=39433[0m
+[0;32mI (830167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (830177) RUUVITAG: Published data to MQTT, msg_id=37573[0m
+[0;32mI (834017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.12%, Pressure: 101033.00 Pa[0m
+[0;32mI (834027) RUUVITAG: Published data to MQTT, msg_id=50437[0m
+[0;32mI (835307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.12%, Pressure: 101033.00 Pa[0m
+[0;32mI (835307) RUUVITAG: Published data to MQTT, msg_id=14951[0m
+[0;32mI (837907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (837917) RUUVITAG: Published data to MQTT, msg_id=53153[0m
+[0;32mI (839157) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.12%, Pressure: 101034.00 Pa[0m
+[0;32mI (839167) RUUVITAG: Published data to MQTT, msg_id=50893[0m
+[0;32mI (841727) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.10%, Pressure: 101033.00 Pa[0m
+[0;32mI (841737) RUUVITAG: Published data to MQTT, msg_id=46256[0m
+[0;32mI (843017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.10%, Pressure: 101033.00 Pa[0m
+[0;32mI (843017) RUUVITAG: Published data to MQTT, msg_id=60924[0m
+[0;32mI (848157) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.50°C, Humidity: 43.13%, Pressure: 101036.00 Pa[0m
+[0;32mI (848157) RUUVITAG: Published data to MQTT, msg_id=6466[0m
+[0;32mI (850727) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.11%, Pressure: 101042.00 Pa[0m
+[0;32mI (850737) RUUVITAG: Published data to MQTT, msg_id=48760[0m
+[0;32mI (854577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.12%, Pressure: 101046.00 Pa[0m
+[0;32mI (854587) RUUVITAG: Published data to MQTT, msg_id=58152[0m
+[0;32mI (855867) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.12%, Pressure: 101046.00 Pa[0m
+[0;32mI (855877) RUUVITAG: Published data to MQTT, msg_id=55947[0m
+[0;32mI (858437) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.13%, Pressure: 101043.00 Pa[0m
+[0;32mI (858437) RUUVITAG: Published data to MQTT, msg_id=61713[0m
+[0;32mI (859717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.15%, Pressure: 101046.00 Pa[0m
+[0;32mI (859727) RUUVITAG: Published data to MQTT, msg_id=4684[0m
+[0;32mI (861007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.15%, Pressure: 101046.00 Pa[0m
+[0;32mI (861007) RUUVITAG: Published data to MQTT, msg_id=15709[0m
+[0;32mI (862277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.12%, Pressure: 101046.00 Pa[0m
+[0;32mI (862287) RUUVITAG: Published data to MQTT, msg_id=34941[0m
+[0;32mI (863577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.12%, Pressure: 101046.00 Pa[0m
+[0;32mI (863587) RUUVITAG: Published data to MQTT, msg_id=48555[0m
+[0;32mI (864857) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101043.00 Pa[0m
+[0;32mI (864857) RUUVITAG: Published data to MQTT, msg_id=33764[0m
+[0;32mI (867427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.13%, Pressure: 101041.00 Pa[0m
+[0;32mI (867437) RUUVITAG: Published data to MQTT, msg_id=40135[0m
+[0;32mI (868717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.13%, Pressure: 101041.00 Pa[0m
+[0;32mI (868727) RUUVITAG: Published data to MQTT, msg_id=6642[0m
+[0;32mI (871277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.15%, Pressure: 101037.00 Pa[0m
+[0;32mI (871287) RUUVITAG: Published data to MQTT, msg_id=6963[0m
+[0;32mI (873857) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101042.00 Pa[0m
+[0;32mI (873857) RUUVITAG: Published data to MQTT, msg_id=44183[0m
+[0;32mI (876427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.11%, Pressure: 101036.00 Pa[0m
+[0;32mI (876437) RUUVITAG: Published data to MQTT, msg_id=1521[0m
+[0;32mI (877707) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.15%, Pressure: 101032.00 Pa[0m
+[0;32mI (877707) RUUVITAG: Published data to MQTT, msg_id=11953[0m
+[0;32mI (880277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101037.00 Pa[0m
+[0;32mI (880287) RUUVITAG: Published data to MQTT, msg_id=5369[0m
+[0;32mI (881567) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101037.00 Pa[0m
+[0;32mI (881567) RUUVITAG: Published data to MQTT, msg_id=55524[0m
+[0;32mI (885417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101044.00 Pa[0m
+[0;32mI (885427) RUUVITAG: Published data to MQTT, msg_id=64504[0m
+[0;32mI (889277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.12%, Pressure: 101039.00 Pa[0m
+[0;32mI (889287) RUUVITAG: Published data to MQTT, msg_id=39473[0m
+[0;32mI (890577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101044.00 Pa[0m
+[0;32mI (890587) RUUVITAG: Published data to MQTT, msg_id=14424[0m
+[0;32mI (893117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.12%, Pressure: 101044.00 Pa[0m
+[0;32mI (893127) RUUVITAG: Published data to MQTT, msg_id=42009[0m
+[0;32mI (894417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.12%, Pressure: 101044.00 Pa[0m
+[0;32mI (894417) RUUVITAG: Published data to MQTT, msg_id=2838[0m
+[0;32mI (896977) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.16%, Pressure: 101053.00 Pa[0m
+[0;32mI (896987) RUUVITAG: Published data to MQTT, msg_id=45746[0m
+[0;32mI (898267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.31%, Pressure: 101045.00 Pa[0m
+[0;32mI (898267) RUUVITAG: Published data to MQTT, msg_id=25603[0m
+[0;32mI (905967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.40%, Pressure: 101041.00 Pa[0m
+[0;32mI (905977) RUUVITAG: Published data to MQTT, msg_id=48106[0m
+[0;32mI (907257) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.40%, Pressure: 101041.00 Pa[0m
+[0;32mI (907257) RUUVITAG: Published data to MQTT, msg_id=48143[0m
+[0;32mI (911127) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.35%, Pressure: 101038.00 Pa[0m
+[0;32mI (911137) RUUVITAG: Published data to MQTT, msg_id=42897[0m
+[0;32mI (916257) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.35%, Pressure: 101040.00 Pa[0m
+[0;32mI (916257) RUUVITAG: Published data to MQTT, msg_id=18364[0m
+[0;32mI (920107) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.33%, Pressure: 101035.00 Pa[0m
+[0;32mI (920107) RUUVITAG: Published data to MQTT, msg_id=57488[0m
+[0;32mI (922677) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.29%, Pressure: 101034.00 Pa[0m
+[0;32mI (922687) RUUVITAG: Published data to MQTT, msg_id=56371[0m
+[0;32mI (929107) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.28%, Pressure: 101032.00 Pa[0m
+[0;32mI (929117) RUUVITAG: Published data to MQTT, msg_id=11402[0m
+[0;32mI (931677) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.27%, Pressure: 101035.00 Pa[0m
+[0;32mI (931687) RUUVITAG: Published data to MQTT, msg_id=6896[0m
+[0;32mI (932957) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.27%, Pressure: 101035.00 Pa[0m
+[0;32mI (932967) RUUVITAG: Published data to MQTT, msg_id=2177[0m
+[0;32mI (935527) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.27%, Pressure: 101038.00 Pa[0m
+[0;32mI (935537) RUUVITAG: Published data to MQTT, msg_id=41691[0m
+[0;32mI (936827) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.26%, Pressure: 101045.00 Pa[0m
+[0;32mI (936837) RUUVITAG: Published data to MQTT, msg_id=22367[0m
+[0;32mI (939387) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.25%, Pressure: 101042.00 Pa[0m
+[0;32mI (939387) RUUVITAG: Published data to MQTT, msg_id=35916[0m
+[0;32mI (944527) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.25%, Pressure: 101042.00 Pa[0m
+[0;32mI (944527) RUUVITAG: Published data to MQTT, msg_id=22642[0m
+[0;32mI (948387) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.24%, Pressure: 101035.00 Pa[0m
+[0;32mI (948387) RUUVITAG: Published data to MQTT, msg_id=55647[0m
+[0;32mI (949687) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.23%, Pressure: 101033.00 Pa[0m
+[0;32mI (949687) RUUVITAG: Published data to MQTT, msg_id=55370[0m
+[0;32mI (952287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.21%, Pressure: 101041.00 Pa[0m
+[0;32mI (952287) RUUVITAG: Published data to MQTT, msg_id=3875[0m
+[0;32mI (953527) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.21%, Pressure: 101041.00 Pa[0m
+[0;32mI (953527) RUUVITAG: Published data to MQTT, msg_id=20485[0m
+[0;32mI (956097) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.21%, Pressure: 101035.00 Pa[0m
+[0;32mI (956107) RUUVITAG: Published data to MQTT, msg_id=32435[0m
+[0;32mI (958657) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.21%, Pressure: 101034.00 Pa[0m
+[0;32mI (958667) RUUVITAG: Published data to MQTT, msg_id=42842[0m
+[0;32mI (961227) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.21%, Pressure: 101031.00 Pa[0m
+[0;32mI (961237) RUUVITAG: Published data to MQTT, msg_id=17628[0m
+[0;32mI (962507) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.21%, Pressure: 101034.00 Pa[0m
+[0;32mI (962517) RUUVITAG: Published data to MQTT, msg_id=39161[0m
+[0;32mI (965077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 43.19%, Pressure: 101035.00 Pa[0m
+[0;32mI (965087) RUUVITAG: Published data to MQTT, msg_id=62794[0m
+[0;32mI (966367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 43.19%, Pressure: 101035.00 Pa[0m
+[0;32mI (966377) RUUVITAG: Published data to MQTT, msg_id=32636[0m
+[0;32mI (967657) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.17%, Pressure: 101035.00 Pa[0m
+[0;32mI (967657) RUUVITAG: Published data to MQTT, msg_id=6197[0m
+[0;32mI (971507) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.20%, Pressure: 101031.00 Pa[0m
+[0;32mI (971517) RUUVITAG: Published data to MQTT, msg_id=2219[0m
+[0;32mI (972787) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.19%, Pressure: 101034.00 Pa[0m
+[0;32mI (972797) RUUVITAG: Published data to MQTT, msg_id=59501[0m
+[0;32mI (974077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.19%, Pressure: 101034.00 Pa[0m
+[0;32mI (974087) RUUVITAG: Published data to MQTT, msg_id=50198[0m
+[0;32mI (975357) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.19%, Pressure: 101033.00 Pa[0m
+[0;32mI (975367) RUUVITAG: Published data to MQTT, msg_id=5427[0m
+[0;32mI (977927) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.17%, Pressure: 101041.00 Pa[0m
+[0;32mI (977937) RUUVITAG: Published data to MQTT, msg_id=51682[0m
+[0;32mI (979237) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.17%, Pressure: 101041.00 Pa[0m
+[0;32mI (979237) RUUVITAG: Published data to MQTT, msg_id=26813[0m
+[0;32mI (983077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.17%, Pressure: 101033.00 Pa[0m
+[0;32mI (983087) RUUVITAG: Published data to MQTT, msg_id=173[0m
+[0;32mI (988207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.16%, Pressure: 101040.00 Pa[0m
+[0;32mI (988217) RUUVITAG: Published data to MQTT, msg_id=22357[0m
+[0;32mI (989507) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.16%, Pressure: 101040.00 Pa[0m
+[0;32mI (989507) RUUVITAG: Published data to MQTT, msg_id=48062[0m
+[0;32mI (992087) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.15%, Pressure: 101038.00 Pa[0m
+[0;32mI (992087) RUUVITAG: Published data to MQTT, msg_id=51337[0m
+[0;32mI (995917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.16%, Pressure: 101040.00 Pa[0m
+[0;32mI (995927) RUUVITAG: Published data to MQTT, msg_id=64052[0m
+[0;32mI (999787) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.15%, Pressure: 101034.00 Pa[0m
+[0;32mI (999787) RUUVITAG: Published data to MQTT, msg_id=17192[0m
+[0;32mI (1001057) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.15%, Pressure: 101043.00 Pa[0m
+[0;32mI (1001067) RUUVITAG: Published data to MQTT, msg_id=6719[0m
+[0;32mI (1003637) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.14%, Pressure: 101041.00 Pa[0m
+[0;32mI (1003637) RUUVITAG: Published data to MQTT, msg_id=33404[0m
+[0;32mI (1004927) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.14%, Pressure: 101041.00 Pa[0m
+[0;32mI (1004927) RUUVITAG: Published data to MQTT, msg_id=41798[0m
+[0;32mI (1008767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.13%, Pressure: 101037.00 Pa[0m
+[0;32mI (1008767) RUUVITAG: Published data to MQTT, msg_id=38286[0m
+[0;32mI (1012627) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.12%, Pressure: 101040.00 Pa[0m
+[0;32mI (1012637) RUUVITAG: Published data to MQTT, msg_id=29085[0m
+[0;32mI (1017767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.10%, Pressure: 101034.00 Pa[0m
+[0;32mI (1017767) RUUVITAG: Published data to MQTT, msg_id=15729[0m
+[0;32mI (1021617) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (1021627) RUUVITAG: Published data to MQTT, msg_id=9240[0m
+[0;32mI (1022907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (1022917) RUUVITAG: Published data to MQTT, msg_id=18852[0m
+[0;32mI (1026757) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.12%, Pressure: 101036.00 Pa[0m
+[0;32mI (1026767) RUUVITAG: Published data to MQTT, msg_id=33373[0m
+[0;32mI (1029327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.10%, Pressure: 101041.00 Pa[0m
+[0;32mI (1029327) RUUVITAG: Published data to MQTT, msg_id=65519[0m
+[0;32mI (1031897) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.10%, Pressure: 101044.00 Pa[0m
+[0;32mI (1031897) RUUVITAG: Published data to MQTT, msg_id=26414[0m
+[0;32mI (1034467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.10%, Pressure: 101044.00 Pa[0m
+[0;32mI (1034467) RUUVITAG: Published data to MQTT, msg_id=33263[0m
+[0;32mI (1037037) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.11%, Pressure: 101041.00 Pa[0m
+[0;32mI (1037037) RUUVITAG: Published data to MQTT, msg_id=63951[0m
+[0;32mI (1038337) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.11%, Pressure: 101041.00 Pa[0m
+[0;32mI (1038337) RUUVITAG: Published data to MQTT, msg_id=40601[0m
+[0;32mI (1040897) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.08%, Pressure: 101040.00 Pa[0m
+[0;32mI (1040907) RUUVITAG: Published data to MQTT, msg_id=42977[0m
+[0;32mI (1043467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.08%, Pressure: 101053.00 Pa[0m
+[0;32mI (1043467) RUUVITAG: Published data to MQTT, msg_id=9607[0m
+[0;32mI (1046037) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.10%, Pressure: 101047.00 Pa[0m
+[0;32mI (1046037) RUUVITAG: Published data to MQTT, msg_id=35171[0m
+[0;32mI (1047327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.09%, Pressure: 101041.00 Pa[0m
+[0;32mI (1047327) RUUVITAG: Published data to MQTT, msg_id=64304[0m
+[0;32mI (1048627) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.09%, Pressure: 101041.00 Pa[0m
+[0;32mI (1048637) RUUVITAG: Published data to MQTT, msg_id=42266[0m
+[0;32mI (1051187) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.08%, Pressure: 101043.00 Pa[0m
+[0;32mI (1051197) RUUVITAG: Published data to MQTT, msg_id=16807[0m
+[0;32mI (1055027) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.09%, Pressure: 101042.00 Pa[0m
+[0;32mI (1055037) RUUVITAG: Published data to MQTT, msg_id=23007[0m
+[0;32mI (1056327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.09%, Pressure: 101042.00 Pa[0m
+[0;32mI (1056337) RUUVITAG: Published data to MQTT, msg_id=61418[0m
+[0;32mI (1060167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.09%, Pressure: 101040.00 Pa[0m
+[0;32mI (1060167) RUUVITAG: Published data to MQTT, msg_id=29207[0m
+[0;32mI (1062737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.09%, Pressure: 101035.00 Pa[0m
+[0;32mI (1062737) RUUVITAG: Published data to MQTT, msg_id=2791[0m
+[0;32mI (1064017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.09%, Pressure: 101035.00 Pa[0m
+[0;32mI (1064027) RUUVITAG: Published data to MQTT, msg_id=49750[0m
+[0;32mI (1065307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.11%, Pressure: 101040.00 Pa[0m
+[0;32mI (1065317) RUUVITAG: Published data to MQTT, msg_id=12597[0m
+[0;32mI (1067877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.09%, Pressure: 101036.00 Pa[0m
+[0;32mI (1067887) RUUVITAG: Published data to MQTT, msg_id=23134[0m
+[0;32mI (1069167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.09%, Pressure: 101036.00 Pa[0m
+[0;32mI (1069177) RUUVITAG: Published data to MQTT, msg_id=21771[0m
+[0;32mI (1073017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.10%, Pressure: 101041.00 Pa[0m
+[0;32mI (1073017) RUUVITAG: Published data to MQTT, msg_id=48774[0m
+[0;32mI (1074317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.10%, Pressure: 101041.00 Pa[0m
+[0;32mI (1074317) RUUVITAG: Published data to MQTT, msg_id=7216[0m
+[0;32mI (1076877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.09%, Pressure: 101038.00 Pa[0m
+[0;32mI (1076887) RUUVITAG: Published data to MQTT, msg_id=46210[0m
+[0;32mI (1080737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.10%, Pressure: 101033.00 Pa[0m
+[0;32mI (1080737) RUUVITAG: Published data to MQTT, msg_id=49159[0m
+[0;32mI (1082027) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.10%, Pressure: 101033.00 Pa[0m
+[0;32mI (1082027) RUUVITAG: Published data to MQTT, msg_id=48061[0m
+[0;32mI (1089737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.08%, Pressure: 101035.00 Pa[0m
+[0;32mI (1089737) RUUVITAG: Published data to MQTT, msg_id=38827[0m
+[0;32mI (1091017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.07%, Pressure: 101038.00 Pa[0m
+[0;32mI (1091027) RUUVITAG: Published data to MQTT, msg_id=24408[0m
+[0;32mI (1093577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.07%, Pressure: 101036.00 Pa[0m
+[0;32mI (1093587) RUUVITAG: Published data to MQTT, msg_id=63678[0m
+[0;32mI (1094877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.07%, Pressure: 101036.00 Pa[0m
+[0;32mI (1094877) RUUVITAG: Published data to MQTT, msg_id=60954[0m
+[0;32mI (1097437) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.50°C, Humidity: 43.10%, Pressure: 101043.00 Pa[0m
+[0;32mI (1097437) RUUVITAG: Published data to MQTT, msg_id=50949[0m
+[0;32mI (1102567) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.08%, Pressure: 101038.00 Pa[0m
+[0;32mI (1102577) RUUVITAG: Published data to MQTT, msg_id=56581[0m
+[0;32mI (1103857) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.10%, Pressure: 101044.00 Pa[0m
+[0;32mI (1103867) RUUVITAG: Published data to MQTT, msg_id=205[0m
+[0;32mI (1106427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.12%, Pressure: 101040.00 Pa[0m
+[0;32mI (1106437) RUUVITAG: Published data to MQTT, msg_id=62146[0m
+[0;32mI (1107737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.12%, Pressure: 101040.00 Pa[0m
+[0;32mI (1107737) RUUVITAG: Published data to MQTT, msg_id=5694[0m
+[0;32mI (1110287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.17%, Pressure: 101041.00 Pa[0m
+[0;32mI (1110297) RUUVITAG: Published data to MQTT, msg_id=35809[0m
+[0;32mI (1111577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.19%, Pressure: 101035.00 Pa[0m
+[0;32mI (1111577) RUUVITAG: Published data to MQTT, msg_id=54333[0m
+[0;32mI (1115427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.50°C, Humidity: 43.19%, Pressure: 101033.00 Pa[0m
+[0;32mI (1115427) RUUVITAG: Published data to MQTT, msg_id=57212[0m
+[0;32mI (1116707) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.17%, Pressure: 101036.00 Pa[0m
+[0;32mI (1116717) RUUVITAG: Published data to MQTT, msg_id=21341[0m
+[0;32mI (1119287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.19%, Pressure: 101037.00 Pa[0m
+[0;32mI (1119287) RUUVITAG: Published data to MQTT, msg_id=16305[0m
+[0;32mI (1120567) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.19%, Pressure: 101037.00 Pa[0m
+[0;32mI (1120577) RUUVITAG: Published data to MQTT, msg_id=41709[0m
+[0;32mI (1123137) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.19%, Pressure: 101037.00 Pa[0m
+[0;32mI (1123137) RUUVITAG: Published data to MQTT, msg_id=46157[0m
+[0;32mI (1124417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.17%, Pressure: 101034.00 Pa[0m
+[0;32mI (1124417) RUUVITAG: Published data to MQTT, msg_id=26242[0m
+[0;32mI (1128277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.17%, Pressure: 101040.00 Pa[0m
+[0;32mI (1128287) RUUVITAG: Published data to MQTT, msg_id=7917[0m
+[0;32mI (1129557) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.15%, Pressure: 101040.00 Pa[0m
+[0;32mI (1129567) RUUVITAG: Published data to MQTT, msg_id=34892[0m
+[0;32mI (1132127) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.14%, Pressure: 101040.00 Pa[0m
+[0;32mI (1132127) RUUVITAG: Published data to MQTT, msg_id=51252[0m
+[0;32mI (1133417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.14%, Pressure: 101040.00 Pa[0m
+[0;32mI (1133427) RUUVITAG: Published data to MQTT, msg_id=17114[0m
+[0;32mI (1135987) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (1135997) RUUVITAG: Published data to MQTT, msg_id=43248[0m
+[0;32mI (1137277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (1137287) RUUVITAG: Published data to MQTT, msg_id=10426[0m
+[0;32mI (1139837) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (1139847) RUUVITAG: Published data to MQTT, msg_id=16051[0m
+[0;32mI (1141127) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (1141137) RUUVITAG: Published data to MQTT, msg_id=21586[0m
+[0;32mI (1144977) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.12%, Pressure: 101033.00 Pa[0m
+[0;32mI (1144977) RUUVITAG: Published data to MQTT, msg_id=45879[0m
+[0;32mI (1146267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.12%, Pressure: 101033.00 Pa[0m
+[0;32mI (1146277) RUUVITAG: Published data to MQTT, msg_id=31052[0m
+[0;32mI (1150117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (1150117) RUUVITAG: Published data to MQTT, msg_id=59826[0m
+[0;32mI (1153977) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.13%, Pressure: 101039.00 Pa[0m
+[0;32mI (1153987) RUUVITAG: Published data to MQTT, msg_id=14161[0m
+[0;32mI (1157837) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.13%, Pressure: 101035.00 Pa[0m
+[0;32mI (1157847) RUUVITAG: Published data to MQTT, msg_id=2128[0m
+[0;32mI (1161687) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.11%, Pressure: 101038.00 Pa[0m
+[0;32mI (1161687) RUUVITAG: Published data to MQTT, msg_id=50474[0m
+[0;32mI (1162967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.10%, Pressure: 101033.00 Pa[0m
+[0;32mI (1162977) RUUVITAG: Published data to MQTT, msg_id=48932[0m
+[0;32mI (1165537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.13%, Pressure: 101030.00 Pa[0m
+[0;32mI (1165537) RUUVITAG: Published data to MQTT, msg_id=37027[0m
+[0;32mI (1166827) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.13%, Pressure: 101030.00 Pa[0m
+[0;32mI (1166837) RUUVITAG: Published data to MQTT, msg_id=55858[0m
+[0;32mI (1170677) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (1170677) RUUVITAG: Published data to MQTT, msg_id=27318[0m
+[0;32mI (1171987) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (1171987) RUUVITAG: Published data to MQTT, msg_id=4260[0m
+[0;32mI (1174537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.10%, Pressure: 101032.00 Pa[0m
+[0;32mI (1174537) RUUVITAG: Published data to MQTT, msg_id=59346[0m
+[0;32mI (1175807) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.14%, Pressure: 101035.00 Pa[0m
+[0;32mI (1175817) RUUVITAG: Published data to MQTT, msg_id=17347[0m
+[0;32mI (1178427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.13%, Pressure: 101040.00 Pa[0m
+[0;32mI (1178437) RUUVITAG: Published data to MQTT, msg_id=54859[0m
+[0;32mI (1179677) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.13%, Pressure: 101040.00 Pa[0m
+[0;32mI (1179687) RUUVITAG: Published data to MQTT, msg_id=38471[0m
+[0;32mI (1183517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.12%, Pressure: 101040.00 Pa[0m
+[0;32mI (1183527) RUUVITAG: Published data to MQTT, msg_id=3157[0m
+[0;32mI (1184817) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.12%, Pressure: 101040.00 Pa[0m
+[0;32mI (1184827) RUUVITAG: Published data to MQTT, msg_id=6041[0m
+[0;32mI (1187387) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.12%, Pressure: 101037.00 Pa[0m
+[0;32mI (1187397) RUUVITAG: Published data to MQTT, msg_id=52279[0m
+[0;32mI (1188667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.15%, Pressure: 101042.00 Pa[0m
+[0;32mI (1188677) RUUVITAG: Published data to MQTT, msg_id=55300[0m
+[0;32mI (1191237) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.13%, Pressure: 101037.00 Pa[0m
+[0;32mI (1191247) RUUVITAG: Published data to MQTT, msg_id=61345[0m
+[0;32mI (1192527) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.13%, Pressure: 101037.00 Pa[0m
+[0;32mI (1192537) RUUVITAG: Published data to MQTT, msg_id=22643[0m
+[0;32mI (1196367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.12%, Pressure: 101035.00 Pa[0m
+[0;32mI (1196377) RUUVITAG: Published data to MQTT, msg_id=23058[0m
+[0;32mI (1197657) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.12%, Pressure: 101035.00 Pa[0m
+[0;32mI (1197667) RUUVITAG: Published data to MQTT, msg_id=36369[0m
+[0;32mI (1201507) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.13%, Pressure: 101031.00 Pa[0m
+[0;32mI (1201517) RUUVITAG: Published data to MQTT, msg_id=29752[0m
+[0;32mI (1204077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.14%, Pressure: 101031.00 Pa[0m
+[0;32mI (1204087) RUUVITAG: Published data to MQTT, msg_id=27102[0m
+[0;32mI (1205367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.14%, Pressure: 101031.00 Pa[0m
+[0;32mI (1205367) RUUVITAG: Published data to MQTT, msg_id=3368[0m
+[0;32mI (1207937) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.13%, Pressure: 101036.00 Pa[0m
+[0;32mI (1207947) RUUVITAG: Published data to MQTT, msg_id=36691[0m
+[0;32mI (1209237) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (1209247) RUUVITAG: Published data to MQTT, msg_id=29459[0m
+[0;32mI (1210537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.13%, Pressure: 101033.00 Pa[0m
+[0;32mI (1210547) RUUVITAG: Published data to MQTT, msg_id=55587[0m
+[0;32mI (1216937) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.15%, Pressure: 101036.00 Pa[0m
+[0;32mI (1216947) RUUVITAG: Published data to MQTT, msg_id=43373[0m
+[0;32mI (1222077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.16%, Pressure: 101045.00 Pa[0m
+[0;32mI (1222077) RUUVITAG: Published data to MQTT, msg_id=33568[0m
+[0;32mI (1224637) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.16%, Pressure: 101047.00 Pa[0m
+[0;32mI (1224647) RUUVITAG: Published data to MQTT, msg_id=18477[0m
+[0;32mI (1225917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.16%, Pressure: 101047.00 Pa[0m
+[0;32mI (1225927) RUUVITAG: Published data to MQTT, msg_id=18141[0m
+[0;32mI (1227207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.15%, Pressure: 101045.00 Pa[0m
+[0;32mI (1227217) RUUVITAG: Published data to MQTT, msg_id=10776[0m
+[0;32mI (1229787) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.16%, Pressure: 101040.00 Pa[0m
+[0;32mI (1229797) RUUVITAG: Published data to MQTT, msg_id=5196[0m
+[0;32mI (1236207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.16%, Pressure: 101054.00 Pa[0m
+[0;32mI (1236217) RUUVITAG: Published data to MQTT, msg_id=9243[0m
+[0;32mI (1237487) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.17%, Pressure: 101051.00 Pa[0m
+[0;32mI (1237497) RUUVITAG: Published data to MQTT, msg_id=62968[0m
+[0;32mI (1238777) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.17%, Pressure: 101051.00 Pa[0m
+[0;32mI (1238787) RUUVITAG: Published data to MQTT, msg_id=42495[0m
+[0;32mI (1242627) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.17%, Pressure: 101045.00 Pa[0m
+[0;32mI (1242637) RUUVITAG: Published data to MQTT, msg_id=44930[0m
+[0;32mI (1243917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.17%, Pressure: 101045.00 Pa[0m
+[0;32mI (1243927) RUUVITAG: Published data to MQTT, msg_id=61038[0m
+[0;32mI (1247767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.15%, Pressure: 101030.00 Pa[0m
+[0;32mI (1247777) RUUVITAG: Published data to MQTT, msg_id=33825[0m
+[0;32mI (1249067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.15%, Pressure: 101030.00 Pa[0m
+[0;32mI (1249067) RUUVITAG: Published data to MQTT, msg_id=49720[0m
+[0;32mI (1250337) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.16%, Pressure: 101030.00 Pa[0m
+[0;32mI (1250347) RUUVITAG: Published data to MQTT, msg_id=58402[0m
+[0;32mI (1251637) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.16%, Pressure: 101030.00 Pa[0m
+[0;32mI (1251647) RUUVITAG: Published data to MQTT, msg_id=26899[0m
+[0;32mI (1252907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.15%, Pressure: 101028.00 Pa[0m
+[0;32mI (1252917) RUUVITAG: Published data to MQTT, msg_id=2206[0m
+[0;32mI (1255487) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.16%, Pressure: 101026.00 Pa[0m
+[0;32mI (1255487) RUUVITAG: Published data to MQTT, msg_id=35773[0m
+[0;32mI (1256767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.16%, Pressure: 101026.00 Pa[0m
+[0;32mI (1256777) RUUVITAG: Published data to MQTT, msg_id=38858[0m
+[0;32mI (1259337) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.15%, Pressure: 101028.00 Pa[0m
+[0;32mI (1259337) RUUVITAG: Published data to MQTT, msg_id=44604[0m
+[0;32mI (1261907) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.18%, Pressure: 101030.00 Pa[0m
+[0;32mI (1261917) RUUVITAG: Published data to MQTT, msg_id=18025[0m
+[0;32mI (1263187) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.15%, Pressure: 101030.00 Pa[0m
+[0;32mI (1263197) RUUVITAG: Published data to MQTT, msg_id=141[0m
+[0;32mI (1264477) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.15%, Pressure: 101030.00 Pa[0m
+[0;32mI (1264487) RUUVITAG: Published data to MQTT, msg_id=61779[0m
+[0;32mI (1268337) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.17%, Pressure: 101030.00 Pa[0m
+[0;32mI (1268347) RUUVITAG: Published data to MQTT, msg_id=55721[0m
+[0;32mI (1269627) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.17%, Pressure: 101030.00 Pa[0m
+[0;32mI (1269627) RUUVITAG: Published data to MQTT, msg_id=33074[0m
+[0;32mI (1273467) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.16%, Pressure: 101025.00 Pa[0m
+[0;32mI (1273477) RUUVITAG: Published data to MQTT, msg_id=13890[0m
+[0;32mI (1274767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.16%, Pressure: 101025.00 Pa[0m
+[0;32mI (1274767) RUUVITAG: Published data to MQTT, msg_id=18429[0m
+[0;32mI (1277327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.19%, Pressure: 101025.00 Pa[0m
+[0;32mI (1277327) RUUVITAG: Published data to MQTT, msg_id=19761[0m
+[0;32mI (1278617) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.18%, Pressure: 101026.00 Pa[0m
+[0;32mI (1278617) RUUVITAG: Published data to MQTT, msg_id=20786[0m
+[0;32mI (1281177) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.19%, Pressure: 101030.00 Pa[0m
+[0;32mI (1281187) RUUVITAG: Published data to MQTT, msg_id=41038[0m
+[0;32mI (1282487) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.19%, Pressure: 101030.00 Pa[0m
+[0;32mI (1282487) RUUVITAG: Published data to MQTT, msg_id=53057[0m
+[0;32mI (1287617) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.19%, Pressure: 101030.00 Pa[0m
+[0;32mI (1287627) RUUVITAG: Published data to MQTT, msg_id=2813[0m
+[0;32mI (1288887) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.18%, Pressure: 101030.00 Pa[0m
+[0;32mI (1288897) RUUVITAG: Published data to MQTT, msg_id=57818[0m
+[0;32mI (1290177) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.18%, Pressure: 101030.00 Pa[0m
+[0;32mI (1290187) RUUVITAG: Published data to MQTT, msg_id=1705[0m
+[0;32mI (1294037) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.19%, Pressure: 101030.00 Pa[0m
+[0;32mI (1294047) RUUVITAG: Published data to MQTT, msg_id=34921[0m
+[0;32mI (1295317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.19%, Pressure: 101030.00 Pa[0m
+[0;32mI (1295327) RUUVITAG: Published data to MQTT, msg_id=47890[0m
+[0;32mI (1299167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.20%, Pressure: 101030.00 Pa[0m
+[0;32mI (1299177) RUUVITAG: Published data to MQTT, msg_id=35007[0m
+[0;32mI (1303027) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.21%, Pressure: 101030.00 Pa[0m
+[0;32mI (1303037) RUUVITAG: Published data to MQTT, msg_id=55346[0m
+[0;32mI (1304307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.19%, Pressure: 101030.00 Pa[0m
+[0;32mI (1304307) RUUVITAG: Published data to MQTT, msg_id=8431[0m
+[0;32mI (1306887) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.22%, Pressure: 101028.00 Pa[0m
+[0;32mI (1306897) RUUVITAG: Published data to MQTT, msg_id=55552[0m
+[0;32mI (1308167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.22%, Pressure: 101028.00 Pa[0m
+[0;32mI (1308177) RUUVITAG: Published data to MQTT, msg_id=44980[0m
+[0;32mI (1312017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.22%, Pressure: 101027.00 Pa[0m
+[0;32mI (1312027) RUUVITAG: Published data to MQTT, msg_id=61712[0m
+[0;32mI (1315887) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.22%, Pressure: 101025.00 Pa[0m
+[0;32mI (1315897) RUUVITAG: Published data to MQTT, msg_id=48454[0m
+[0;32mI (1319727) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.23%, Pressure: 101030.00 Pa[0m
+[0;32mI (1319737) RUUVITAG: Published data to MQTT, msg_id=8005[0m
+[0;32mI (1321017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.23%, Pressure: 101030.00 Pa[0m
+[0;32mI (1321027) RUUVITAG: Published data to MQTT, msg_id=2021[0m
+[0;32mI (1323587) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.24%, Pressure: 101032.00 Pa[0m
+[0;32mI (1323597) RUUVITAG: Published data to MQTT, msg_id=59618[0m
+[0;32mI (1324867) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.25%, Pressure: 101031.00 Pa[0m
+[0;32mI (1324877) RUUVITAG: Published data to MQTT, msg_id=54282[0m
+[0;32mI (1326167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.25%, Pressure: 101031.00 Pa[0m
+[0;32mI (1326167) RUUVITAG: Published data to MQTT, msg_id=18390[0m
+[0;32mI (1328727) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.25%, Pressure: 101030.00 Pa[0m
+[0;32mI (1328737) RUUVITAG: Published data to MQTT, msg_id=49007[0m
+[0;32mI (1331287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.27%, Pressure: 101031.00 Pa[0m
+[0;32mI (1331297) RUUVITAG: Published data to MQTT, msg_id=52103[0m
+[0;32mI (1332587) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.28%, Pressure: 101022.00 Pa[0m
+[0;32mI (1332597) RUUVITAG: Published data to MQTT, msg_id=53935[0m
+[0;32mI (1333877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.28%, Pressure: 101022.00 Pa[0m
+[0;32mI (1333877) RUUVITAG: Published data to MQTT, msg_id=21964[0m
+[0;32mI (1336437) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.30%, Pressure: 101023.00 Pa[0m
+[0;32mI (1336447) RUUVITAG: Published data to MQTT, msg_id=59104[0m
+[0;32mI (1337737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.29%, Pressure: 101027.00 Pa[0m
+[0;32mI (1337747) RUUVITAG: Published data to MQTT, msg_id=8678[0m
+[0;32mI (1341577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.30%, Pressure: 101028.00 Pa[0m
+[0;32mI (1341587) RUUVITAG: Published data to MQTT, msg_id=31842[0m
+[0;32mI (1344147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.29%, Pressure: 101028.00 Pa[0m
+[0;32mI (1344147) RUUVITAG: Published data to MQTT, msg_id=20022[0m
+[0;32mI (1345427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.31%, Pressure: 101027.00 Pa[0m
+[0;32mI (1345427) RUUVITAG: Published data to MQTT, msg_id=55896[0m
+[0;32mI (1349287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.30%, Pressure: 101028.00 Pa[0m
+[0;32mI (1349297) RUUVITAG: Published data to MQTT, msg_id=7891[0m
+[0;32mI (1350567) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.29%, Pressure: 101025.00 Pa[0m
+[0;32mI (1350577) RUUVITAG: Published data to MQTT, msg_id=43934[0m
+[0;32mI (1353137) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.26%, Pressure: 101022.00 Pa[0m
+[0;32mI (1353147) RUUVITAG: Published data to MQTT, msg_id=40666[0m
+[0;32mI (1355707) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.29%, Pressure: 101027.00 Pa[0m
+[0;32mI (1355717) RUUVITAG: Published data to MQTT, msg_id=58255[0m
+[0;32mI (1358287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.29%, Pressure: 101023.00 Pa[0m
+[0;32mI (1358297) RUUVITAG: Published data to MQTT, msg_id=11553[0m
+[0;32mI (1359577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.29%, Pressure: 101023.00 Pa[0m
+[0;32mI (1359577) RUUVITAG: Published data to MQTT, msg_id=12849[0m
+[0;32mI (1362137) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.30%, Pressure: 101031.00 Pa[0m
+[0;32mI (1362147) RUUVITAG: Published data to MQTT, msg_id=17180[0m
+[0;32mI (1363417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.29%, Pressure: 101031.00 Pa[0m
+[0;32mI (1363427) RUUVITAG: Published data to MQTT, msg_id=12199[0m
+[0;32mI (1367277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.31%, Pressure: 101029.00 Pa[0m
+[0;32mI (1367277) RUUVITAG: Published data to MQTT, msg_id=34822[0m
+[0;32mI (1371127) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.31%, Pressure: 101023.00 Pa[0m
+[0;32mI (1371137) RUUVITAG: Published data to MQTT, msg_id=12820[0m
+[0;32mI (1372447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.31%, Pressure: 101023.00 Pa[0m
+[0;32mI (1372447) RUUVITAG: Published data to MQTT, msg_id=6239[0m
+[0;32mI (1374987) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101031.00 Pa[0m
+[0;32mI (1374997) RUUVITAG: Published data to MQTT, msg_id=40510[0m
+[0;32mI (1376267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.29%, Pressure: 101028.00 Pa[0m
+[0;32mI (1376267) RUUVITAG: Published data to MQTT, msg_id=42602[0m
+[0;32mI (1378837) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.28%, Pressure: 101023.00 Pa[0m
+[0;32mI (1378847) RUUVITAG: Published data to MQTT, msg_id=51475[0m
+[0;32mI (1383977) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.27%, Pressure: 101030.00 Pa[0m
+[0;32mI (1383977) RUUVITAG: Published data to MQTT, msg_id=1057[0m
+[0;32mI (1387837) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.29%, Pressure: 101028.00 Pa[0m
+[0;32mI (1387847) RUUVITAG: Published data to MQTT, msg_id=22922[0m
+[0;32mI (1389117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.32%, Pressure: 101024.00 Pa[0m
+[0;32mI (1389117) RUUVITAG: Published data to MQTT, msg_id=52378[0m
+[0;32mI (1391697) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.29%, Pressure: 101025.00 Pa[0m
+[0;32mI (1391697) RUUVITAG: Published data to MQTT, msg_id=52864[0m
+[0;32mI (1396827) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.28%, Pressure: 101024.00 Pa[0m
+[0;32mI (1396827) RUUVITAG: Published data to MQTT, msg_id=23566[0m
+[0;32mI (1398117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.28%, Pressure: 101024.00 Pa[0m
+[0;32mI (1398117) RUUVITAG: Published data to MQTT, msg_id=64806[0m
+[0;32mI (1400687) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.28%, Pressure: 101030.00 Pa[0m
+[0;32mI (1400697) RUUVITAG: Published data to MQTT, msg_id=45238[0m
+[0;32mI (1401967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 43.28%, Pressure: 101031.00 Pa[0m
+[0;32mI (1401977) RUUVITAG: Published data to MQTT, msg_id=37441[0m
+[0;32mI (1404537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 43.29%, Pressure: 101023.00 Pa[0m
+[0;32mI (1404547) RUUVITAG: Published data to MQTT, msg_id=61098[0m
+[0;32mI (1409687) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101031.00 Pa[0m
+[0;32mI (1409697) RUUVITAG: Published data to MQTT, msg_id=819[0m
+[0;32mI (1410967) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101031.00 Pa[0m
+[0;32mI (1410977) RUUVITAG: Published data to MQTT, msg_id=9458[0m
+[0;32mI (1412237) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 43.34%, Pressure: 101028.00 Pa[0m
+[0;32mI (1412247) RUUVITAG: Published data to MQTT, msg_id=60044[0m
+[0;32mI (1413537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 43.34%, Pressure: 101028.00 Pa[0m
+[0;32mI (1413547) RUUVITAG: Published data to MQTT, msg_id=50353[0m
+[0;32mI (1414817) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.32%, Pressure: 101032.00 Pa[0m
+[0;32mI (1414827) RUUVITAG: Published data to MQTT, msg_id=27258[0m
+[0;32mI (1416117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.32%, Pressure: 101032.00 Pa[0m
+[0;32mI (1416117) RUUVITAG: Published data to MQTT, msg_id=56088[0m
+[0;32mI (1417427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101023.00 Pa[0m
+[0;32mI (1417437) RUUVITAG: Published data to MQTT, msg_id=26713[0m
+[0;32mI (1418677) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101023.00 Pa[0m
+[0;32mI (1418687) RUUVITAG: Published data to MQTT, msg_id=42057[0m
+[0;32mI (1422517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.34%, Pressure: 101024.00 Pa[0m
+[0;32mI (1422527) RUUVITAG: Published data to MQTT, msg_id=22500[0m
+[0;32mI (1423807) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.34%, Pressure: 101024.00 Pa[0m
+[0;32mI (1423817) RUUVITAG: Published data to MQTT, msg_id=51590[0m
+[0;32mI (1426387) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101024.00 Pa[0m
+[0;32mI (1426397) RUUVITAG: Published data to MQTT, msg_id=13746[0m
+[0;32mI (1436667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.34%, Pressure: 101028.00 Pa[0m
+[0;32mI (1436667) RUUVITAG: Published data to MQTT, msg_id=18136[0m
+[0;32mI (1437937) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.35%, Pressure: 101028.00 Pa[0m
+[0;32mI (1437947) RUUVITAG: Published data to MQTT, msg_id=12808[0m
+[0;32mI (1443087) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101031.00 Pa[0m
+[0;32mI (1443097) RUUVITAG: Published data to MQTT, msg_id=51594[0m
+[0;32mI (1444377) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101031.00 Pa[0m
+[0;32mI (1444387) RUUVITAG: Published data to MQTT, msg_id=36678[0m
+[0;32mI (1448227) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.38%, Pressure: 101025.00 Pa[0m
+[0;32mI (1448237) RUUVITAG: Published data to MQTT, msg_id=43274[0m
+[0;32mI (1449517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.38%, Pressure: 101025.00 Pa[0m
+[0;32mI (1449517) RUUVITAG: Published data to MQTT, msg_id=63575[0m
+[0;32mI (1452077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.38%, Pressure: 101032.00 Pa[0m
+[0;32mI (1452087) RUUVITAG: Published data to MQTT, msg_id=18249[0m
+[0;32mI (1453367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.37%, Pressure: 101029.00 Pa[0m
+[0;32mI (1453377) RUUVITAG: Published data to MQTT, msg_id=40387[0m
+[0;32mI (1455927) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101025.00 Pa[0m
+[0;32mI (1455937) RUUVITAG: Published data to MQTT, msg_id=63136[0m
+[0;32mI (1457217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101025.00 Pa[0m
+[0;32mI (1457227) RUUVITAG: Published data to MQTT, msg_id=40668[0m
+[0;32mI (1461077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.35%, Pressure: 101022.00 Pa[0m
+[0;32mI (1461087) RUUVITAG: Published data to MQTT, msg_id=2087[0m
+[0;32mI (1462367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.35%, Pressure: 101022.00 Pa[0m
+[0;32mI (1462377) RUUVITAG: Published data to MQTT, msg_id=15452[0m
+[0;32mI (1464937) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.37%, Pressure: 101024.00 Pa[0m
+[0;32mI (1464937) RUUVITAG: Published data to MQTT, msg_id=47136[0m
+[0;32mI (1466217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.38%, Pressure: 101026.00 Pa[0m
+[0;32mI (1466227) RUUVITAG: Published data to MQTT, msg_id=65522[0m
+[0;32mI (1468777) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.37%, Pressure: 101032.00 Pa[0m
+[0;32mI (1468787) RUUVITAG: Published data to MQTT, msg_id=35036[0m
+[0;32mI (1470067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.37%, Pressure: 101032.00 Pa[0m
+[0;32mI (1470077) RUUVITAG: Published data to MQTT, msg_id=26200[0m
+[0;32mI (1475207) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.39%, Pressure: 101030.00 Pa[0m
+[0;32mI (1475217) RUUVITAG: Published data to MQTT, msg_id=9594[0m
+[0;32mI (1477787) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.36%, Pressure: 101031.00 Pa[0m
+[0;32mI (1477797) RUUVITAG: Published data to MQTT, msg_id=9038[0m
+[0;32mI (1479067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.38%, Pressure: 101036.00 Pa[0m
+[0;32mI (1479077) RUUVITAG: Published data to MQTT, msg_id=21085[0m
+[0;32mI (1481637) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.36%, Pressure: 101039.00 Pa[0m
+[0;32mI (1481647) RUUVITAG: Published data to MQTT, msg_id=45844[0m
+[0;32mI (1482917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.36%, Pressure: 101039.00 Pa[0m
+[0;32mI (1482927) RUUVITAG: Published data to MQTT, msg_id=4852[0m
+[0;32mI (1486777) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.41%, Pressure: 101032.00 Pa[0m
+[0;32mI (1486777) RUUVITAG: Published data to MQTT, msg_id=58700[0m
+[0;32mI (1489337) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.40%, Pressure: 101032.00 Pa[0m
+[0;32mI (1489347) RUUVITAG: Published data to MQTT, msg_id=9674[0m
+[0;32mI (1490637) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.40%, Pressure: 101032.00 Pa[0m
+[0;32mI (1490637) RUUVITAG: Published data to MQTT, msg_id=56756[0m
+[0;32mI (1491917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.38%, Pressure: 101034.00 Pa[0m
+[0;32mI (1491917) RUUVITAG: Published data to MQTT, msg_id=45680[0m
+[0;32mI (1494487) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.40%, Pressure: 101033.00 Pa[0m
+[0;32mI (1494487) RUUVITAG: Published data to MQTT, msg_id=42538[0m
+[0;32mI (1495777) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.40%, Pressure: 101033.00 Pa[0m
+[0;32mI (1495777) RUUVITAG: Published data to MQTT, msg_id=3120[0m
+[0;32mI (1498347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.40°C, Humidity: 43.40%, Pressure: 101030.00 Pa[0m
+[0;32mI (1498347) RUUVITAG: Published data to MQTT, msg_id=42210[0m
+[0;32mI (1499627) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.40%, Pressure: 101030.00 Pa[0m
+[0;32mI (1499637) RUUVITAG: Published data to MQTT, msg_id=36054[0m
+[0;32mI (1500917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.40%, Pressure: 101030.00 Pa[0m
+[0;32mI (1500927) RUUVITAG: Published data to MQTT, msg_id=39281[0m
+[0;32mI (1502187) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.41%, Pressure: 101033.00 Pa[0m
+[0;32mI (1502197) RUUVITAG: Published data to MQTT, msg_id=55815[0m
+[0;32mI (1503477) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.41%, Pressure: 101033.00 Pa[0m
+[0;32mI (1503487) RUUVITAG: Published data to MQTT, msg_id=5877[0m
+[0;32mI (1508627) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.40%, Pressure: 101033.00 Pa[0m
+[0;32mI (1508627) RUUVITAG: Published data to MQTT, msg_id=58291[0m
+[0;32mI (1513767) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.38%, Pressure: 101028.00 Pa[0m
+[0;32mI (1513777) RUUVITAG: Published data to MQTT, msg_id=24757[0m
+[0;32mI (1516337) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101029.00 Pa[0m
+[0;32mI (1516337) RUUVITAG: Published data to MQTT, msg_id=64519[0m
+[0;32mI (1517647) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 43.40%, Pressure: 101032.00 Pa[0m
+[0;32mI (1517657) RUUVITAG: Published data to MQTT, msg_id=36240[0m
+[0;32mI (1520187) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.39%, Pressure: 101027.00 Pa[0m
+[0;32mI (1520187) RUUVITAG: Published data to MQTT, msg_id=58880[0m
+[0;32mI (1521477) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.39%, Pressure: 101027.00 Pa[0m
+[0;32mI (1521487) RUUVITAG: Published data to MQTT, msg_id=1188[0m
+[0;32mI (1524047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101029.00 Pa[0m
+[0;32mI (1524047) RUUVITAG: Published data to MQTT, msg_id=43555[0m
+[0;32mI (1527887) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101026.00 Pa[0m
+[0;32mI (1527897) RUUVITAG: Published data to MQTT, msg_id=10275[0m
+[0;32mI (1529187) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101026.00 Pa[0m
+[0;32mI (1529197) RUUVITAG: Published data to MQTT, msg_id=49207[0m
+[0;32mI (1533037) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.39%, Pressure: 101033.00 Pa[0m
+[0;32mI (1533037) RUUVITAG: Published data to MQTT, msg_id=7847[0m
+[0;32mI (1534327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.39%, Pressure: 101033.00 Pa[0m
+[0;32mI (1534337) RUUVITAG: Published data to MQTT, msg_id=24229[0m
+[0;32mI (1538167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101045.00 Pa[0m
+[0;32mI (1538177) RUUVITAG: Published data to MQTT, msg_id=32149[0m
+[0;32mI (1540737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.36%, Pressure: 101045.00 Pa[0m
+[0;32mI (1540747) RUUVITAG: Published data to MQTT, msg_id=25981[0m
+[0;32mI (1542027) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.36%, Pressure: 101045.00 Pa[0m
+[0;32mI (1542037) RUUVITAG: Published data to MQTT, msg_id=21122[0m
+[0;32mI (1543307) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.38%, Pressure: 101045.00 Pa[0m
+[0;32mI (1543317) RUUVITAG: Published data to MQTT, msg_id=11063[0m
+[0;32mI (1545887) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.40%, Pressure: 101032.00 Pa[0m
+[0;32mI (1545887) RUUVITAG: Published data to MQTT, msg_id=49493[0m
+[0;32mI (1547167) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.40%, Pressure: 101032.00 Pa[0m
+[0;32mI (1547177) RUUVITAG: Published data to MQTT, msg_id=6493[0m
+[0;32mI (1549737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.40%, Pressure: 101031.00 Pa[0m
+[0;32mI (1549747) RUUVITAG: Published data to MQTT, msg_id=24659[0m
+[0;32mI (1551047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.40%, Pressure: 101030.00 Pa[0m
+[0;32mI (1551047) RUUVITAG: Published data to MQTT, msg_id=30645[0m
+[0;32mI (1553597) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.40%, Pressure: 101030.00 Pa[0m
+[0;32mI (1553597) RUUVITAG: Published data to MQTT, msg_id=18408[0m
+[0;32mI (1554887) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.40%, Pressure: 101030.00 Pa[0m
+[0;32mI (1554887) RUUVITAG: Published data to MQTT, msg_id=53189[0m
+[0;32mI (1558747) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.40%, Pressure: 101035.00 Pa[0m
+[0;32mI (1558747) RUUVITAG: Published data to MQTT, msg_id=62246[0m
+[0;32mI (1560017) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.40%, Pressure: 101035.00 Pa[0m
+[0;32mI (1560027) RUUVITAG: Published data to MQTT, msg_id=52883[0m
+[0;32mI (1566437) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.41%, Pressure: 101029.00 Pa[0m
+[0;32mI (1566447) RUUVITAG: Published data to MQTT, msg_id=20105[0m
+[0;32mI (1569007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.40%, Pressure: 101033.00 Pa[0m
+[0;32mI (1569017) RUUVITAG: Published data to MQTT, msg_id=5311[0m
+[0;32mI (1570297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.40%, Pressure: 101033.00 Pa[0m
+[0;32mI (1570307) RUUVITAG: Published data to MQTT, msg_id=59743[0m
+[0;32mI (1571577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.41%, Pressure: 101029.00 Pa[0m
+[0;32mI (1571587) RUUVITAG: Published data to MQTT, msg_id=18505[0m
+[0;32mI (1572877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.41%, Pressure: 101029.00 Pa[0m
+[0;32mI (1572877) RUUVITAG: Published data to MQTT, msg_id=1728[0m
+[0;32mI (1575447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.40%, Pressure: 101035.00 Pa[0m
+[0;32mI (1575447) RUUVITAG: Published data to MQTT, msg_id=5348[0m
+[0;32mI (1576717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101028.00 Pa[0m
+[0;32mI (1576727) RUUVITAG: Published data to MQTT, msg_id=12249[0m
+[0;32mI (1580577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.36%, Pressure: 101030.00 Pa[0m
+[0;32mI (1580587) RUUVITAG: Published data to MQTT, msg_id=31923[0m
+[0;32mI (1583147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101026.00 Pa[0m
+[0;32mI (1583147) RUUVITAG: Published data to MQTT, msg_id=33541[0m
+[0;32mI (1584427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.38%, Pressure: 101030.00 Pa[0m
+[0;32mI (1584437) RUUVITAG: Published data to MQTT, msg_id=29499[0m
+[0;32mI (1588287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.38%, Pressure: 101031.00 Pa[0m
+[0;32mI (1588307) RUUVITAG: Published data to MQTT, msg_id=57596[0m
+[0;32mI (1592137) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.36%, Pressure: 101042.00 Pa[0m
+[0;32mI (1592147) RUUVITAG: Published data to MQTT, msg_id=34529[0m
+[0;32mI (1593427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.36%, Pressure: 101042.00 Pa[0m
+[0;32mI (1593437) RUUVITAG: Published data to MQTT, msg_id=54232[0m
+[0;32mI (1595997) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.37%, Pressure: 101035.00 Pa[0m
+[0;32mI (1596007) RUUVITAG: Published data to MQTT, msg_id=4227[0m
+[0;32mI (1598577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.40%, Pressure: 101028.00 Pa[0m
+[0;32mI (1598587) RUUVITAG: Published data to MQTT, msg_id=37068[0m
+[0;32mI (1601147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.38%, Pressure: 101030.00 Pa[0m
+[0;32mI (1601147) RUUVITAG: Published data to MQTT, msg_id=1927[0m
+[0;32mI (1602447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.40%, Pressure: 101042.00 Pa[0m
+[0;32mI (1602457) RUUVITAG: Published data to MQTT, msg_id=34835[0m
+[0;32mI (1603717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.40%, Pressure: 101042.00 Pa[0m
+[0;32mI (1603727) RUUVITAG: Published data to MQTT, msg_id=64390[0m
+[0;32mI (1606287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101030.00 Pa[0m
+[0;32mI (1606287) RUUVITAG: Published data to MQTT, msg_id=18592[0m
+[0;32mI (1611417) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.37%, Pressure: 101036.00 Pa[0m
+[0;32mI (1611427) RUUVITAG: Published data to MQTT, msg_id=36553[0m
+[0;32mI (1613997) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.35%, Pressure: 101031.00 Pa[0m
+[0;32mI (1614007) RUUVITAG: Published data to MQTT, msg_id=52938[0m
+[0;32mI (1615277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.38%, Pressure: 101040.00 Pa[0m
+[0;32mI (1615277) RUUVITAG: Published data to MQTT, msg_id=4406[0m
+[0;32mI (1619147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.35%, Pressure: 101035.00 Pa[0m
+[0;32mI (1619147) RUUVITAG: Published data to MQTT, msg_id=36213[0m
+[0;32mI (1622997) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101040.00 Pa[0m
+[0;32mI (1622997) RUUVITAG: Published data to MQTT, msg_id=65154[0m
+[0;32mI (1624267) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101040.00 Pa[0m
+[0;32mI (1624277) RUUVITAG: Published data to MQTT, msg_id=59122[0m
+[0;32mI (1626847) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.38%, Pressure: 101036.00 Pa[0m
+[0;32mI (1626847) RUUVITAG: Published data to MQTT, msg_id=63265[0m
+[0;32mI (1628117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101031.00 Pa[0m
+[0;32mI (1628127) RUUVITAG: Published data to MQTT, msg_id=47272[0m
+[0;32mI (1631977) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.38%, Pressure: 101040.00 Pa[0m
+[0;32mI (1631977) RUUVITAG: Published data to MQTT, msg_id=15379[0m
+[0;32mI (1634547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.37%, Pressure: 101040.00 Pa[0m
+[0;32mI (1634547) RUUVITAG: Published data to MQTT, msg_id=32709[0m
+[0;32mI (1637117) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.39%, Pressure: 101035.00 Pa[0m
+[0;32mI (1637127) RUUVITAG: Published data to MQTT, msg_id=43879[0m
+[0;32mI (1638397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.35%, Pressure: 101037.00 Pa[0m
+[0;32mI (1638407) RUUVITAG: Published data to MQTT, msg_id=53791[0m
+[0;32mI (1639687) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.35%, Pressure: 101037.00 Pa[0m
+[0;32mI (1639687) RUUVITAG: Published data to MQTT, msg_id=6671[0m
+[0;32mI (1643547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101035.00 Pa[0m
+[0;32mI (1643557) RUUVITAG: Published data to MQTT, msg_id=26783[0m
+[0;32mI (1644827) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.37%, Pressure: 101035.00 Pa[0m
+[0;32mI (1644837) RUUVITAG: Published data to MQTT, msg_id=40424[0m
+[0;32mI (1647397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.35%, Pressure: 101030.00 Pa[0m
+[0;32mI (1647407) RUUVITAG: Published data to MQTT, msg_id=48257[0m
+[0;32mI (1648677) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.35%, Pressure: 101028.00 Pa[0m
+[0;32mI (1648677) RUUVITAG: Published data to MQTT, msg_id=30506[0m
+[0;32mI (1651247) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.36%, Pressure: 101032.00 Pa[0m
+[0;32mI (1651247) RUUVITAG: Published data to MQTT, msg_id=14412[0m
+[0;32mI (1652547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.36%, Pressure: 101032.00 Pa[0m
+[0;32mI (1652547) RUUVITAG: Published data to MQTT, msg_id=20979[0m
+[0;32mI (1657667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.35%, Pressure: 101031.00 Pa[0m
+[0;32mI (1657677) RUUVITAG: Published data to MQTT, msg_id=24449[0m
+[0;32mI (1661547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.35%, Pressure: 101035.00 Pa[0m
+[0;32mI (1661557) RUUVITAG: Published data to MQTT, msg_id=12514[0m
+[0;32mI (1662807) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.35%, Pressure: 101035.00 Pa[0m
+[0;32mI (1662817) RUUVITAG: Published data to MQTT, msg_id=24023[0m
+[0;32mI (1664097) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.37%, Pressure: 101033.00 Pa[0m
+[0;32mI (1664107) RUUVITAG: Published data to MQTT, msg_id=31856[0m
+[0;32mI (1665397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.37%, Pressure: 101033.00 Pa[0m
+[0;32mI (1665407) RUUVITAG: Published data to MQTT, msg_id=36471[0m
+[0;32mI (1666667) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.34%, Pressure: 101029.00 Pa[0m
+[0;32mI (1666677) RUUVITAG: Published data to MQTT, msg_id=27098[0m
+[0;32mI (1669237) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.35%, Pressure: 101028.00 Pa[0m
+[0;32mI (1669247) RUUVITAG: Published data to MQTT, msg_id=2376[0m
+[0;32mI (1670537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.35%, Pressure: 101028.00 Pa[0m
+[0;32mI (1670537) RUUVITAG: Published data to MQTT, msg_id=29728[0m
+[0;32mI (1673097) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.35%, Pressure: 101032.00 Pa[0m
+[0;32mI (1673107) RUUVITAG: Published data to MQTT, msg_id=35598[0m
+[0;32mI (1676947) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.35%, Pressure: 101029.00 Pa[0m
+[0;32mI (1676947) RUUVITAG: Published data to MQTT, msg_id=27130[0m
+[0;32mI (1682087) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.36%, Pressure: 101023.00 Pa[0m
+[0;32mI (1682087) RUUVITAG: Published data to MQTT, msg_id=62000[0m
+[0;32mI (1683377) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.36%, Pressure: 101023.00 Pa[0m
+[0;32mI (1683387) RUUVITAG: Published data to MQTT, msg_id=21735[0m
+[0;32mI (1688527) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.35%, Pressure: 101029.00 Pa[0m
+[0;32mI (1688537) RUUVITAG: Published data to MQTT, msg_id=39773[0m
+[0;32mI (1691087) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.33%, Pressure: 101031.00 Pa[0m
+[0;32mI (1691097) RUUVITAG: Published data to MQTT, msg_id=26593[0m
+[0;32mI (1692367) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.33%, Pressure: 101030.00 Pa[0m
+[0;32mI (1692377) RUUVITAG: Published data to MQTT, msg_id=2018[0m
+[0;32mI (1694947) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.33%, Pressure: 101030.00 Pa[0m
+[0;32mI (1694957) RUUVITAG: Published data to MQTT, msg_id=10945[0m
+[0;32mI (1696227) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.33%, Pressure: 101030.00 Pa[0m
+[0;32mI (1696227) RUUVITAG: Published data to MQTT, msg_id=22175[0m
+[0;32mI (1702647) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.35%, Pressure: 101030.00 Pa[0m
+[0;32mI (1702657) RUUVITAG: Published data to MQTT, msg_id=21767[0m
+[0;32mI (1703937) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.35%, Pressure: 101030.00 Pa[0m
+[0;32mI (1703947) RUUVITAG: Published data to MQTT, msg_id=52701[0m
+[0;32mI (1707787) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.36%, Pressure: 101030.00 Pa[0m
+[0;32mI (1707787) RUUVITAG: Published data to MQTT, msg_id=25517[0m
+[0;32mI (1712927) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.37%, Pressure: 101031.00 Pa[0m
+[0;32mI (1712937) RUUVITAG: Published data to MQTT, msg_id=42378[0m
+[0;32mI (1714217) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.37%, Pressure: 101031.00 Pa[0m
+[0;32mI (1714227) RUUVITAG: Published data to MQTT, msg_id=48737[0m
+[0;32mI (1715497) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.35%, Pressure: 101028.00 Pa[0m
+[0;32mI (1715507) RUUVITAG: Published data to MQTT, msg_id=20526[0m
+[0;32mI (1716787) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.35%, Pressure: 101028.00 Pa[0m
+[0;32mI (1716787) RUUVITAG: Published data to MQTT, msg_id=14394[0m
+[0;32mI (1720647) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.35%, Pressure: 101033.00 Pa[0m
+[0;32mI (1720657) RUUVITAG: Published data to MQTT, msg_id=59284[0m
+[0;32mI (1721927) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.35%, Pressure: 101033.00 Pa[0m
+[0;32mI (1721927) RUUVITAG: Published data to MQTT, msg_id=33981[0m
+[0;32mI (1725777) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.37%, Pressure: 101034.00 Pa[0m
+[0;32mI (1725787) RUUVITAG: Published data to MQTT, msg_id=60258[0m
+[0;32mI (1727067) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.37%, Pressure: 101034.00 Pa[0m
+[0;32mI (1727077) RUUVITAG: Published data to MQTT, msg_id=32537[0m
+[0;32mI (1728347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.37%, Pressure: 101040.00 Pa[0m
+[0;32mI (1728347) RUUVITAG: Published data to MQTT, msg_id=34966[0m
+[0;32mI (1729637) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.37%, Pressure: 101040.00 Pa[0m
+[0;32mI (1729647) RUUVITAG: Published data to MQTT, msg_id=20353[0m
+[0;32mI (1733487) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.35%, Pressure: 101035.00 Pa[0m
+[0;32mI (1733487) RUUVITAG: Published data to MQTT, msg_id=9012[0m
+[0;32mI (1734777) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.35%, Pressure: 101035.00 Pa[0m
+[0;32mI (1734777) RUUVITAG: Published data to MQTT, msg_id=18894[0m
+[0;32mI (1737347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.36%, Pressure: 101030.00 Pa[0m
+[0;32mI (1737357) RUUVITAG: Published data to MQTT, msg_id=51296[0m
+[0;32mI (1739917) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.34%, Pressure: 101034.00 Pa[0m
+[0;32mI (1739917) RUUVITAG: Published data to MQTT, msg_id=58013[0m
+[0;32mI (1741197) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.35%, Pressure: 101035.00 Pa[0m
+[0;32mI (1741197) RUUVITAG: Published data to MQTT, msg_id=16898[0m
+[0;32mI (1742497) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.35%, Pressure: 101035.00 Pa[0m
+[0;32mI (1742507) RUUVITAG: Published data to MQTT, msg_id=25219[0m
+[0;32mI (1745047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.33%, Pressure: 101027.00 Pa[0m
+[0;32mI (1745057) RUUVITAG: Published data to MQTT, msg_id=29822[0m
+[0;32mI (1746347) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.38%, Pressure: 101027.00 Pa[0m
+[0;32mI (1746347) RUUVITAG: Published data to MQTT, msg_id=38350[0m
+[0;32mI (1747647) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.38%, Pressure: 101027.00 Pa[0m
+[0;32mI (1747657) RUUVITAG: Published data to MQTT, msg_id=6686[0m
+[0;32mI (1751477) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.35%, Pressure: 101029.00 Pa[0m
+[0;32mI (1751487) RUUVITAG: Published data to MQTT, msg_id=14430[0m
+[0;32mI (1755327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101030.00 Pa[0m
+[0;32mI (1755337) RUUVITAG: Published data to MQTT, msg_id=52362[0m
+[0;32mI (1756617) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101025.00 Pa[0m
+[0;32mI (1756627) RUUVITAG: Published data to MQTT, msg_id=47068[0m
+[0;32mI (1759177) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.34%, Pressure: 101033.00 Pa[0m
+[0;32mI (1759187) RUUVITAG: Published data to MQTT, msg_id=52096[0m
+[0;32mI (1760487) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.34%, Pressure: 101033.00 Pa[0m
+[0;32mI (1760497) RUUVITAG: Published data to MQTT, msg_id=64825[0m
+[0;32mI (1763047) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101030.00 Pa[0m
+[0;32mI (1763057) RUUVITAG: Published data to MQTT, msg_id=25697[0m
+[0;32mI (1765617) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101028.00 Pa[0m
+[0;32mI (1765627) RUUVITAG: Published data to MQTT, msg_id=53060[0m
+[0;32mI (1766897) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.32%, Pressure: 101032.00 Pa[0m
+[0;32mI (1766907) RUUVITAG: Published data to MQTT, msg_id=61563[0m
+[0;32mI (1768187) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.32%, Pressure: 101032.00 Pa[0m
+[0;32mI (1768197) RUUVITAG: Published data to MQTT, msg_id=21288[0m
+[0;32mI (1772027) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.33%, Pressure: 101035.00 Pa[0m
+[0;32mI (1772037) RUUVITAG: Published data to MQTT, msg_id=17499[0m
+[0;32mI (1773327) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.33%, Pressure: 101035.00 Pa[0m
+[0;32mI (1773327) RUUVITAG: Published data to MQTT, msg_id=42608[0m
+[0;32mI (1774687) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101030.00 Pa[0m
+[0;32mI (1774687) RUUVITAG: Published data to MQTT, msg_id=5088[0m
+[0;32mI (1779737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.35%, Pressure: 101033.00 Pa[0m
+[0;32mI (1779747) RUUVITAG: Published data to MQTT, msg_id=38952[0m
+[0;32mI (1782317) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101039.00 Pa[0m
+[0;32mI (1782327) RUUVITAG: Published data to MQTT, msg_id=18335[0m
+[0;32mI (1783597) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101039.00 Pa[0m
+[0;32mI (1783607) RUUVITAG: Published data to MQTT, msg_id=59198[0m
+[0;32mI (1784877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.33%, Pressure: 101035.00 Pa[0m
+[0;32mI (1784887) RUUVITAG: Published data to MQTT, msg_id=46590[0m
+[0;32mI (1788747) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.34%, Pressure: 101037.00 Pa[0m
+[0;32mI (1788747) RUUVITAG: Published data to MQTT, msg_id=7429[0m
+[0;32mI (1793897) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.32%, Pressure: 101035.00 Pa[0m
+[0;32mI (1793907) RUUVITAG: Published data to MQTT, msg_id=2519[0m
+[0;32mI (1796447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.32%, Pressure: 101036.00 Pa[0m
+[0;32mI (1796457) RUUVITAG: Published data to MQTT, msg_id=62988[0m
+[0;32mI (1797727) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.31%, Pressure: 101034.00 Pa[0m
+[0;32mI (1797737) RUUVITAG: Published data to MQTT, msg_id=33900[0m
+[0;32mI (1799027) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.31%, Pressure: 101034.00 Pa[0m
+[0;32mI (1799027) RUUVITAG: Published data to MQTT, msg_id=7627[0m
+[0;32mI (1800297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101031.00 Pa[0m
+[0;32mI (1800307) RUUVITAG: Published data to MQTT, msg_id=42692[0m
+[0;32mI (1801587) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101031.00 Pa[0m
+[0;32mI (1801597) RUUVITAG: Published data to MQTT, msg_id=45854[0m
+[0;32mI (1802877) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.33%, Pressure: 101031.00 Pa[0m
+[0;32mI (1802877) RUUVITAG: Published data to MQTT, msg_id=36753[0m
+[0;32mI (1806737) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.49°C, Humidity: 43.32%, Pressure: 101028.00 Pa[0m
+[0;32mI (1806737) RUUVITAG: Published data to MQTT, msg_id=65064[0m
+[0;32mI (1808007) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.32%, Pressure: 101029.00 Pa[0m
+[0;32mI (1808017) RUUVITAG: Published data to MQTT, msg_id=35153[0m
+[0;32mI (1809297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.32%, Pressure: 101029.00 Pa[0m
+[0;32mI (1809307) RUUVITAG: Published data to MQTT, msg_id=40891[0m
+[0;32mI (1810587) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.33%, Pressure: 101024.00 Pa[0m
+[0;32mI (1810597) RUUVITAG: Published data to MQTT, msg_id=49976[0m
+[0;32mI (1814447) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.33%, Pressure: 101033.00 Pa[0m
+[0;32mI (1814457) RUUVITAG: Published data to MQTT, msg_id=64714[0m
+[0;32mI (1819577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101030.00 Pa[0m
+[0;32mI (1819587) RUUVITAG: Published data to MQTT, msg_id=21635[0m
+[0;32mI (1822147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.41°C, Humidity: 43.33%, Pressure: 101032.00 Pa[0m
+[0;32mI (1822157) RUUVITAG: Published data to MQTT, msg_id=56000[0m
+[0;32mI (1823437) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.30%, Pressure: 101030.00 Pa[0m
+[0;32mI (1823437) RUUVITAG: Published data to MQTT, msg_id=11624[0m
+[0;32mI (1827297) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.31%, Pressure: 101031.00 Pa[0m
+[0;32mI (1827307) RUUVITAG: Published data to MQTT, msg_id=12804[0m
+[0;32mI (1828577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.32%, Pressure: 101032.00 Pa[0m
+[0;32mI (1828587) RUUVITAG: Published data to MQTT, msg_id=205[0m
+[0;32mI (1831147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.31%, Pressure: 101026.00 Pa[0m
+[0;32mI (1831157) RUUVITAG: Published data to MQTT, msg_id=27694[0m
+[0;32mI (1832437) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.46°C, Humidity: 43.31%, Pressure: 101026.00 Pa[0m
+[0;32mI (1832437) RUUVITAG: Published data to MQTT, msg_id=54114[0m
+[0;32mI (1833717) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101027.00 Pa[0m
+[0;32mI (1833717) RUUVITAG: Published data to MQTT, msg_id=14770[0m
+[0;32mI (1837577) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.31%, Pressure: 101030.00 Pa[0m
+[0;32mI (1837577) RUUVITAG: Published data to MQTT, msg_id=48962[0m
+[0;32mI (1840147) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.33%, Pressure: 101027.00 Pa[0m
+[0;32mI (1840157) RUUVITAG: Published data to MQTT, msg_id=25987[0m
+[0;32mI (1841427) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.31%, Pressure: 101028.00 Pa[0m
+[0;32mI (1841427) RUUVITAG: Published data to MQTT, msg_id=58662[0m
+[0;32mI (1845287) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101030.00 Pa[0m
+[0;32mI (1845287) RUUVITAG: Published data to MQTT, msg_id=3933[0m
+[0;32mI (1847847) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101030.00 Pa[0m
+[0;32mI (1847857) RUUVITAG: Published data to MQTT, msg_id=14934[0m
+[0;32mI (1849127) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.32%, Pressure: 101029.00 Pa[0m
+[0;32mI (1849137) RUUVITAG: Published data to MQTT, msg_id=45593[0m
+[0;32mI (1851747) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.32%, Pressure: 101027.00 Pa[0m
+[0;32mI (1851757) RUUVITAG: Published data to MQTT, msg_id=10929[0m
+[0;32mI (1852987) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.32%, Pressure: 101027.00 Pa[0m
+[0;32mI (1852997) RUUVITAG: Published data to MQTT, msg_id=39393[0m
+[0;32mI (1856837) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.32%, Pressure: 101035.00 Pa[0m
+[0;32mI (1856847) RUUVITAG: Published data to MQTT, msg_id=54557[0m
+[0;32mI (1858127) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.32%, Pressure: 101035.00 Pa[0m
+[0;32mI (1858137) RUUVITAG: Published data to MQTT, msg_id=10523[0m
+[0;32mI (1861987) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.31%, Pressure: 101030.00 Pa[0m
+[0;32mI (1861987) RUUVITAG: Published data to MQTT, msg_id=27326[0m
+[0;32mI (1863277) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.31%, Pressure: 101030.00 Pa[0m
+[0;32mI (1863287) RUUVITAG: Published data to MQTT, msg_id=41111[0m
+[0;32mI (1865847) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.31%, Pressure: 101026.00 Pa[0m
+[0;32mI (1865857) RUUVITAG: Published data to MQTT, msg_id=38637[0m
+[0;32mI (1873547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.31%, Pressure: 101025.00 Pa[0m
+[0;32mI (1873557) RUUVITAG: Published data to MQTT, msg_id=6376[0m
+[0;32mI (1876127) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.31%, Pressure: 101031.00 Pa[0m
+[0;32mI (1876127) RUUVITAG: Published data to MQTT, msg_id=52435[0m
+[0;32mI (1877397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.33%, Pressure: 101027.00 Pa[0m
+[0;32mI (1877407) RUUVITAG: Published data to MQTT, msg_id=62734[0m
+[0;32mI (1879977) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.30%, Pressure: 101028.00 Pa[0m
+[0;32mI (1879987) RUUVITAG: Published data to MQTT, msg_id=14192[0m
+[0;32mI (1882537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.30%, Pressure: 101025.00 Pa[0m
+[0;32mI (1882547) RUUVITAG: Published data to MQTT, msg_id=40430[0m
+[0;32mI (1886397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.31%, Pressure: 101028.00 Pa[0m
+[0;32mI (1886407) RUUVITAG: Published data to MQTT, msg_id=39424[0m
+[0;32mI (1890247) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.31%, Pressure: 101028.00 Pa[0m
+[0;32mI (1890257) RUUVITAG: Published data to MQTT, msg_id=36225[0m
+[0;32mI (1891537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.31%, Pressure: 101028.00 Pa[0m
+[0;32mI (1891537) RUUVITAG: Published data to MQTT, msg_id=13225[0m
+[0;32mI (1892827) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101022.00 Pa[0m
+[0;32mI (1892827) RUUVITAG: Published data to MQTT, msg_id=14032[0m
+[0;32mI (1895387) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.30%, Pressure: 101020.00 Pa[0m
+[0;32mI (1895397) RUUVITAG: Published data to MQTT, msg_id=57412[0m
+[0;32mI (1900537) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101023.00 Pa[0m
+[0;32mI (1900537) RUUVITAG: Published data to MQTT, msg_id=57572[0m
+[0;32mI (1901817) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101023.00 Pa[0m
+[0;32mI (1901827) RUUVITAG: Published data to MQTT, msg_id=11898[0m
+[0;32mI (1904397) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.47°C, Humidity: 43.31%, Pressure: 101031.00 Pa[0m
+[0;32mI (1904397) RUUVITAG: Published data to MQTT, msg_id=23426[0m
+[0;32mI (1908237) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.29%, Pressure: 101029.00 Pa[0m
+[0;32mI (1908247) RUUVITAG: Published data to MQTT, msg_id=59989[0m
+[0;32mI (1909547) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.29%, Pressure: 101029.00 Pa[0m
+[0;32mI (1909557) RUUVITAG: Published data to MQTT, msg_id=57967[0m
+[0;32mI (1912097) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.32%, Pressure: 101022.00 Pa[0m
+[0;32mI (1912107) RUUVITAG: Published data to MQTT, msg_id=20889[0m
+[0;32mI (1913377) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.29%, Pressure: 101027.00 Pa[0m
+[0;32mI (1913387) RUUVITAG: Published data to MQTT, msg_id=11267[0m
+[0;32mI (1915947) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.29%, Pressure: 101030.00 Pa[0m
+[0;32mI (1915957) RUUVITAG: Published data to MQTT, msg_id=39725[0m
+[0;32mI (1917237) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.29%, Pressure: 101030.00 Pa[0m
+[0;32mI (1917247) RUUVITAG: Published data to MQTT, msg_id=20095[0m
+[0;32mI (1921097) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101023.00 Pa[0m
+[0;32mI (1921107) RUUVITAG: Published data to MQTT, msg_id=33813[0m
+[0;32mI (1922377) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.31%, Pressure: 101023.00 Pa[0m
+[0;32mI (1922387) RUUVITAG: Published data to MQTT, msg_id=48782[0m
+[0;32mI (1924957) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.32%, Pressure: 101021.00 Pa[0m
+[0;32mI (1924957) RUUVITAG: Published data to MQTT, msg_id=25125[0m
+[0;32mI (1927517) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.48°C, Humidity: 43.31%, Pressure: 101024.00 Pa[0m
+[0;32mI (1927527) RUUVITAG: Published data to MQTT, msg_id=16010[0m
+[0;32mI (1928797) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.30%, Pressure: 101023.00 Pa[0m
+[0;32mI (1928807) RUUVITAG: Published data to MQTT, msg_id=51092[0m
+[0;32mI (1930107) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.44°C, Humidity: 43.30%, Pressure: 101023.00 Pa[0m
+[0;32mI (1930107) RUUVITAG: Published data to MQTT, msg_id=58407[0m
+[0;32mI (1933937) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.43°C, Humidity: 43.30%, Pressure: 101024.00 Pa[0m
+[0;32mI (1933947) RUUVITAG: Published data to MQTT, msg_id=10613[0m
+[0;32mI (1941647) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.33%, Pressure: 101029.00 Pa[0m
+[0;32mI (1941647) RUUVITAG: Published data to MQTT, msg_id=15887[0m
+[0;32mI (1942937) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.33%, Pressure: 101029.00 Pa[0m
+[0;32mI (1942937) RUUVITAG: Published data to MQTT, msg_id=23832[0m
+[0;32mI (1945497) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.42°C, Humidity: 43.33%, Pressure: 101030.00 Pa[0m
+[0;32mI (1945507) RUUVITAG: Published data to MQTT, msg_id=23579[0m
+[0;32mI (1946787) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.32%, Pressure: 101028.00 Pa[0m
+[0;32mI (1946797) RUUVITAG: Published data to MQTT, msg_id=14630[0m
+[0;32mI (1948077) RUUVITAG: Updated RuuviTag: c6:8d:c6:26:39:a6, Temp: 23.45°C, Humidity: 43.32%, Pressure: 101028.00 Pa[0m
+[0;32mI (1948087) RUUVITAG: Published data to MQTT, msg_id=46771[0m

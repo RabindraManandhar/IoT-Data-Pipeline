@@ -1,0 +1,47 @@
+# PyFlink Dependencies
+apache-flink==1.18.1
+pyflink==1.0
+
+# PyIceberg Dependencies
+pyiceberg[all]==0.7.1
+pyiceberg[s3fs]==0.7.1
+pyiceberg[sql-postgres]==0.7.1
+
+# Data processing dependencies
+pandas==2.2.2
+pyarrow==9.0.0
+numpy==1.24.4
+
+# Storage and serialization
+s3fs==2023.12.2
+boto3==1.35.82
+botocore==1.35.82
+
+# Database connectivity
+psycopg2-binary==2.9.10
+sqlalchemy==2.0.36
+alembic==1.14.0
+
+# Kafka and Avro integration
+confluent-kafka[avro]==2.9.0
+avro-python3==1.10.2
+fastavro==1.10.0
+
+# Configuration and utilities
+pydantic==2.11.3
+pydantic-settings==2.8.1
+python-dotenv==1.1.0
+pyyaml==6.0.2
+loguru==0.7.3
+
+# HTTP and API clients
+requests==2.32.3
+aiohttp==3.11.10
+
+# Time and date handling
+pytz==2024.2
+python-dateutil==2.9.0
+
+# Development and testing
+pytest==8.3.4
+pytest-asyncio==0.24.0

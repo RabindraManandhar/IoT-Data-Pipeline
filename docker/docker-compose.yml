@@ -1,6 +1,5 @@
 services:
-  # Kafka Broker
-
+  # Kafka Brokers
   kafka1:
     image: confluentinc/cp-kafka:7.9.0
     container_name: kafka-broker-1
@@ -252,6 +251,33 @@ services:
       - kafka-net
     restart: unless-stopped
 
+  # # Kafka Producer 
+  # kafka-producer:
+  #   build:
+  #     context: .. # Project root directory
+  #     dockerfile: docker/Dockerfile.producer
+  #   container_name: kafka-producer
+  #   environment:
+  #     # Configure producer to connect all brokers inside docker for fault tolerance
+  #     KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka1:9092,kafka2:9092,kafka3:9092}
+  #     KAFKA_TOPIC_NAME: ${KAFKA_TOPIC_NAME:-iot-sensor-data} # Topic to publish simulated data
+  #     # Schema Registry Configuration
+  #     SCHEMA_REGISTRY_URL: ${SCHEMA_REGISTRY_URL:-http://schema-registry:8081}
+  #     # Settings for IoT data simulation
+  #     IOT_NUM_DEVICES: ${IOT_NUM_DEVICES:-8} # Number of virtual IoT devices
+  #     IOT_DATA_INTERVAL_SEC: ${IOT_DATA_INTERVAL_SEC:-1.0} # How often each device sends data
+  #     PYTHONUNBUFFERED: 1 # Ensures real-time stdout logging
+  #     CONFIG_FILE_PATH: /app/config.yaml # Path to the config file inside the container
+  #   volumes:
+  #     - ../src/config/config.yaml:/app/config.yaml # Mount configuration file
+  #   depends_on:
+  #     - kafka1
+  #     - kafka2
+  #     - kafka3
+  #     - schema-registry
+  #   networks:
+  #     - kafka-net
+
   # Kafka Consumer
   kafka-consumer:
     build:
@@ -278,6 +304,146 @@ services:
     networks:
       - kafka-net
 
+  # PostgreSQL for Iceberg Catalog
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    hostname: postgres
+    environment:
+      POSTGRES_DB: iceberg_catalog
+      POSTGRES_USER: iceberg
+      POSTGRES_PASSWORD: iceberg
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../scripts/init_postgres.sql:/docker-entrypoint-initdb.d/init_postgres.sql
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iceberg -d iceberg_catalog"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # MinIO Object Storage (S3-compatible)
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: minio
+    hostname: minio
+    ports:
+      - "9000:9000" # MinIO API
+      - "9002:9002" # MinIO Console (9001:9001 is not used to avoid conflict with Mosquitto Websocket port)
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_CONSOLE_ADDRESS: ":9002"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9002"
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # MinIO Client for bucket setup
+  mc:
+    image: minio/mc:RELEASE.2025-04-16T18-13-26Z
+    container_name: mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ../scripts/setup_minio.sh:/setup_minio.sh
+    entrypoint: ["/bin/sh", "/setup_minio.sh"]
+    networks:
+      - kafka-net
+
+  # Flink JobManager
+  flink-jobmanager:
+    image: flink:1.19.1-scala_2.12-java11
+    container_name: flink-jobmanager
+    hostname: flink-jobmanager
+    ports:
+      - "8082:8081" # Flink Web UI (avoiding conflict with Schema Registry)
+    environment:
+      - FLINK_PROPERTIES=jobmanager.rpc.address:flink-jobmanager
+    command: jobmanager
+    volumes:
+      - flink_data:/opt/flink/data
+      - ../src/config/flink-config.yaml:/opt/flink/conf/flink-config.yaml
+      - ../jars:/opt/flink/lib/custom # For additional JARs
+    networks:
+      - kafka-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/overview"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Flink TaskManager
+  flink-taskmanager:
+    image: flink:1.19.1-scala_2.12-java11
+    environment:
+      - FLINK_PROPERTIES=jobmanager.rpc.address:flink-jobmanager
+    command: taskmanager
+    volumes:
+      - flink_data:/opt/flink/data
+      - ../src/config/flink-config.yaml:/opt/flink/conf/flink-config.yaml
+      - ../jars:/opt/flink/lib/custom
+    depends_on:
+      flink-jobmanager:
+        condition: service_healthy
+    networks:
+      - kafka-net
+    deploy:
+      replicas: 2 # Proper scaling for Swarm mode
+  
+  # PyFlink Streaming Job Runner
+  flink-streaming-job:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.flink_job
+    container_name: flink-streaming-job
+    hostname: flink-streaming-job
+    environment:
+      PYTHONUNBUFFERED: 1
+      FLINK_JOBMANAGER_HOST: flink-jobmanager
+      FLINK_JOBMANAGER_PORT: 6123
+      CONFIG_FILE_PATH: /app/config.yaml
+      # Iceberg configuration
+      ICEBERG_CATALOG_URI: postgresql://iceberg:iceberg@postgres:5432/iceberg_catalog
+      ICEBERG_WAREHOUSE_PATH: s3a://iceberg-warehouse/
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      # Kafka configuration
+      KAFKA_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    volumes:
+      - ../src/config/config.yaml:/app/config.yaml
+      - ../jars:/app/jars  # For Flink connector JARs
+    depends_on:
+      flink-jobmanager:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      schema-registry:
+        condition: service_healthy
+    networks:
+      - kafka-net
+    restart: unless-stopped
+  
+
 # Docker Volume for Kafka Storage
 volumes:
   kafka1_data:
@@ -298,6 +464,13 @@ volumes:
     driver: local
   kafka-consumer:
     driver: local
+  postgres_data:
+    driver: local
+  minio_data:
+    driver: local
+  flink_data:
+    driver: local
+  
 
 # Docker Network for All Services
 networks:

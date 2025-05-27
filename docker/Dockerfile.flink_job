@@ -1,0 +1,67 @@
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies and JDK 11 (Temurin)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    wget \
+    gnupg \
+    ca-certificates \
+    build-essential \
+    && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" \
+    > /etc/apt/sources.list.d/adoptium.list \
+    && wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public \
+    | gpg --dearmor -o /etc/apt/trusted.gpg.d/adoptium.gpg \
+    && apt-get update && apt-get install -y temurin-11-jdk \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set JAVA_HOME dynamically and symlink for compatibility
+RUN JAVA_PATH=$(dirname $(dirname $(readlink -f $(which java)))) && \
+    echo "JAVA_HOME=$JAVA_PATH" >> /etc/environment && \
+    echo "export JAVA_HOME=$JAVA_PATH" >> /etc/profile && \
+    ln -s "$JAVA_PATH" /usr/lib/jvm/default-java
+ENV JAVA_HOME=/usr/lib/jvm/default-java
+
+# Ensure Java works
+RUN javac -version && java -version
+
+
+# Copy requirements file
+COPY requirements_flink.txt .
+
+# Install Python dependencies
+COPY requirements_flink.txt .
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements_flink.txt
+
+# Copy source code
+COPY src/ ./src/
+COPY run_flink_job.py .
+
+# Create directories for JARs and configs
+RUN mkdir -p /app/jars /app/logs /app/conf
+
+# Copy Flink connector JARs (these will be mounted as volumes)
+COPY jars/ /app/jars/
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV FLINK_HOME=/opt/flink
+ENV HADOOP_CONF_DIR=/app/conf
+ENV FLINK_CONF_DIR=/app/conf
+
+# Create configuration directory
+RUN mkdir -p /app/conf
+
+# Add wait script for service readiness
+RUN curl -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+    chmod +x /usr/local/bin/wait-for-it.sh
+
+# Expose port for Flink job monitoring
+EXPOSE 8083
+
+# Default command
+CMD ["/usr/local/bin/wait-for-it.sh", "flink-jobmanager:8081", "-t", "300", "--", "python", "run_flink_job.py"]

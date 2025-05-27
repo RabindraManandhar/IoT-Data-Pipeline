@@ -1,4 +1,4 @@
-# IoT Data Ingestion Pipeline Configuration
+# IoT Data Ingestion Pipeline Configuration with PyFlink and PyIceberg
 # This file contains all configuration options for the data pipeline
 
 # Kafka configuration
@@ -105,12 +105,12 @@ ruuviTag:
   default_location:
     latitude: 60.1699
     longitude: 24.9384
-    building: buidling-1
+    building: building-1
     floor: 1
     zone: main
     room: room-101
   battery:
-    # RuuviTag uses CR2477 battery (3.9V nominal)
+    # RuuviTag uses CR2477 battery (3.0V nominal)
     # Map voltage to percentage (approx)
     # 3.0V = 100%, 2.0V = 0%
     min_voltage: 2.0
@@ -125,6 +125,111 @@ ruuviTag:
     battery_low: 2.0
   signal_strength: -80 # (actual BLE RSSI could be used if available)
   firmware_version: 3.31.1 # (actual firmware version could be used if available)
+
+# NEW: PyFlink configuration
+flink:
+  # Job configuration
+  jobs:
+    kafka_to_iceberg:
+      name: kafka-to-iceberg-etl
+      parallelism: 2
+      consumer_group: flink-iceberg-consumer
+      
+      # Batch settings for Iceberg writes
+      batch_size: 1000
+      batch_timeout_ms: 30000  # 30 seonds
+      
+      # Schema evolution
+      schema_evolution_enabled: true
+
+# NEW: PyIceberg configuration
+iceberg:
+  # Catalog configuration
+  catalog:
+    type: sql
+    name: iot_catalog
+    uri: postgresql://iceberg:iceberg@postgres:5432/iceberg_catalog
+    warehouse: s3a://iceberg-warehouse/
+    
+  # Storage configuration (MinIO/S3)
+  storage:
+    type: s3
+    endpoint: http://minio:9000
+    access_key: minioadmin
+    secret_key: minioadmin
+    path_style_access: true
+    region: us-east-1
+    
+  # Table configuration
+  tables:
+    # Default namespace for IoT data
+    namespace: iot_data
+    
+    # Partitioning strategy
+    partitioning:
+      device_buckets: 16  # Number of device buckets
+      time_granularity: hour  # hour, day, month
+      
+    # Table properties
+    properties:
+      format_version: 2
+      compression: snappy
+      delete_after_commit: true
+      previous_versions_max: 5
+      
+    # Schema evolution
+    schema_evolution:
+      auto_add_columns: true
+      compatibility_check: true
+      
+  # Write optimization
+  write:
+    # File size targets
+    target_file_size_mb: 128
+    max_file_size_mb: 256
+    
+    # Compaction
+    auto_compaction: true
+    compaction_trigger_mb: 512
+    
+    # Batching
+    batch_size: 1000
+    flush_interval_ms: 30000
+
+# NEW: MinIO configuration
+minio:
+  endpoint: http://minio:9000
+  access_key: minioadmin
+  secret_key: minioadmin
+  region: us-east-1
+  
+  # Bucket configuration
+  buckets:
+    warehouse: iceberg-warehouse
+    staging: iceberg-staging
+    
+  # Lifecycle policies
+  lifecycle:
+    staging_expiry_days: 7
+    old_versions_expiry_days: 30
+
+# NEW: PostgreSQL configuration
+postgres:
+  host: postgres
+  port: 5432
+  database: iceberg_catalog
+  username: iceberg
+  password: iceberg
+  
+  # Connection pool settings
+  pool:
+    min_connections: 5
+    max_connections: 20
+    connection_timeout: 30
+    
+  # Schema settings
+  schema: iceberg
+  auto_create_schema: true
   
 # Logging configuration
 logging:
@@ -186,8 +291,69 @@ kafka_ui:
   port: 8080
   cluster_name: local-cluster
 
+# NEW: Flink UI configuration
+flink_ui:
+  port: 8082
+  cluster_name: iot-flink-cluster
+
 # Application settings
 app:
-  name: IoT Data Pipeline (Multi-Broker with Schema Registry)
+  name: IoT Data Pipeline (Multi-Broker with Schema Registry + PyFlink + PyIceberg)
   environment: development  # Change to production for production deployment
 
+# NEW: Monitoring and alerting configuration
+monitoring:
+  # Health check intervals
+  health_check_interval_ms: 30000
+  
+  # Metrics collection
+  metrics:
+    enabled: true
+    interval_ms: 60000
+    
+    # Flink metrics
+    flink:
+      job_metrics: true
+      task_metrics: true
+      checkpoint_metrics: true
+      
+    # Iceberg metrics
+    iceberg:
+      table_metrics: true
+      write_metrics: true
+      compaction_metrics: true
+      
+  # Alerting thresholds
+  alerts:
+    # Kafka lag alerts
+    kafka_lag_threshold: 10000
+    
+    # Flink job alerts
+    flink_restart_threshold: 3
+    flink_checkpoint_failure_threshold: 5
+    
+    # Iceberg write alerts
+    iceberg_write_failure_threshold: 10
+    iceberg_batch_delay_threshold_ms: 300000  # 5 minutes
+
+# NEW: GCS configuration (for future deployment)
+gcs:
+  # Service account configuration
+  credentials_path: /secrets/gcs-credentials.json
+  project_id: your-gcp-project-id
+  
+  # Storage configuration
+  storage:
+    bucket: your-iceberg-warehouse-bucket
+    region: us-central1
+    storage_class: STANDARD
+    
+  # BigQuery integration (optional)
+  bigquery:
+    dataset: iot_analytics
+    location: US
+    
+  # Pub/Sub integration (optional)
+  pubsub:
+    topic: iot-sensor-data
+    subscription: flink-consumer
