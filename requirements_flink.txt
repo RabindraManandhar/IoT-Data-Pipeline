@@ -1,5 +1,5 @@
 # PyFlink Dependencies
-apache-flink==1.18.1
+apache-flink==1.19.1
 pyflink==1.0
 
 # PyIceberg Dependencies

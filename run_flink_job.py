@@ -125,7 +125,7 @@ def setup_flink_environment():
             '/app/jars/flink-parquet-1.19.1.jar',
             '/app/jars/hadoop-aws-3.3.6.jar',
             '/app/jars/aws-java-sdk-bundle-1.12.728.jar',
-            '/app/jars/iceberg-flink-runtime-1.19-1.4.3.jar'
+            '/app/jars/iceberg-flink-runtime-1.19-1.9.0.jar'
         ]
         
         # Check if JAR files exist

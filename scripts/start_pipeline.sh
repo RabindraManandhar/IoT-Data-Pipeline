@@ -124,11 +124,13 @@ check_required_jars() {
     
     local required_jars=(
         "flink-connector-kafka-3.2.0-1.19.jar"
+        "flink-connector-files-1.19.1.jar"
         "flink-sql-connector-kafka-3.2.0-1.19.jar"
         "flink-avro-1.19.1.jar"
+        "flink-parquet-1.19.1.jar"
         "hadoop-aws-3.3.6.jar"
         "aws-java-sdk-bundle-1.12.728.jar"
-        "iceberg-flink-runtime-1.19-1.4.3.jar"
+        "iceberg-flink-runtime-1.19-1.9.0.jar"
         "postgresql-42.7.1.jar"
     )
     

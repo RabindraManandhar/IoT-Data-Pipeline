@@ -17,7 +17,7 @@ FLINK_VERSION="1.19.1"
 KAFKA_CONNECTOR_VERSION="3.2.0-1.19"
 HADOOP_VERSION="3.3.6"
 AWS_SDK_VERSION="1.12.728"
-ICEBERG_VERSION="1.4.3"
+ICEBERG_VERSION="1.9.0"
 
 # Function to download JAR if it doesn't exist
 download_jar() {
@@ -83,19 +83,19 @@ download_jar \
 
 # Additional dependencies for Avro Schema Registry integration
 download_jar \
-    "$MAVEN_CENTRAL/io/confluent/kafka-avro-serializer/7.9.0/kafka-avro-serializer-7.9.0.jar" \
+    "$CONFLUENT_REPO/io/confluent/kafka-avro-serializer/7.9.0/kafka-avro-serializer-7.9.0.jar" \
     "kafka-avro-serializer-7.9.0.jar"
 
 download_jar \
-    "$MAVEN_CENTRAL/io/confluent/kafka-schema-registry-client/7.9.0/kafka-schema-registry-client-7.9.0.jar" \
+    "$CONFLUENT_REPO/io/confluent/kafka-schema-registry-client/7.9.0/kafka-schema-registry-client-7.9.0.jar" \
     "kafka-schema-registry-client-7.9.0.jar"
 
 download_jar \
-    "$MAVEN_CENTRAL/io/confluent/common-config/7.9.0/common-config-7.9.0.jar" \
+    "$CONFLUENT_REPO/io/confluent/common-config/7.9.0/common-config-7.9.0.jar" \
     "common-config-7.9.0.jar"
 
 download_jar \
-    "$MAVEN_CENTRAL/io/confluent/common-utils/7.9.0/common-utils-7.9.0.jar" \
+    "$CONFLUENT_REPO/io/confluent/common-utils/7.9.0/common-utils-7.9.0.jar" \
     "common-utils-7.9.0.jar"
 
 # PostgreSQL JDBC Driver for Iceberg catalog
