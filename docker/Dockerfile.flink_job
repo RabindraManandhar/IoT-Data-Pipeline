@@ -27,7 +27,6 @@ ENV JAVA_HOME=/usr/lib/jvm/default-java
 # Ensure Java works
 RUN javac -version && java -version
 
-
 # Copy requirements file
 COPY requirements_flink.txt .
 
@@ -64,4 +63,4 @@ RUN curl -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vish
 EXPOSE 8083
 
 # Default command
-CMD ["/usr/local/bin/wait-for-it.sh", "flink-jobmanager:8081", "-t", "300", "--", "python", "run_flink_job.py"]
+CMD ["/bin/bash", "-c",  "/usr/local/bin/wait-for-it.sh flink-jobmanager:8081 -t 300 && echo 'Starting PyFlink job...' && python -u run_flink_job.py"]

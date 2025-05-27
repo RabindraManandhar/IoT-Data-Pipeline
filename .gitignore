@@ -3,12 +3,11 @@ __pycache__/
 *.py[cod]
 
 # Ignore virtual environment
-venv/
 .env
 
 # Ignore data folders (raw and processed data)
-build/*
-jars/*
+build/
+jars/
 
 
 # Ignore Jupyter Notebook checkpoints

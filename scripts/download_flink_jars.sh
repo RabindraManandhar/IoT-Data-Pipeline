@@ -128,4 +128,4 @@ echo "Total size: $(du -sh jars/)"
 
 echo ""
 echo "Note: These JARs are compatible with ARM64 (Apple Silicon) architecture"
-echo "and will be automatically mounted into the Flink containers.
+echo "and will be automatically mounted into the Flink containers."
