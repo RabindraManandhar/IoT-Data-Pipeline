@@ -305,25 +305,33 @@ start_application_services() {
 }
 
 # Function to start streaming job
-start_streaming_job() {
-    log "Starting PyFlink streaming job..."
+# start_streaming_job() {
+#     log "Starting PyFlink streaming job..."
     
-    cd "$PROJECT_ROOT/docker"
+#     cd "$PROJECT_ROOT/docker"
     
-    # Start the Flink streaming job
-    docker-compose up -d flink-streaming-job
+#     # Start the Flink streaming job
+#     docker-compose up -d flink-streaming-job
     
-    # Give the job time to start
-    sleep 30
+#     # Give the job time to start and show logs
+#     sleep 45
     
-    # Check if job is running
-    if docker-compose logs flink-streaming-job | grep -q "Streaming job started successfully"; then
-        log_success "PyFlink streaming job is running"
-    else
-        log_warning "Streaming job may not have started properly. Check logs with:"
-        log "docker-compose logs flink-streaming-job"
-    fi
-}
+#     # Check if job is running
+#     if docker-compose ps flink-streaming-job | grep -q "Up"; then
+#         log_success "PyFlink streaming job container is running"
+
+#         # Check logs for any obvious errors
+#         if docker-compose logs --tail=20 flink-streaming-job | grep -i "error\|exception\|failed" | grep -v "Failed to connect.*retrying"; then
+#             log_warning "Found some errors in streaming job logs. Check with: docker-compose logs flink-streaming-job"
+#         else
+#             log_success "PyFlink streaming job appears to be running successfully"
+#         fi
+
+#     else
+#         log_warning "Streaming job container may not have started properly. Check logs with:"
+#         log "docker-compose logs flink-streaming-job"
+#     fi
+# }
 
 # Function to display service status
 show_service_status() {
@@ -380,9 +388,9 @@ show_logs() {
     
     cd "$PROJECT_ROOT/docker"
     
-    echo ""
-    echo "=== Flink Streaming Job Logs ==="
-    docker-compose logs --tail=20 flink-streaming-job
+    # echo ""
+    # echo "=== Flink Streaming Job Logs ==="
+    # docker-compose logs --tail=20 flink-streaming-job
     
     echo ""
     echo "=== RuuviTag Adapter Logs ==="
@@ -448,8 +456,8 @@ main() {
     start_application_services
     echo ""
     
-    start_streaming_job
-    echo ""
+    # start_streaming_job
+    # echo ""
     
     # Show status and run tests
     show_service_status
@@ -472,11 +480,11 @@ main() {
     echo ""
     
     # Ask if user wants to monitor logs
-    read -p "Would you like to monitor the streaming job logs? (y/n): " -r
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        cd "$PROJECT_ROOT/docker"
-        docker-compose logs -f flink-streaming-job
-    fi
+    # read -p "Would you like to monitor the streaming job logs? (y/n): " -r
+    # if [[ $REPLY =~ ^[Yy]$ ]]; then
+    #     cd "$PROJECT_ROOT/docker"
+    #     docker-compose logs -f flink-streaming-job
+    # fi
 }
 
 # Handle script interruption

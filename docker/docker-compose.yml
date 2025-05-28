@@ -407,41 +407,41 @@ services:
       replicas: 2 # Proper scaling for Swarm mode
   
   # PyFlink Streaming Job Runner
-  flink-streaming-job:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.flink_job
-    container_name: flink-streaming-job
-    hostname: flink-streaming-job
-    environment:
-      PYTHONUNBUFFERED: 1
-      FLINK_JOBMANAGER_HOST: flink-jobmanager
-      FLINK_JOBMANAGER_PORT: 6123
-      CONFIG_FILE_PATH: /app/config.yaml
-      # Iceberg configuration
-      ICEBERG_CATALOG_URI: postgresql://iceberg:iceberg@postgres:5432/iceberg_catalog
-      ICEBERG_WAREHOUSE_PATH: s3a://iceberg-warehouse/
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-      # Kafka configuration
-      KAFKA_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
-      SCHEMA_REGISTRY_URL: http://schema-registry:8081
-    volumes:
-      - ../src/config/config.yaml:/app/config.yaml
-      - ../jars:/app/jars  # For Flink connector JARs
-    depends_on:
-      flink-jobmanager:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      schema-registry:
-        condition: service_healthy
-    networks:
-      - kafka-net
-    restart: unless-stopped
+  # flink-streaming-job:
+  #   build:
+  #     context: ..
+  #     dockerfile: docker/Dockerfile.flink_job
+  #   container_name: flink-streaming-job
+  #   hostname: flink-streaming-job
+  #   environment:
+  #     PYTHONUNBUFFERED: 1
+  #     FLINK_JOBMANAGER_HOST: flink-jobmanager
+  #     FLINK_JOBMANAGER_PORT: 6123
+  #     CONFIG_FILE_PATH: /app/config.yaml
+  #     # Iceberg configuration
+  #     ICEBERG_CATALOG_URI: postgresql://iceberg:iceberg@postgres:5432/iceberg_catalog
+  #     ICEBERG_WAREHOUSE_PATH: s3a://iceberg-warehouse/
+  #     MINIO_ENDPOINT: http://minio:9000
+  #     MINIO_ACCESS_KEY: minioadmin
+  #     MINIO_SECRET_KEY: minioadmin
+  #     # Kafka configuration
+  #     KAFKA_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+  #     SCHEMA_REGISTRY_URL: http://schema-registry:8081
+  #   volumes:
+  #     - ../src/config/config.yaml:/app/config.yaml
+  #     - ../jars:/app/jars  # For Flink connector JARs
+  #   depends_on:
+  #     flink-jobmanager:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #     schema-registry:
+  #       condition: service_healthy
+  #   networks:
+  #     - kafka-net
+  #   restart: unless-stopped
   
 
 # Docker Volume for Kafka Storage

@@ -27,10 +27,17 @@ ENV JAVA_HOME=/usr/lib/jvm/default-java
 # Ensure Java works
 RUN javac -version && java -version
 
-# Copy requirements file
-COPY requirements_flink.txt .
+# Download and install Flink distribution
+ENV FLINK_VERSION=1.19.1
+ENV FLINK_HOME=/opt/flink
+ENV PATH=$FLINK_HOME/bin:$PATH
 
-# Install Python dependencies
+RUN wget -O flink.tgz "https://archive.apache.org/dist/flink/flink-${FLINK_VERSION}/flink-${FLINK_VERSION}-bin-scala_2.12.tgz" \
+    && tar -xzf flink.tgz \
+    && mv flink-${FLINK_VERSION} ${FLINK_HOME} \
+    && rm flink.tgz
+
+# Copy requirements file and install Python dependencies
 COPY requirements_flink.txt .
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements_flink.txt
@@ -45,15 +52,15 @@ RUN mkdir -p /app/jars /app/logs /app/conf
 # Copy Flink connector JARs (these will be mounted as volumes)
 COPY jars/ /app/jars/
 
+# Copy Flink configuration to the expected location
+# Note: The file will be renamed from flink-config.yaml to flink-conf.yaml
+COPY src/config/flink-config.yaml ${FLINK_HOME}/conf/flink-conf.yaml
+
 # Set environment variables
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
-ENV FLINK_HOME=/opt/flink
+ENV FLINK_CONF_DIR=${FLINK_HOME}/conf
 ENV HADOOP_CONF_DIR=/app/conf
-ENV FLINK_CONF_DIR=/app/conf
-
-# Create configuration directory
-RUN mkdir -p /app/conf
 
 # Add wait script for service readiness
 RUN curl -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
