@@ -8,7 +8,7 @@ echo "Setting up MinIO for PyIceberg..."
 
 # Wait for MinIO to be ready
 echo "Waiting for MinIO to be ready..."
-until mc alias set myminio http://minio:9000 minioadmin minioadmin; do
+until mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin}; do
   echo "MinIO not ready yet, waiting..."
   sleep 5
 done

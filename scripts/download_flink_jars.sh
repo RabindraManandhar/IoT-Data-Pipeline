@@ -41,6 +41,7 @@ download_jar() {
 
 echo "Starting JAR downloads..."
 
+# Essential Flink connectors
 # Flink Kafka Connector
 download_jar \
     "$MAVEN_CENTRAL/org/apache/flink/flink-connector-kafka/$KAFKA_CONNECTOR_VERSION/flink-connector-kafka-$KAFKA_CONNECTOR_VERSION.jar" \
@@ -56,6 +57,37 @@ download_jar \
     "$MAVEN_CENTRAL/org/apache/flink/flink-avro/$FLINK_VERSION/flink-avro-$FLINK_VERSION.jar" \
     "flink-avro-$FLINK_VERSION.jar"
 
+# Iceberg connector
+# Iceberg Flink Runtime
+download_jar \
+    "$MAVEN_CENTRAL/org/apache/iceberg/iceberg-flink-runtime-1.19/$ICEBERG_VERSION/iceberg-flink-runtime-1.19-$ICEBERG_VERSION.jar" \
+    "iceberg-flink-runtime-1.19-$ICEBERG_VERSION.jar"
+
+# S3/MinIO support
+# Hadoop AWS
+download_jar \
+    "$MAVEN_CENTRAL/org/apache/hadoop/hadoop-aws/$HADOOP_VERSION/hadoop-aws-$HADOOP_VERSION.jar" \
+    "hadoop-aws-$HADOOP_VERSION.jar"
+
+# AWS Java SDK Bundle
+download_jar \
+    "$MAVEN_CENTRAL/com/amazonaws/aws-java-sdk-bundle/$AWS_SDK_VERSION/aws-java-sdk-bundle-$AWS_SDK_VERSION.jar" \
+    "aws-java-sdk-bundle-$AWS_SDK_VERSION.jar"
+
+# Schema Registry support
+download_jar \
+    "$CONFLUENT_REPO/io/confluent/kafka-avro-serializer/7.9.0/kafka-avro-serializer-7.9.0.jar" \
+    "kafka-avro-serializer-7.9.0.jar"
+
+download_jar \
+    "$CONFLUENT_REPO/io/confluent/kafka-schema-registry-client/7.9.0/kafka-schema-registry-client-7.9.0.jar" \
+    "kafka-schema-registry-client-7.9.0.jar"
+
+# PostgreSQL JDBC Driver for Iceberg catalog
+download_jar \
+    "$MAVEN_CENTRAL/org/postgresql/postgresql/42.7.1/postgresql-42.7.1.jar" \
+    "postgresql-42.7.1.jar"
+
 # Flink Parquet Support
 download_jar \
     "$MAVEN_CENTRAL/org/apache/flink/flink-parquet/$FLINK_VERSION/flink-parquet-$FLINK_VERSION.jar" \
@@ -66,30 +98,7 @@ download_jar \
     "$MAVEN_CENTRAL/org/apache/flink/flink-connector-files/$FLINK_VERSION/flink-connector-files-$FLINK_VERSION.jar" \
     "flink-connector-files-$FLINK_VERSION.jar"
 
-# Hadoop AWS for S3/MinIO support
-download_jar \
-    "$MAVEN_CENTRAL/org/apache/hadoop/hadoop-aws/$HADOOP_VERSION/hadoop-aws-$HADOOP_VERSION.jar" \
-    "hadoop-aws-$HADOOP_VERSION.jar"
-
-# AWS Java SDK Bundle
-download_jar \
-    "$MAVEN_CENTRAL/com/amazonaws/aws-java-sdk-bundle/$AWS_SDK_VERSION/aws-java-sdk-bundle-$AWS_SDK_VERSION.jar" \
-    "aws-java-sdk-bundle-$AWS_SDK_VERSION.jar"
-
-# Iceberg Flink Runtime
-download_jar \
-    "$MAVEN_CENTRAL/org/apache/iceberg/iceberg-flink-runtime-1.19/$ICEBERG_VERSION/iceberg-flink-runtime-1.19-$ICEBERG_VERSION.jar" \
-    "iceberg-flink-runtime-1.19-$ICEBERG_VERSION.jar"
-
 # Additional dependencies for Avro Schema Registry integration
-download_jar \
-    "$CONFLUENT_REPO/io/confluent/kafka-avro-serializer/7.9.0/kafka-avro-serializer-7.9.0.jar" \
-    "kafka-avro-serializer-7.9.0.jar"
-
-download_jar \
-    "$CONFLUENT_REPO/io/confluent/kafka-schema-registry-client/7.9.0/kafka-schema-registry-client-7.9.0.jar" \
-    "kafka-schema-registry-client-7.9.0.jar"
-
 download_jar \
     "$CONFLUENT_REPO/io/confluent/common-config/7.9.0/common-config-7.9.0.jar" \
     "common-config-7.9.0.jar"
@@ -97,11 +106,6 @@ download_jar \
 download_jar \
     "$CONFLUENT_REPO/io/confluent/common-utils/7.9.0/common-utils-7.9.0.jar" \
     "common-utils-7.9.0.jar"
-
-# PostgreSQL JDBC Driver for Iceberg catalog
-download_jar \
-    "$MAVEN_CENTRAL/org/postgresql/postgresql/42.7.1/postgresql-42.7.1.jar" \
-    "postgresql-42.7.1.jar"
 
 # JSON processing
 download_jar \
