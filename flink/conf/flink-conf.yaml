@@ -1,12 +1,12 @@
 blob.server.port: 6124
-fs.s3a.access.key: ${MINIO_ROOT_USER:-minioadmin}
+fs.s3a.access.key: user
 fs.s3a.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
 jobmanager.rpc.address: flink-jobmanager
 state.savepoints.dir: s3a://iceberg-staging/savepoints
 execution.runtime-mode: STREAMING
 query.server.port: 6125
 taskmanager.memory.jvm-overhead.min: 512m
-s3.secret-key: ${MINIO_ROOT_PASSWORD:-minioadmin}
+s3.secret-key: password
 metrics.reporter.slf4j.factory.class: org.apache.flink.metrics.slf4j.Slf4jReporterFactory
 s3.endpoint: http://minio:9000
 taskmanager.memory.flink.size: 2048m
@@ -15,7 +15,7 @@ taskmanager.numberOfTaskSlots: 4
 metrics.reporters: slf4j
 taskmanager.memory.jvm-overhead.max: 2048m
 jobmanager.memory.flink.size: 1024m
-fs.s3a.secret.key: ${MINIO_ROOT_PASSWORD:-minioadmin}
+fs.s3a.secret.key: password
 taskmanager.memory.process.size: 4096m
 classloader.resolve-order: child-first
 restart-strategy.fixed-delay.attempts: 3
@@ -26,7 +26,7 @@ rest.bind-address: 0.0.0.0
 rest.port: 8081
 execution.checkpointing.interval: 60s
 execution.checkpointing.timeout: 300s
-s3.access-key: ${MINIO_ROOT_USER:-minioadmin}
+s3.access-key: user
 fs.s3a.connection.ssl.enabled: false
 restart-strategy.fixed-delay.delay: 30s
 execution.checkpointing.externalized-checkpoint-retention: RETAIN_ON_CANCELLATION

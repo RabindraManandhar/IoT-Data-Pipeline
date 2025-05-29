@@ -720,7 +720,7 @@ class JobSubmissionSettings(BaseSettings):
        default_factory=lambda: yaml_config.get('job_submission', {}).get('monitor_jobs') or
                        os.getenv("JOB_SUBMISSION_MONITOR_JOBS", "True").lower() in ("true", "1", "yes")
    )
-   
+  
    monitoring_interval: int = Field(
        default_factory=lambda: yaml_config.get('job_submission', {}).get('monitoring_interval') or
                        int(os.getenv("JOB_SUBMISSION_MONITORING_INTERVAL", "30"))

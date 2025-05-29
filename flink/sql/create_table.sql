@@ -1,5 +1,3 @@
-from src.config.config import settings
-
 -- Create Kafka Source Table
 CREATE TABLE kafka_iot_source (
     device_id STRING,
@@ -75,8 +73,8 @@ WITH (
     'catalog-impl' = 'org.apache.iceberg.rest.RESTCatalog',
     'io-impl' = 'org.apache.iceberg.aws.s3.S3FileIO',
     's3.endpoint' = 'http://minio:9000',
-    's3.access-key-id' = 'os.getenv("MINIO_ACCESS_KEY", "minioadmin")',
-    's3.secret-access-key' = 'os.getenv("MINIO_SECRET_KEY", "minioadmin")',
+    's3.access-key-id' = 'user',
+    's3.secret-access-key' = 'password',
     's3.path-style-access' = 'true',
     'database-name' = 'iot_data',
     'table-name' = 'sensor_readings',
@@ -109,8 +107,8 @@ WITH (
     'catalog-impl' = 'org.apache.iceberg.rest.RESTCatalog',
     'io-impl' = 'org.apache.iceberg.aws.s3.S3FileIO',
     's3.endpoint' = 'http://minio:9000',
-    's3.access-key-id' = 'os.getenv("MINIO_ACCESS_KEY", "minioadmin")',
-    's3.secret-access-key' = 'os.getenv("MINIO_SECRET_KEY", "minioadmin")',
+    's3.access-key-id' = 'user',
+    's3.secret-access-key' = 'password',
     's3.path-style-access' = 'true',
     'database-name' = 'iot_data',
     'table-name' = 'sensor_readings_hourly',
