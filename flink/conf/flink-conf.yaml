@@ -2,6 +2,7 @@ blob.server.port: 6124
 fs.s3a.access.key: user
 fs.s3a.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
 jobmanager.rpc.address: flink-jobmanager
+sql-gateway.endpoint.rest.port: 8083
 state.savepoints.dir: s3a://iceberg-staging/savepoints
 execution.runtime-mode: STREAMING
 query.server.port: 6125
@@ -17,6 +18,7 @@ taskmanager.memory.jvm-overhead.max: 2048m
 jobmanager.memory.flink.size: 1024m
 fs.s3a.secret.key: password
 taskmanager.memory.process.size: 4096m
+sql-gateway.endpoint.rest.address: 0.0.0.0
 classloader.resolve-order: child-first
 restart-strategy.fixed-delay.attempts: 3
 jobmanager.memory.process.size: 2048m

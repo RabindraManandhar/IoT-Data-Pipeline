@@ -9,7 +9,6 @@ from datetime import datetime
 from pyflink.datastream import StreamExecutionEnvironment
 from pyflink.table import StreamTableEnvironment, EnvironmentSettings
 from pyflink.common import Configuration
-from src.config.config import settings
 
 def create_kafka_source_ddl():
     """Create Kafka source table DDL"""
@@ -51,9 +50,6 @@ def create_kafka_source_ddl():
 
 def create_iceberg_sink_ddl():
     """Create Iceberg sink table DDL"""
-    minio_user = settings.minio.access_key
-    minio_password = settings.minio.secret_key
-
     return """
     CREATE TABLE iceberg_iot_sink (
         device_id STRING,
@@ -93,8 +89,8 @@ def create_iceberg_sink_ddl():
         'catalog-impl' = 'org.apache.iceberg.rest.RESTCatalog',
         'io-impl' = 'org.apache.iceberg.aws.s3.S3FileIO',
         's3.endpoint' = 'http://minio:9000',
-        's3.access-key-id' = '{minio_user}',
-        's3.secret-access-key' = '{minio_password}',
+        's3.access-key-id' = 'user',
+        's3.secret-access-key' = 'password',
         's3.path-style-access' = 'true',
         'database-name' = 'iot_data',
         'table-name' = 'sensor_readings',
@@ -102,8 +98,45 @@ def create_iceberg_sink_ddl():
     )
     """
 
+def create_iceberg_iot_aggregate_hourly():
+    """Create aggregated results table for analytics"""
+    return """
+    CREATE TABLE iceberg_iot_hourly (
+        device_id STRING,
+        device_type STRING,
+        hour_window TIMESTAMP(3),
+        avg_value DOUBLE,
+        min_value DOUBLE,
+        max_value DOUBLE,
+        reading_count BIGINT,
+        anomaly_count BIGINT,
+        battery_level DOUBLE,
+        partition_device STRING,
+        partition_year INT,
+        partition_month INT,
+        partition_day INT,
+        partition_hour INT
+    ) PARTITIONED BY (partition_device, partition_year, partition_month, partition_day)
+    WITH (
+        'connector' = 'iceberg',
+        'catalog-name' = 'iot_catalog',
+        'catalog-type' = 'rest',
+        'uri' = 'http://iceberg-rest:8181',
+        'warehouse' = 's3a://iceberg-warehouse/',
+        'catalog-impl' = 'org.apache.iceberg.rest.RESTCatalog',
+        'io-impl' = 'org.apache.iceberg.aws.s3.S3FileIO',
+        's3.endpoint' = 'http://minio:9000',
+        's3.access-key-id' = 'user',
+        's3.secret-access-key' = 'password',
+        's3.path-style-access' = 'true',
+        'database-name' = 'iot_data',
+        'table-name' = 'sensor_readings_hourly',
+        'format-version' = '2'
+    );
+    """
+
 def create_streaming_job_sql():
-    """Create streaming job SQL"""
+    """Main streaming job: Kafka to Iceberg"""
     return """
     INSERT INTO iceberg_iot_sink
     SELECT 
@@ -128,6 +161,33 @@ def create_streaming_job_sql():
         EXTRACT(DAY FROM event_time) as partition_day,
         EXTRACT(HOUR FROM event_time) as partition_hour
     FROM kafka_iot_source
+    """
+
+def create_aggregate_job_hourly():
+    """Aggregation job: Hourly statistics"""
+    return """
+    INSERT INTO iceberg_iot_hourly
+    SELECT 
+        device_id,
+        device_type,
+        TUMBLE_START(event_time, INTERVAL '1' HOUR) as hour_window,
+        AVG(value) as avg_value,
+        MIN(value) as min_value,
+        MAX(value) as max_value,
+        COUNT(*) as reading_count,
+        SUM(CASE WHEN is_anomaly THEN 1 ELSE 0 END) as anomaly_count,
+        LAST_VALUE(battery_level) as battery_level,
+        SUBSTRING(device_id, 1, 8) as partition_device,
+        EXTRACT(YEAR FROM TUMBLE_START(event_time, INTERVAL '1' HOUR)) as partition_year,
+        EXTRACT(MONTH FROM TUMBLE_START(event_time, INTERVAL '1' HOUR)) as partition_month,
+        EXTRACT(DAY FROM TUMBLE_START(event_time, INTERVAL '1' HOUR)) as partition_day,
+        EXTRACT(HOUR FROM TUMBLE_START(event_time, INTERVAL '1' HOUR)) as partition_hour
+    FROM kafka_iot_source
+    WHERE value IS NOT NULL
+    GROUP BY 
+        device_id,
+        device_type,
+        TUMBLE(event_time, INTERVAL '1' HOUR);
     """
 
 def main():
@@ -159,8 +219,11 @@ def main():
     print("Creating Iceberg sink table...")
     table_env.execute_sql(create_iceberg_sink_ddl())
     
-    print("Starting streaming job...")
+    print("Starting streaming job from kafka to iceberg...")
     table_env.execute_sql(create_streaming_job_sql())
+
+    print("Starting hourly aggregation job...")
+    table_env.execute_sql(create_aggregate_job_hourly())
     
     print("Job submitted successfully!")
 

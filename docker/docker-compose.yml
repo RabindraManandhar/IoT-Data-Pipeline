@@ -367,7 +367,20 @@ services:
       - "8082:8081" # Flink Web UI (avoiding conflict with Schema Registry)
     environment:
       - FLINK_PROPERTIES=jobmanager.rpc.address:flink-jobmanager
-    command: jobmanager
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager
+        sql-gateway.endpoint.rest.address: 0.0.0.0
+        sql-gateway.endpoint.rest.port: 8083
+    command: |
+      bash -c '
+        echo "Starting JobManager and SQL Gateway..."
+        /docker-entrypoint.sh jobmanager &
+        sleep 10
+        echo "Starting SQL Gateway..."
+        /opt/flink/bin/sql-gateway.sh start -Dsql-gateway.endpoint.rest.address=0.0.0.0 -Dsql-gateway.endpoint.rest.port=8083
+        wait
+      '
     volumes:
       - flink_data:/opt/flink/data
       - ../flink/conf/flink-conf.yaml:/opt/flink/conf/flink-conf.yaml
@@ -375,7 +388,7 @@ services:
     networks:
       - kafka-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/overview"]
+      test: ["CMD", "bash", "-c", "curl -f http://localhost:8081/overview && curl -f http://localhost:8083/v1/info"]
       interval: 30s
       timeout: 10s
       retries: 5
