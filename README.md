@@ -704,7 +704,7 @@ The application can be configured through environment variables:
         FROM sensor_readings
         WHERE timestamp >= NOW() - INTERVAL '24 hours'
         ORDER BY timestamp DESC
-        LIMIT 100;
+        LIMIT 10;
 
         -- Time-series data for specific device
         SELECT 
@@ -723,7 +723,7 @@ The application can be configured through environment variables:
             MAX(value) as max_value,
             COUNT(*) as reading_count
         FROM sensor_readings
-        WHERE timestamp BETWEEN '2025-07-24' AND '2025-07-26'
+        WHERE timestamp BETWEEN '2025-08-08' AND '2025-08-11'
             AND device_type = 'temperature_sensor'
         GROUP BY device_id, device_type
         ORDER BY avg_value DESC;

@@ -8,7 +8,7 @@ services:
     ports:
       - "9092:9092" # Internal Kafka port for broker-to-client communication
       - "29092:29092" # Host-accessible external kafka port for host machine tools like Kafka UI 
-      - "7071:7071"  # JMX metrics port
+      - "7071:7071" # JMX metrics port
     environment:
       # KRaft settings - Unique ID and roles
       KAFKA_NODE_ID: ${KAFKA_NODE_ID_1:-1}
@@ -20,7 +20,7 @@ services:
       # 1. PLAINTEXT - For client communication
       # 2. CONTROLLER - For controller communication
       # 3. PLAINTEXT_HOST - For external access from host machine
-      # Listeners for different roles: 'internal docker dns,internal controller port,exposed port for outside-Docker clients'
+      # Listeners for different roles: 'internal docker dns, internal controller port,exposed port for outside-Docker clients'
       KAFKA_LISTENERS: ${KAFKA_LISTENERS_1:-PLAINTEXT://kafka1:9092,CONTROLLER://kafka1:29093,PLAINTEXT_HOST://0.0.0.0:29092}
       # What the broker advertises to clients: 'internal communication,external docker host communication'
       KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS_1:-PLAINTEXT://kafka1:9092,PLAINTEXT_HOST://localhost:29092}
@@ -60,7 +60,7 @@ services:
     ports:
       - "9093:9092" # Internal Kafka port for broker-to-client communication
       - "29093:29092" # Host-accessible external kafka port for host machine tools like Kafka UI 
-      - "7072:7071"  # JMX metrics port
+      - "7072:7071" # JMX metrics port
     environment:
       # KRaft settings - Unique ID and roles
       KAFKA_NODE_ID: ${KAFKA_NODE_ID_2:-2}
@@ -114,7 +114,7 @@ services:
     ports:
       - "9094:9092" # Internal Kafka port for broker-to-client communication
       - "29094:29092" # Host-accessible external kafka port for host machine tools like Kafka UI
-      - "7073:7071"  # JMX metrics port
+      - "7073:7071" # JMX metrics port
     environment:
       # KRaft settings - Unique ID and roles
       KAFKA_NODE_ID: ${KAFKA_NODE_ID_3:-3}
