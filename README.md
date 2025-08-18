@@ -246,6 +246,11 @@ If you haven't installed ESP-IDF yet, follow these steps:
         #define MQTT_BROKER_URL	    “mqtt://REPLACE_ME:1883”
         ```
 
+        Include the config.h file in your main/main.c source
+        ```
+        #include "config.h"
+        ```
+
     - Set ESP32 target
         ```bash
         idf.py set-target esp32
@@ -1145,26 +1150,6 @@ The application can be configured through environment variables:
         - Confirm RuuviTags are powered and broadcasting
         - Place RuuviTags closer to the ESP32 during testing
         - Check if the RuuviTags are using a supported data format (usually format 5)
-
-    - Flash partition Issue
-
-        When the compiled binary size exceeds the available space in the flash partition, it gives overflow error. To fix this issue,
-        - Reduce the size of the binary
-        - Increase the size of the partition
-
-        Increasing the size of the partition is more straightforward. We'll need to create a custom partition table that increases the
-        size of the factory partition.
-        
-        In ESP-IDF, partition table define how flash memory is allocated. It is configured by enabling Partition Table in the menu configuration.
-        ```bash
-        >> idf.py menuconfig
-        ```
-        This opens a menu configuration window. In the menuconfig interface:
-        - Navigate to `Partition Table` → `Partition Table`
-        - Enable `Custom partition table CSV`
-        - Save the configuration and exit
-
-        After enabling `Custom partition table CSV`, you need to create a `partitions.csv` with proper partition sizes in the esp32/ruuvitag_gateway/main directory. You can use the example partitions.csv file given in the project.
 
 2. MQTT Issues
 
