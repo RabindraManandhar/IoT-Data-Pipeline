@@ -183,6 +183,27 @@ If you haven't installed ESP-IDF yet, follow these steps:
         . $HOME/esp/esp-idf/export.sh
         ```
 
+        `NOTE`: This is a script that comes with ESP-IDF to set up the environmental variables and paths needed for ESP-IDF tools to work. It configures IDF_PATH, adds CMake, Ninja, Python environment, Xtensa-ESP32 toolchain, etc. to your PATH. Basically, this script prepares your shell session to use ESP-IDF.
+
+        `NOTE`: This script is added to in your shell’s startup config file (i.e. .bashrc or .profile) so it runs automatically when a new shell session starts, and you do not need to manually run the above script each time you open a new terminal.
+        
+        `NOTE`: How to add the script to your startup config file?
+        ```
+        nano ~/.bashrc
+        ```
+
+        Add this line at the bottom of the file:
+
+        . $HOME/esp/esp-idf/export.sh
+
+        Then, reload your shell so the changes take effect:
+        ```
+        source ~/.bashrc
+        ```
+
+        Now, every new terminal will have ESP-IDF ready to use.
+        
+
 2. Windows
 
     - Download the ESP-IDF Tools Installer from [official ESP-IDF installation guide](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html)
@@ -211,39 +232,98 @@ If you haven't installed ESP-IDF yet, follow these steps:
 
 2. Configure ESP32 Gateway
 
-    - Navigate to ESP32 project
+    - From the project's root folder, navigate to ESP32 project
         ```bash
         cd esp32/ruuvitag_gateway
         ```
 
-    - Configure your WiFi and MQTT settigns in main/main.c
-        ```bash
-        vim main/main.c
+    - Configure your Wi-Fi and MQTT settigns
+        
+        Create a `config.h` file inside the main folder. Copy the contents of main/config.h.example to the main/config.h and change REPLACE_ME in the following variables:
+        ```
+        #define WIFI_SSID			“REPLACE_ME”
+        #define WIFI_PASSWORD		“REPLACE_ME”
+        #define MQTT_BROKER_URL	    “mqtt://REPLACE_ME:1883”
         ```
 
-    - Update:
-        - WIFI_SSID and WIFI_PASSWORD
-        - MQTT_BROKER_URL (Computer-IP-address)
-
-    - Set ESP32 target and configure
+    - Set ESP32 target
         ```bash
         idf.py set-target esp32
+        ```
+    
+    - Enable Bluetooth in menu configuration
+        ```
         idf.py menuconfig
         ```
 
-        In the configuration menu:
+        This opens a configuration window. In the configuration menu:
         - Navigate to `Component config` -> `Bluetooth` -> `Bluetooth`
         - Enable `Bluetooth`
+        - Then navigate to `Bluetooth` -> `Host (Bluedroid -- Dual-mode)`
         - Enable `Bluedroid (the Bluetooth stack)`
         - Save the configuration and exit
+        
+            `Note`: Use left arrow key to navigate left and right arrow key to navigate right.\
+            `Note`: Use spacebar to select/unselect the option\
+            `Note`: Keep pressing ‘ESC’ key to leave menu without saving\
+            `Note`: Press ‘Q’ and then ‘Y’ to save the configuration and quit the configuration menu
 
+    - Enable Partition Table in menu configuration
+
+        When the compiled binary size exceeds the available space in the flash partition, it gives overflow error. To fix this issue,
+        - Reduce the size of the binary
+        - Increase the size of the partition
+
+        Increasing the size of the partition is more straightforward. We'll need to create a custom partition table that increases the size of the factory partition.
+        
+        In ESP-IDF, partition table define how flash memory is allocated. It is configured by enabling Partition Table in the menu configuration:
+        ```
+        idf.py menuconfig
+        ```
+
+        This opens a menu configuration window. In the menuconfig interface:
+        - Navigate to `Partition Table` → `Partition Table`
+        - Enable `Custom partition table CSV`
+        - Save the configuration and exit
+
+        After enabling `Custom partition table CSV`, you need to create a `partitions.csv` with proper partition sizes in the esp32/ruuvitag_gateway/main directory. You can use the example partitions.csv file given in the project.
+        
     - Build and flash
         ```bash
         idf.py build
-        idf.py -p <PORT> flash # Replace <PORT> with your port
-        idf.py -p <PORT> monitor # Replace <PORT> with your port
+        idf.py -p <PORT> flash 
+        idf.py -p <PORT> monitor
         ```
-        This will perform the followings:
+        
+        `Note`: `<PORT>` should be replaced with the serial/USB port your ESP32 is connected to.
+
+        For macOS, 
+        
+        - /dev/cu.usbserial-xxxx
+        - /dev/cu.SLAB_USBtoUART (Silicon Labs CP210x USB-UART bridge)
+        - /dev/cu.usbmodemxxxx (CH340/CH9102 or Apple Silicon drivers)
+
+        You can check by running:
+        ```bash
+        ls /dev/cu.*
+        ```
+
+        For Linux,
+
+        - /dev/ttyUSB0, /dev/ttyUSB1, ... (CP210x, CH340 USB-to-UART adapters)
+        - /dev/ttyACM0, /dev/ttyACM1, ... (CDC-ACM devices)
+
+        You can check by running:
+        ```bash
+        dmesg | grep tty
+        ```
+
+        For Windows,
+        - COM3, COM4, ... (varies depending on USB device)
+
+        Check in Device Manager -> Ports (COM & LPT).
+
+        `Note`: This will perform the followings:
         - ESP32 collects the real-time IoT data from RuuviTag sensors via BLE
         - ESP32 sends the collected data to the Kafka via MQTT protocol
 
@@ -256,7 +336,12 @@ If you haven't installed ESP-IDF yet, follow these steps:
 
 4. Start Docker Services:
 
-    - In the root project,
+    - Return to the project's root folder,
+        ```bash
+        cd ../..
+        ```
+
+    - From the project's root folder, navigate to docker
         ```bash
         cd docker
         ```
@@ -1068,15 +1153,18 @@ The application can be configured through environment variables:
         - Increase the size of the partition
 
         Increasing the size of the partition is more straightforward. We'll need to create a custom partition table that increases the
-        size of the factory partition. In ESP-IDF, partition table define how flash memory is allocated. It is configured by running
-        the following commands:
+        size of the factory partition.
+        
+        In ESP-IDF, partition table define how flash memory is allocated. It is configured by enabling Partition Table in the menu configuration.
         ```bash
-        idf.py menuconfig
+        >> idf.py menuconfig
         ```
-        In the menuconfig interface:
+        This opens a menu configuration window. In the menuconfig interface:
         - Navigate to `Partition Table` → `Partition Table`
         - Enable `Custom partition table CSV`
         - Save the configuration and exit
+
+        After enabling `Custom partition table CSV`, you need to create a `partitions.csv` with proper partition sizes in the esp32/ruuvitag_gateway/main directory. You can use the example partitions.csv file given in the project.
 
 2. MQTT Issues
 

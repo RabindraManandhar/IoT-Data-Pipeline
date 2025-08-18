@@ -1,6 +1,7 @@
 // ESP32 Gateway for RuuviTag Data Collection
 // Using ESP-IDF Framework
 
+#include "config.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -31,9 +32,6 @@
 
 
 // Constants
-#define WIFI_SSID               "WIFI_SSID"
-#define WIFI_PASSWORD           "WIFI_PASSWORD"
-#define MQTT_BROKER_URL         "mqtt://<IP_ADDRESS>:1883"     // Change to your MQTT broker IP
 #define MQTT_TOPIC              "ruuvitag/data"
 #define MQTT_QOS                1
 #define MAX_RUUVITAGS           10

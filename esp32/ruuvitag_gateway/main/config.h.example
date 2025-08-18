@@ -1,0 +1,5 @@
+#pragma once
+
+#define WIFI_SSID        "REPLACE_ME"
+#define WIFI_PASSWORD    "REPLACE_ME"
+#define MQTT_BROKER_URL  "mqtt://REPLACE_ME:1883"

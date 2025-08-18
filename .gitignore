@@ -14,6 +14,7 @@ jars/
 
 # Ignore files
 *.pages
+config.h
 
 # Ignore all .txt files
 *.txt
