@@ -239,9 +239,9 @@ services:
     ports:
     - "5432:5432"
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-iot_data}
-      POSTGRES_USER: ${POSTGRES_USER:-iot_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-iot_password}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
       # TimescaleDB specific configurations
       TIMESCALEDB_TELEMETRY: "off"
@@ -252,7 +252,7 @@ services:
       - kafka-net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-iot_user} -d ${POSTGRES_DB:-iot_data}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -347,9 +347,9 @@ services:
       # Database configuration
       POSTGRES_HOST: ${POSTGRES_HOST:-timescaledb}
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
-      POSTGRES_DB: ${POSTGRES_DB:-iot_data}
-      POSTGRES_USER: ${POSTGRES_USER:-iot_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-iot_password}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
       # Kafka configuration
       KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka1:9092,kafka2:9092,kafka3:9092}
