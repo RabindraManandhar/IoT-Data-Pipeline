@@ -396,14 +396,14 @@ services:
 
   # Prometheus for Metrics Collection
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.48.0
     container_name: prometheus
     hostname: prometheus
     ports:
       - "9090:9090"
     volumes:
       - ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ../monitoring/prometheus/rules/alert_rules.yml:/etc/prometheus/alert_rules.yml
+      - ../monitoring/prometheus/rules:/etc/prometheus/rules
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -545,7 +545,7 @@ services:
 
   # AlertManager for alerting
   alertmanager:
-    image: prom/alertmanager:latest
+    image: prom/alertmanager:v0.26.0
     container_name: alertmanager
     ports:
       - "9095:9093"

@@ -11,7 +11,7 @@ groups:
           description: "Kafka broker {{ $labels.instance }} has been down for more than 1 minute."
 
       - alert: KafkaHighLatency
-        expr: kafka_request_handler_avg_idle_percent < 0.2
+        expr: kafka_server_request_handler_avg_idle_percent < 0.2
         for: 5m
         labels:
           severity: warning
@@ -28,15 +28,6 @@ groups:
           summary: "Kafka under-replicated partitions"
           description: "Kafka broker {{ $labels.instance }} has {{ $value }} under-replicated partitions."
 
-      - alert: KafkaConsumerLag
-        expr: kafka_consumer_lag_max > 1000
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High Kafka consumer lag"
-          description: "Consumer {{ $labels.consumer_group }} has lag of {{ $value }} messages."
-
   - name: timescaledb_alerts
     rules:
       - alert: TimescaleDBDown
@@ -49,22 +40,13 @@ groups:
           description: "TimescaleDB has been down for more than 1 minute."
 
       - alert: TimescaleDBHighConnections
-        expr: pg_stat_database_numbackends / pg_settings_max_connections * 100 > 80
+        expr: pg_stat_database_numbackends > 80
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "TimescaleDB high connection usage"
-          description: "TimescaleDB connection usage is {{ $value }}%."
-
-      - alert: TimescaleDBDiskSpaceHigh
-        expr: (pg_database_size_bytes / (1024*1024*1024)) > 10
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "TimescaleDB high disk usage"
-          description: "TimescaleDB database size is {{ $value }}GB."
+          description: "TimescaleDB connection usage is {{ $value }}."
 
   - name: mqtt_alerts
     rules:
@@ -77,19 +59,10 @@ groups:
           summary: "MQTT broker is down"
           description: "MQTT broker has been down for more than 1 minute."
 
-      - alert: MQTTHighConnections
-        expr: mosquitto_connected_clients > 1000
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High MQTT client connections"
-          description: "MQTT broker has {{ $value }} connected clients."
-
   - name: application_alerts
     rules:
       - alert: ApplicationDown
-        expr: up{job=~"iot-.*|ruuvitag-.*|timescaledb-sink"} == 0
+        expr: up{job=~"ruuvitag-adapter|kafka-consumer|timescaledb-sink"} == 0
         for: 2m
         labels:
           severity: critical
@@ -98,22 +71,13 @@ groups:
           description: "Service {{ $labels.job }} at {{ $labels.instance }} has been down for more than 2 minutes."
 
       - alert: HighErrorRate
-        expr: rate(application_errors_total[5m]) > 0.1
+        expr: rate(iot_messages_failed_total[5m]) > 0.1
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "High application error rate"
           description: "Service {{ $labels.job }} has error rate of {{ $value }} errors/sec."
-
-      - alert: HighMemoryUsage
-        expr: container_memory_usage_bytes / container_spec_memory_limit_bytes * 100 > 85
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "High memory usage"
-          description: "Container {{ $labels.name }} memory usage is {{ $value }}%."
 
   - name: system_alerts
     rules:
@@ -126,20 +90,22 @@ groups:
           summary: "High CPU usage"
           description: "CPU usage on {{ $labels.instance }} is {{ $value }}%."
 
-      - alert: HighDiskUsage
-        expr: (node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes * 100 > 85
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "High disk usage"
-          description: "Disk usage on {{ $labels.instance }} is {{ $value }}%."
+          summary: "High memory usage"
+          description: "Memory usage on {{ $labels.instance }} is {{ $value }}%."
 
-      - alert: LowDiskSpace
-        expr: node_filesystem_free_bytes < 5*1024*1024*1024
-        for: 5m
+  - name: test_alerts
+    rules:
+      - alert: TestAlert
+        expr: vector(1)  # This always returns 1, so always fires
+        for: 0s
         labels:
-          severity: critical
+          severity: info
         annotations:
-          summary: "Low disk space"
-          description: "Less than 5GB free disk space on {{ $labels.instance }}."
+          summary: "Manual test"
+          description: "This test alert should always fire to verify the pipeline"

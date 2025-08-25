@@ -3,7 +3,7 @@ global:
   evaluation_interval: 15s
 
 rule_files:
-  - "alert_rules.yml"
+  - "rules/alert_rules.yml"  # Correct path to match Docker volume mount
 
 alerting:
   alertmanagers:
@@ -17,15 +17,21 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # Kafka JMX Exporters (Updated ports)
-  - job_name: 'kafka-jmx'
+  # Kafka JMX Exporters - Fixed job names
+  - job_name: 'kafka-broker-1'
     static_configs:
-      - targets: 
-          - 'kafka-jmx-exporter1:9101'
-          - 'kafka-jmx-exporter2:9102'
-          - 'kafka-jmx-exporter3:9103'
+      - targets: ['kafka-jmx-exporter1:9101']
     scrape_interval: 30s
-    metrics_path: /metrics
+
+  - job_name: 'kafka-broker-2'
+    static_configs:
+      - targets: ['kafka-jmx-exporter2:9102']
+    scrape_interval: 30s
+
+  - job_name: 'kafka-broker-3'
+    static_configs:
+      - targets: ['kafka-jmx-exporter3:9103']
+    scrape_interval: 30s
 
   # Application metrics
   - job_name: 'ruuvitag-adapter'
@@ -43,13 +49,13 @@ scrape_configs:
       - targets: ['timescaledb-sink:8003']
     scrape_interval: 15s
 
-  # Infrastructure metrics
-  - job_name: 'postgres-exporter'
+  # Infrastructure metrics - Fixed job names
+  - job_name: 'timescaledb'
     static_configs:
       - targets: ['postgres-exporter:9187']
     scrape_interval: 30s
 
-  - job_name: 'mosquitto-exporter'
+  - job_name: 'mosquitto'
     static_configs:
       - targets: ['mosquitto-exporter:9234']
     scrape_interval: 30s
