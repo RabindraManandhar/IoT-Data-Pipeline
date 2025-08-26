@@ -17,7 +17,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # Kafka JMX Exporters - Fixed job names
+  # Kafka JMX Exporters
   - job_name: 'kafka-broker-1'
     static_configs:
       - targets: ['kafka-jmx-exporter1:9101']
@@ -49,7 +49,7 @@ scrape_configs:
       - targets: ['timescaledb-sink:8003']
     scrape_interval: 15s
 
-  # Infrastructure metrics - Fixed job names
+  # Infrastructure metrics
   - job_name: 'timescaledb'
     static_configs:
       - targets: ['postgres-exporter:9187']
