@@ -1,10 +1,12 @@
+# This environment config file is extracted from docker/.env file
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: iot-pipeline-config
   namespace: iot-pipeline
 data:
-  # Kafka configuration:
+  # Kafka Configuration
   KAFKA_BOOTSTRAP_SERVERS: "kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9092"
   KAFKA_TOPIC_NAME: "iot-sensor-data"
   KAFKA_REPLICATION_FACTOR: "3"

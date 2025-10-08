@@ -6,7 +6,7 @@ __pycache__/
 venv/
 
 # Ignore environment variables and secrets (if applicable)
-.env
+*.env
 
 # Ignore folders
 build/
@@ -15,6 +15,7 @@ jars/
 # Ignore files
 *.pages
 config.h
+secrets.yaml
 
 # Ignore all .txt files
 *.txt

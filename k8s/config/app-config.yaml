@@ -52,12 +52,6 @@ data:
       sensor_schema_file: iot_sensor_reading.avsc
       serialize_format: avro
 
-    iot_simulator:
-      num_devices: 8
-      data_generation_interval_sec: 1.0
-      device_types: ["temperature", "humidity", "pressure", "motion", "light"]
-      anomaly_probability: 0.05
-
     ruuvitag:
       device_type: ruuvitag
       default_location:

@@ -84,7 +84,7 @@ deploy_kafka() {
     echo "Waiting for Kafka pods to be ready (this may take 2-3 minutes)..."
     
     if kubectl wait --for=condition=ready pod -l app=kafka \
-        -n ${NAMESPACE} --timeout=600s 2>/dev/null; then
+        -n ${NAMESPACE} --timeout=300s 2>/dev/null; then
         echo -e "${GREEN}✅ Kafka cluster deployed${NC}"
     else
         echo -e "${RED}❌ Kafka pods failed to become ready${NC}"
@@ -101,9 +101,10 @@ deploy_kafka() {
         # Troubleshooting
         echo -e "\n${YELLOW}Troubleshooting options:${NC}"
         echo "1. Check full logs for kafka-init: kubectl logs kafka-0 -n ${NAMESPACE} -c kafka-init"
-        echo "1. Check full logs for kafka-0: kubectl logs kafka-0 -n ${NAMESPACE} -c kafka"
-        echo "2. Show recent events: kubectl get events -n ${NAMESPACE} --sort-by='.lastTimestamp' | grep kafka | tail -10"
-        echo "3. Get the logs from the previous run: kubectl logs kafka-0 -n ${namespace} -c kafka --previous"
+        echo "2. Check full logs for pod kafka-0: kubectl logs kafka-0 -n ${NAMESPACE} -c kafka"
+        echo "3. Describe the pod kafka-0: kubectl describe pod kafka-0 -n ${NAMESPACE}"
+        echo "4. Show recent events: kubectl get events -n ${NAMESPACE} --sort-by='.lastTimestamp' | grep kafka | tail -10"
+        echo "5. Get the logs from the previous run: kubectl logs kafka-0 -n ${namespace} -c kafka --previous"
          
         read -p "Continue deployment anyway? (y/n) " -n 1 -r
         echo
@@ -120,9 +121,31 @@ deploy_schema_registry() {
     
     # Wait for Schema Registry to be ready
     echo "Waiting for Schema Registry to be ready..."
-    kubectl wait --for=condition=ready pod -l app=schema-registry \
-        -n ${NAMESPACE} --timeout=180s
-    echo -e "${GREEN}✅ Schema Registry deployed${NC}"
+
+    if kubectl wait --for=condition=ready pod -l app=schema-registry \
+        -n ${NAMESPACE} --timeout=300s 2>/dev/null; then
+        echo -e "${GREEN}✅ Schema Registry deployed${NC}"
+    else
+        echo -e "${RED}❌ Schema registry pod failed to become ready${NC}"
+        echo -e "${YELLOW}Debbuging information:${NC}"
+
+        # Show pod status
+        echo -e "\nPod status:"
+        kubectl get pods -n ${NAMESPACE} -l app=schema-registry
+
+        # Troubleshooting
+        echo -e "\n${YELLOW}Troubleshooting options:${NC}"
+        echo "1. Check logs for schema-registry: kubectl logs schema-registry-9c475d89-98zn2 -n ${NAMESPACE} -c schema-registry"
+        echo "3. Describe the pod schema-registry-9c475d89-98zn2: kubectl describe pod schema-registry-9c475d89-98zn2 -n ${NAMESPACE}"
+        echo "4. Show recent events: kubectl get events -n ${NAMESPACE} --sort-by='.lastTimestamp' | grep schema-registry | tail -10"
+        echo "5. Get the logs from the previous run: kubectl logs schema-registry-9c475d89-98zn2 -n ${namespace} -c schema-registry --previous" 
+        
+        read -p "Continue deployment anyway? (y/n) " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+    fi
 }
 
 # Function to deploy TimescaleDB
