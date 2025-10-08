@@ -24,8 +24,8 @@ COPY run_consumer.py .
 RUN mkdir -p /app/src/schemas
 
 # Add wait script for service readiness
-RUN curl -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
-    chmod +x /usr/local/bin/wait-for-it.sh
+COPY docker/wait-for-it.sh /usr/local/bin/wait-for-it.sh
+RUN chmod +x /usr/local/bin/wait-for-it.sh
 
 # Set environment variable for config path
 ENV CONFIG_FILE_PATH=/app/config.yaml

@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rules
+  namespace: iot-pipeline
+data:
+  alert_rules.yml: |
+    groups:
+    - name: kafka_alerts
+      rules:
+      - alert: KafkaBrokerDown
+        expr: up{job=~"kafka-.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kafka broker is down"
+          description: "Kafka broker {{ $labels.instance }} has been down for more than 1 minute."
+      
+      - alert: KafkaUnderReplicatedPartitions
+        expr: kafka_server_replica_manager_under_replicated_partitions > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kafka under-replicated partitions"
+          description: "Kafka has {{ $value }} under-replicated partitions."
+    
+    - name: timescaledb_alerts
+      rules:
+      - alert: TimescaleDBDown
+        expr: up{job="timescaledb"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "TimescaleDB is down"
+          description: "TimescaleDB has been down for more than 1 minute."
+      
+      - alert: TimescaleDBHighConnections
+        expr: pg_stat_database_numbackends > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "TimescaleDB high connection usage"
+          description: "TimescaleDB connection usage is {{ $value }}."
+    
+    - name: mqtt_alerts
+      rules:
+      - alert: MQTTBrokerDown
+        expr: up{job="mosquitto"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MQTT broker is down"
+          description: "MQTT broker has been down for more than 1 minute."
+    
+    - name: application_alerts
+      rules:
+      - alert: ApplicationDown
+        expr: up{job=~"ruuvitag-adapter|kafka-consumer|timescaledb-sink"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Application service is down"
+          description: "Service {{ $labels.job }} has been down for more than 2 minutes."
+      
+      - alert: HighErrorRate
+        expr: rate(iot_messages_failed_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High application error rate"
+          description: "Service {{ $labels.job }} has error rate of {{ $value }} errors/sec."

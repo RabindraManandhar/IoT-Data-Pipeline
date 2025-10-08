@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ruuvitag-adapter
+  namespace: iot-pipeline
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ruuvitag-adapter
+  template:
+    metadata:
+      labels:
+        app: ruuvitag-adapter
+    spec:
+      containers:
+      - name: ruuvitag-adapter
+        image: rabindramdr/ruuvitag-adapter:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8002
+          name: metrics
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: METRICS_PORT
+          value: "8002"
+        - name: CONFIG_FILE_PATH
+          value: "/app/config.yaml"
+        envFrom:
+        # - configMapRef:
+        #     name: iot-pipeline-config
+        - secretRef:
+            name: iot-pipeline-secrets
+        volumeMounts:
+        - name: app-config
+          mountPath: /app/config.yaml
+          subPath: config.yaml
+        - name: schema
+          mountPath: /app/src/schemas
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 8002
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 8002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: app-config
+        configMap:
+          name: app-config
+      - name: schema
+        configMap:
+          name: avro-schemas

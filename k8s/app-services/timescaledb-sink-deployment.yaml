@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timescaledb-sink
+  namespace: iot-pipeline
+spec:
+  replicas: 1  # Single instance to avoid duplicate writes
+  selector:
+    matchLabels:
+      app: timescaledb-sink
+  template:
+    metadata:
+      labels:
+        app: timescaledb-sink
+    spec:
+      containers:
+      - name: timescaledb-sink
+        image: rabindramdr/timescaledb-sink:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8003
+          name: metrics
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: METRICS_PORT
+          value: "8003"
+        - name: CONFIG_FILE_PATH
+          value: "/app/config.yaml"
+        envFrom:
+        # - configMapRef:
+        #     name: iot-pipeline-config
+        - secretRef:
+            name: iot-pipeline-secrets
+        volumeMounts:
+        - name: app-config
+          mountPath: /app/config.yaml
+          subPath: config.yaml
+        - name: schema
+          mountPath: /app/src/schemas
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 8003
+          initialDelaySeconds: 90
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 8003
+          initialDelaySeconds: 60
+          periodSeconds: 10
+      volumes:
+      - name: app-config
+        configMap:
+          name: app-config
+      - name: schema
+        configMap:
+          name: avro-schemas

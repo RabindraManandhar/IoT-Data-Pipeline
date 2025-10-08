@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: timescaledb-init
+  namespace: iot-pipeline
+data:
+  init.sql: |
+    -- TimescaleDB initialization script
+    CREATE EXTENSION IF NOT EXISTS timescaledb;
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+    
+    CREATE TYPE device_status AS ENUM ('ACTIVE', 'IDLE', 'MAINTENANCE', 'ERROR', 'UNKNOWN');
+    
+    CREATE TABLE IF NOT EXISTS sensor_readings (
+        id BIGSERIAL,
+        device_id TEXT NOT NULL,
+        device_type TEXT NOT NULL,
+        timestamp TIMESTAMPTZ NOT NULL,
+        value DOUBLE PRECISION,
+        unit TEXT NOT NULL,
+        latitude DOUBLE PRECISION,
+        longitude DOUBLE PRECISION,
+        building TEXT,
+        floor INTEGER,
+        zone TEXT,
+        room TEXT,
+        battery_level DOUBLE PRECISION,
+        signal_strength DOUBLE PRECISION,
+        firmware_version TEXT,
+        is_anomaly BOOLEAN DEFAULT FALSE,
+        status device_status DEFAULT 'ACTIVE',
+        maintenance_date TIMESTAMPTZ,
+        device_metadata JSONB,
+        tags TEXT[],
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT valid_battery_level CHECK (battery_level IS NULL OR (battery_level >= 0 AND battery_level <= 100)),
+        CONSTRAINT valid_coordinates CHECK (
+            (latitude IS NULL AND longitude IS NULL) OR 
+            (latitude IS NOT NULL AND longitude IS NOT NULL AND 
+             latitude BETWEEN -90 AND 90 AND longitude BETWEEN -180 AND 180)
+        )
+    );
+    
+    SELECT create_hypertable('sensor_readings', 'timestamp', 
+        chunk_time_interval => INTERVAL '1 day',
+        if_not_exists => TRUE
+    );
+    
+    CREATE INDEX IF NOT EXISTS idx_sensor_readings_device_id ON sensor_readings(device_id, timestamp DESC);
+    CREATE INDEX IF NOT EXISTS idx_sensor_readings_device_type ON sensor_readings(device_type, timestamp DESC);
+    CREATE INDEX IF NOT EXISTS idx_sensor_readings_anomaly ON sensor_readings(is_anomaly, timestamp DESC) WHERE is_anomaly = TRUE;

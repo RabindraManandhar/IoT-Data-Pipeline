@@ -1,0 +1,111 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: iot-pipeline
+data:
+  config.yaml: |
+    # IoT Data Ingestion Pipeline Configuration
+
+    kafka:
+      bootstrap_servers: kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9092
+      topic_name: iot-sensor-data
+      consumer_group_id: iot-data-consumer
+      auto_offset_reset: earliest
+      replication_factor: 3
+      partitions: 6
+      topic_config:
+        min_insync_replicas: 2
+        retention_ms: 604800000
+        cleanup_policy: delete
+      
+    timescaledb:
+      host: timescaledb.iot-pipeline.svc.cluster.local
+      port: 5432
+      database: iot_data
+      pool_size: 5
+      max_overflow: 10
+      batch_size: 100
+      commit_interval: 5.0
+      main_table: sensor_readings
+      archive_table: sensor_readings_archive
+      chunk_time_interval: "1 day"
+      compress_after: "7 days"
+      drop_after: "90 days"
+      enable_continuous_aggregates: true
+
+    mqtt:
+      broker_host: mosquitto.iot-pipeline.svc.cluster.local
+      broker_port: 1883
+      topic: ruuvitag/data
+      client_id: ruuvitag_adapter
+      qos: 1
+      keep_alive: 60
+      reconnect_interval: 10
+    
+    schema_registry:
+      url: http://schema-registry.iot-pipeline.svc.cluster.local:8081
+      auto_register_schemas: true
+      compatibility_level: BACKWARD
+      subject_name_strategy: TopicNameStrategy
+      schema_dir: src/schemas
+      sensor_schema_file: iot_sensor_reading.avsc
+      serialize_format: avro
+
+    iot_simulator:
+      num_devices: 8
+      data_generation_interval_sec: 1.0
+      device_types: ["temperature", "humidity", "pressure", "motion", "light"]
+      anomaly_probability: 0.05
+
+    ruuvitag:
+      device_type: ruuvitag
+      default_location:
+        latitude: 60.1699
+        longitude: 24.9384
+        building: building-1
+        floor: 1
+        zone: main
+        room: room-101
+      battery:
+        min_voltage: 2.0
+        max_voltage: 3.0
+      anomaly_thresholds:
+        temperature_min: -50
+        temperature_max: 50
+        humidity_min: 15
+        humidity_max: 100
+        pressure_min: 87000
+        pressure_max: 108500
+        battery_low: 2.0
+      
+    logging:
+      level: INFO
+      format: "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+      file_logging:
+        enabled: false
+        log_dir: logs
+        max_size: 10MB
+        retention: 1 week
+        compression: zip
+    
+    consumer:
+      enable_auto_commit: true
+      auto_commit_interval_ms: 5000
+      fetch_min_bytes: 1
+      session_timeout_ms: 30000
+      heartbeat_interval_ms: 10000
+      max_poll_interval_ms: 300000
+      partition_assignment_strategy: cooperative-sticky
+    
+    data_sink:
+      consumer_group_id: iot-data-sink
+      batch_size: 100
+      commit_interval: 5.0
+      max_retries: 3
+      retry_backoff: 2.0
+    
+    app:
+      name: IoT Data Pipeline (Kubernetes)
+      environment: production
+    

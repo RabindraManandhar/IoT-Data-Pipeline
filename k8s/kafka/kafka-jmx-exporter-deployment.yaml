@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-jmx-exporter
+  namespace: iot-pipeline
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kafka-jmx-exporter
+  template:
+    metadata:
+      labels:
+        app: kafka-jmx-exporter
+    spec:
+      containers:
+      - name: jmx-exporter
+        image: bitnami/jmx-exporter:latest
+        ports:
+        - containerPort: 9101
+          name: metrics
+        env:
+        - name: SERVICE_PORT
+          value: "9101"
+        volumeMounts:
+        - name: jmx-config
+          mountPath: /opt/bitnami/jmx-exporter/etc/config.yml
+          subPath: kafka-jmx-config.yml
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: jmx-config
+        configMap:
+          name: kafka-jmx-config

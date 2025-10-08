@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto-exporter
+  namespace: iot-pipeline
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto-exporter
+  template:
+    metadata:
+      labels:
+        app: mosquitto-exporter
+    spec:
+      containers:
+      - name: mosquitto-exporter
+        image: jryberg/mosquitto-exporter:v0.7.5
+        ports:
+        - containerPort: 9234
+          name: metrics
+        env:
+        - name: BROKER_ENDPOINT
+          value: "tcp://mosquitto.iot-pipeline.svc.cluster.local:1883"
+        - name: MQTT_IGNORED_TOPICS
+          value: "$$SYS/broker/clients/disconnected,$$SYS/broker/clients/maximum"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto-exporter
+  namespace: iot-pipeline
+spec:
+  ports:
+  - port: 9234
+    targetPort: 9234
+  selector:
+    app: mosquitto-exporter
