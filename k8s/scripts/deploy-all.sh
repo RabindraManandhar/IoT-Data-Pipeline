@@ -78,7 +78,9 @@ create_configs() {
 # Function to deploy Kafka
 deploy_kafka() {
     echo -e "${YELLOW}Deploying Kafka cluster...${NC}"
-    kubectl apply -f k8s/kafka/
+    kubectl apply -f k8s/kafka/kafka-headless-service.yaml
+    kubectl apply -f k8s/kafka/kafka-service.yaml
+    kubectl apply -f k8s/kafka/kafka-statefulset.yaml
 
     # Wait for Kafka to be ready
     echo "Waiting for Kafka pods to be ready (this may take 2-3 minutes)..."
@@ -104,7 +106,8 @@ deploy_kafka() {
         echo "2. Check full logs for pod kafka-0: kubectl logs kafka-0 -n ${NAMESPACE} -c kafka"
         echo "3. Describe the pod kafka-0: kubectl describe pod kafka-0 -n ${NAMESPACE}"
         echo "4. Show recent events: kubectl get events -n ${NAMESPACE} --sort-by='.lastTimestamp' | grep kafka | tail -10"
-        echo "5. Get the logs from the previous run: kubectl logs kafka-0 -n ${namespace} -c kafka --previous"
+        echo "5. Watch the rollout: kubectl rollout status statefulset/kafka -n ${NAMESPACE}"
+        echo "6. Get the logs from the previous run: kubectl logs kafka-0 -n ${namespace} -c kafka --previous"
          
         read -p "Continue deployment anyway? (y/n) " -n 1 -r
         echo
