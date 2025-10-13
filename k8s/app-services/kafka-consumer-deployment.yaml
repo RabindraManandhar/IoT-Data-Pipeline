@@ -4,7 +4,7 @@ metadata:
   name: kafka-consumer
   namespace: iot-pipeline
 spec:
-  replicas: 2  # Scale horizontally for load distribution
+  replicas: 1
   selector:
     matchLabels:
       app: kafka-consumer
@@ -28,8 +28,6 @@ spec:
         - name: CONFIG_FILE_PATH
           value: "/app/config.yaml"
         envFrom:
-        # - configMapRef:
-        #     name: iot-pipeline-config
         - secretRef:
             name: iot-pipeline-secrets
         volumeMounts:
@@ -40,11 +38,11 @@ spec:
           mountPath: /app/src/schemas
         resources:
           requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
             memory: "512Mi"
             cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
         livenessProbe:
           httpGet:
             path: /metrics

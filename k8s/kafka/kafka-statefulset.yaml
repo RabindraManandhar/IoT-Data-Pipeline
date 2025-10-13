@@ -33,8 +33,7 @@ spec:
         - |
           set -ex
           
-          # Extract node ID from pod name
-          # kafka-0 -> 0, kafka-1 -> 1, kafka-2 -> 2
+          # Extract node ID from pod name (kafka-0 -> 0, kafka-1 -> 1, kafka-2 -> 2)
           NODE_ID=${HOSTNAME##*-}
           echo "===== Kafka Init Container ====="
           echo "Pod Name: ${HOSTNAME}"
@@ -86,11 +85,11 @@ spec:
           mountPath: /var/lib/kafka/data
         resources:
           requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
             memory: "256Mi"
             cpu: "200m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
       
       # Main Kafka container
       containers:
@@ -148,8 +147,7 @@ spec:
         # Node ID: extracted from hostname in startup command
         # Will be 0, 1, or 2 based on pod ordinal
         
-        # Controller quorum voters: list of all controller nodes
-        # Format: id@host:port,id@host:port,...
+        # Controller quorum voters: list of all controller nodes (Format: id@host:port,id@host:port,...)
         - name: KAFKA_CONTROLLER_QUORUM_VOTERS
           value: "0@kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9093,1@kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9093,2@kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9093"
 
@@ -200,11 +198,11 @@ spec:
         
         # Number of threads for network requests
         - name: KAFKA_NUM_NETWORK_THREADS
-          value: "8"
+          value: "6"
         
         # Number of threads for I/O operations
         - name: KAFKA_NUM_IO_THREADS
-          value: "8"
+          value: "4"
         
         # Socket buffer sizes
         - name: KAFKA_SOCKET_SEND_BUFFER_BYTES
@@ -234,11 +232,11 @@ spec:
         - name: KAFKA_LOG_RETENTION_HOURS
           value: "168"
         - name: KAFKA_LOG_RETENTION_BYTES
-          value: "1073741824"  # 1GB per partition
+          value: "536870912"  # 512MB per partition
         
         # Log segment size
         - name: KAFKA_LOG_SEGMENT_BYTES
-          value: "1073741824"  # 1GB
+          value: "536870912"  # 512MB segments
         
         # Compression (reduces storage and network usage)
         - name: KAFKA_COMPRESSION_TYPE
@@ -255,10 +253,9 @@ spec:
         - name: KAFKA_JMX_OPTS
           value: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.rmi.port=7071"
         
-        # ===== Java Heap Settings (for local dev) =====
-        
-        # - name: KAFKA_HEAP_OPTS
-        #   value: "-Xmx512M -Xms512M"
+        # Java Heap Settings - CRITICAL FOR RESOURCE CONSTRAINTS
+        - name: KAFKA_HEAP_OPTS
+          value: "-Xmx512M -Xms512M" # Limited heap for low-resource environment
 
         # ===== Other Settings =====
         
@@ -268,7 +265,7 @@ spec:
         
         # Default number of partitions for auto-created topics
         - name: KAFKA_NUM_PARTITIONS
-          value: "6"
+          value: "3"
         
         # Hostname for pod identity
         - name: HOSTNAME
@@ -295,29 +292,30 @@ spec:
         # Resource limits
         resources:
           requests:
-            memory: "2Gi"
-            cpu: "1000m"
+            memory: "512Mi"
+            cpu: "300m"
           limits:
-            memory: "4Gi"
-            cpu: "2000m"
+            memory: "1Gi"
+            cpu: "800m"
         
+        # ===== Health checks with longer timeouts ===== 
         # Liveness probe: is Kafka running?
-        # livenessProbe:
-        #   tcpSocket:
-        #     port: 9092
-        #   initialDelaySeconds: 60
-        #   periodSeconds: 30
-        #   timeoutSeconds: 10
-        #   failureThreshold: 6
+        livenessProbe:
+          tcpSocket:
+            port: 9092
+          initialDelaySeconds: 90
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 6
         
-        # # Readiness probe: is Kafka ready for traffic?
-        # readinessProbe:
-        #   tcpSocket:
-        #     port: 9092
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 10
-        #   timeoutSeconds: 10
-        #   failureThreshold: 6
+        # Readiness probe: is Kafka ready for traffic?
+        readinessProbe:
+          tcpSocket:
+            port: 9092
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 6
       
       # Security context (optional, for production)
       # securityContext:
@@ -337,5 +335,5 @@ spec:
       storageClassName: standard
       resources:
         requests:
-          storage: 20Gi
+          storage: 10Gi
 

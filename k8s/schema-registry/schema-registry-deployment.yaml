@@ -35,13 +35,15 @@ spec:
               key: SCHEMA_REGISTRY_COMPATIBILITY_LEVEL
         - name: SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR
           value: "3"
+        - name: SCHEMA_REGISTRY_HEAP_OPTS
+          value: "-Xmx256M -Xms256M"
         resources:
           requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
             memory: "512Mi"
             cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
         livenessProbe:
           httpGet:
             path: /subjects

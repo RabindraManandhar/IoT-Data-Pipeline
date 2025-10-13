@@ -40,6 +40,15 @@ spec:
           value: "--encoding=UTF8 --locale=C"
         - name: TIMESCALEDB_TELEMETRY
           value: "off"
+        # PostgreSQL performance tuning for low resources
+        - name: POSTGRES_SHARED_BUFFERS
+          value: "256MB"
+        - name: POSTGRES_WORK_MEM
+          value: "16MB"
+        - name: POSTGRES_MAINTENANCE_WORK_MEM
+          value: "128MB"
+        - name: POSTGRES_EFFECTIVE_CACHE_SIZE
+          value: "1GB"
         volumeMounts:
         - name: timescaledb-data
           mountPath: /var/lib/postgresql/data
@@ -47,11 +56,11 @@ spec:
           mountPath: /docker-entrypoint-initdb.d
         resources:
           requests:
-            memory: "2Gi"
-            cpu: "1000m"
+            memory: "512Mi"
+            cpu: "300m"
           limits:
-            memory: "4Gi"
-            cpu: "2000m"
+            memory: "1Gi"
+            cpu: "800m"
         livenessProbe:
           exec:
             command:
@@ -84,4 +93,4 @@ spec:
       storageClassName: standard
       resources:
         requests:
-          storage: 50Gi
+          storage: 20Gi

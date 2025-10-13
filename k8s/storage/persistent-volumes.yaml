@@ -25,7 +25,7 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: 50Gi
+      storage: 20Gi
 
 ---
 # PVC for Prometheus
@@ -40,7 +40,7 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: 20Gi
+      storage: 10Gi
 
 ---
 # PVC for Grafana
@@ -55,7 +55,7 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: 10Gi
+      storage: 5Gi
 
 ---
 # PVC for AlertManager
@@ -70,7 +70,7 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: 5Gi
+      storage: 2Gi
 
 ---
 # PVC for Mosquitto
@@ -85,4 +85,4 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: 5Gi
+      storage: 2Gi
