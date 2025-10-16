@@ -13,51 +13,14 @@ spec:
   selector:
     matchLabels:
       app: kafka
-  podManagementPolicy: Parallel  # Start all pods consecutively
+  podManagementPolicy: Parallel  # Start all pods in parallel
   template:
     metadata:
       labels:
         app: kafka
     spec:
       # This runs ONCE before the main Kafka container starts
-      initContainers:
-      # DNS check init container
-      - name: dns-check
-        image: busybox:1.36
-        command:
-        - sh
-        - -c
-        - |
-          echo "Checking DNS resolution for Kafka pods..."
-          TIMEOUT=300
-          START_TIME=$(date +%s)
-          for i in 0 1 2; do
-            HOST="kafka-${i}.kafka-headless.iot-pipeline.svc.cluster.local"
-            echo "Resolving $HOST..."
-            while true; do
-              if nslookup $HOST; then
-                echo "$HOST resolved successfully"
-                break
-              fi
-              CURRENT_TIME=$(date +%s)
-              ELAPSED=$((CURRENT_TIME - START_TIME))
-              if [ $ELAPSED -ge $TIMEOUT ]; then
-                echo "ERROR: Timeout after ${TIMEOUT}s resolving $HOST"
-                exit 1
-              fi
-              echo "Failed to resolve $HOST, retrying in 5 seconds..."
-              sleep 5
-            done
-          done
-          echo "All Kafka DNS names resolved"
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "50m"
-          limits:
-            memory: "128Mi"
-            cpu: "100m"
-
+      initContainers:      
       # Formats Kafka storage for KRaft mode
       - name: kafka-init
         image: confluentinc/cp-kafka:7.9.0
@@ -171,90 +134,64 @@ spec:
         - name: KAFKA_PROCESS_ROLES
           value: "broker,controller"
         
-        # Node ID: extracted from hostname in startup command
-        # Format: 0, 1, or 2 based on pod ordinal
-        
         # Controller quorum voters: exported in startup command
-        # Format: id@host:port,id@host:port,...)
-
-        # ===== Listener Configuration =====
-        
-        # PLAINTEXT: client connections (port 9092)
-        # CONTROLLER: inter-controller communication (port 9093)
-
         - name: KAFKA_CONTROLLER_LISTENER_NAMES
           value: "CONTROLLER"
 
         - name: KAFKA_LISTENERS
           value: PLAINTEXT://:9092,CONTROLLER://:9093
-
-        # Advertised listeners: set dynamically in startup command
-        # (removed from here to avoid variable expansion issues)
         
         # Security protocol map
         - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
           value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
         
-        # Inter-broker listener: used for broker-to-broker communication
+        # Inter-broker listener
         - name: KAFKA_INTER_BROKER_LISTENER_NAME
           value: "PLAINTEXT"
         
         # ===== Replication & Durability =====
         
-        # Offsets topic replication (internal topic)
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-          value: "3"  # Matches kafka.replication_factor: 3
+          value: "3"
         
-        # Transaction state log settings (for exactly-once semantics)
         - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
-          value: "2"    # Matches kafka.topic_config.min_insync_replicas: 2
+          value: "2"
 
         - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-          value: "3"  # Matches kafka.replication_factor: 3
+          value: "3"
         
-        # Consumer group initial rebalance delay
         - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
           value: "3000"
 
-        # Default number of partitions for auto-created topics (from configmap.yaml: kafka.partitions)
         - name: KAFKA_NUM_PARTITIONS
-          value: "6"  # Matches kafka.partitions: 6
+          value: "6"
        
-        # Log retention (from configmap.yaml: kafka.topic_config.retention_ms)
         - name: KAFKA_LOG_RETENTION_MS
-          value: "604800000"  # Matches kafka.topic_config.retention_ms: 604800000 (7 days)
+          value: "604800000"
        
-        # Cleanup policy (from configmap.yaml: kafka.topic_config.cleanup_policy)
         - name: KAFKA_LOG_CLEANUP_POLICY
-          value: "delete"  # Matches kafka.topic_config.cleanup_policy: delete
+          value: "delete"
         
         # ===== Storage Configuration =====
-
-        # Where Kafka stores data (must match init container)
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
         
         # ===== JMX Monitoring =====
-        
         - name: KAFKA_JMX_PORT
           value: "7071"
 
-        # ==== Java Heap Settings - CRITICAL FOR RESOURCE CONSTRAINTS ====
-        
+        # ==== Java Heap Settings ====
         - name: KAFKA_HEAP_OPTS
-          value: "-Xmx512M -Xms512M" # Limited heap for low-resource environment
+          value: "-Xmx512M -Xms512M"
 
         # ==== Other Settings ====
-        
-        # Auto-create topics when producer sends data
         - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
           value: "true"
 
-        # Remove deprecated port configuration
         - name: KAFKA_PORT
-          value: ""  # Override any default port setting
+          value: ""
 
-        # Disable Java DNS caching to prevent cached failures in K8s
+        # Disable Java DNS caching
         - name: KAFKA_OPTS
           value: "-Dnetworkaddress.cache.ttl=0 -Dnetworkaddress.cache.negative.ttl=0"
         
@@ -272,9 +209,7 @@ spec:
             memory: "1Gi"
             cpu: "800m"
         
-        # ===== Health checks with longer timeouts =====
-
-        # Liveness probe: is Kafka running?
+        # ===== Health checks with appropriate timeouts =====
         livenessProbe:
           exec:
             command:
@@ -287,15 +222,14 @@ spec:
           timeoutSeconds: 5
           failureThreshold: 5
         
-        # Readiness probe: is Kafka ready for traffic?
         readinessProbe:
           exec:
             command:
               - sh
-              - c
+              - -c
               - >
                 nc -z localhost 9092 || exit 1
-          initialDelaySeconds: 20
+          initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 10
           failureThreshold: 5
