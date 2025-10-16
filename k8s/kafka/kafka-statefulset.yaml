@@ -1,5 +1,4 @@
 # Kafka StatefulSet with KRaft mode (no Zookeeper required)
-# KRaft = Kafka Raft metadata mode, introduced in Kafka 2.8+
 
 apiVersion: apps/v1
 kind: StatefulSet
@@ -8,44 +7,72 @@ metadata:
   namespace: iot-pipeline
   labels:
     app: kafka
-    component: broker
 spec:
   serviceName: kafka-headless
   replicas: 3
   selector:
     matchLabels:
       app: kafka
-  podManagementPolicy: Parallel  # Start all pods simultaneously
+  podManagementPolicy: Parallel  # Start all pods consecutively
   template:
     metadata:
       labels:
         app: kafka
-        component: broker
     spec:
-      # Init container: Formats Kafka storage for KRaft mode
       # This runs ONCE before the main Kafka container starts
       initContainers:
+      # DNS check init container
+      - name: dns-check
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          echo "Checking DNS resolution for Kafka pods..."
+          TIMEOUT=300
+          START_TIME=$(date +%s)
+          for i in 0 1 2; do
+            HOST="kafka-${i}.kafka-headless.iot-pipeline.svc.cluster.local"
+            echo "Resolving $HOST..."
+            while true; do
+              if nslookup $HOST; then
+                echo "$HOST resolved successfully"
+                break
+              fi
+              CURRENT_TIME=$(date +%s)
+              ELAPSED=$((CURRENT_TIME - START_TIME))
+              if [ $ELAPSED -ge $TIMEOUT ]; then
+                echo "ERROR: Timeout after ${TIMEOUT}s resolving $HOST"
+                exit 1
+              fi
+              echo "Failed to resolve $HOST, retrying in 5 seconds..."
+              sleep 5
+            done
+          done
+          echo "All Kafka DNS names resolved"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+
+      # Formats Kafka storage for KRaft mode
       - name: kafka-init
         image: confluentinc/cp-kafka:7.9.0
         command:
-        - /bin/bash
-        - -c
+        - sh
+        - -exc
         - |
-          set -ex
-          
           # Extract node ID from pod name (kafka-0 -> 0, kafka-1 -> 1, kafka-2 -> 2)
-          NODE_ID=${HOSTNAME##*-}
-          echo "===== Kafka Init Container ====="
-          echo "Pod Name: ${HOSTNAME}"
-          echo "Node ID: ${NODE_ID}"
-          echo "Cluster ID: ${CLUSTER_ID}"
-          echo "================================"
+          NODE_ID=${POD_NAME##*-}
           
-          # Check if storage is already formatted
-          # meta.properties file indicates formatted storage
+          echo "Initializing Kafka storage for node ${NODE_ID}"
+          
+          # Check if storage is already formatted (meta.properties file indicates formatted storage)
           if [ -f /var/lib/kafka/data/meta.properties ]; then
             echo "Storage already formatted, skipping format step"
-            cat /var/lib/kafka/data/meta.properties
           else
             echo "Formatting storage for KRaft mode..."
             
@@ -55,6 +82,7 @@ spec:
           node.id=${NODE_ID}
           controller.quorum.voters=0@kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9093,1@kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9093,2@kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9093
           listeners=PLAINTEXT://:9092,CONTROLLER://:9093
+          advertised.listeners=PLAINTEXT://${POD_NAME}.kafka-headless.iot-pipeline.svc.cluster.local:9092
           controller.listener.names=CONTROLLER
           log.dirs=/var/lib/kafka/data
           EOF
@@ -66,7 +94,6 @@ spec:
               --ignore-formatted
             
             echo "Storage formatting complete"
-            cat /var/lib/kafka/data/meta.properties
           fi
           
           echo "Init container completed successfully"
@@ -76,7 +103,7 @@ spec:
             secretKeyRef:
               name: iot-pipeline-secrets
               key: CLUSTER_ID
-        - name: HOSTNAME
+        - name: POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
@@ -105,25 +132,15 @@ spec:
         - containerPort: 7071
           name: jmx
           protocol: TCP
-        
-        # Startup command
         command:
-        - /bin/bash
-        - -c
+        - sh
+        - -exc
         - |
-          set -ex
-          
-          # Extract node ID from pod name
-          export KAFKA_NODE_ID=${HOSTNAME##*-}
-
-          # Set advertised listeners dynamically
-          export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${HOSTNAME}.kafka-headless.iot-pipeline.svc.cluster.local:9092"
-
-          echo "===== Starting Kafka Broker ====="
-          echo "Node ID: ${KAFKA_NODE_ID}"
-          echo "Pod Name: ${HOSTNAME}"
-          echo "Advertised Listeners: ${KAFKA_ADVERTISED_LISTENERS}"
-          echo "=================================="
+          # Export cluster and node identifiers
+          export NODE_ID=${POD_NAME##*-}
+          export KAFKA_NODE_ID=${NODE_ID}
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.kafka-headless.iot-pipeline.svc.cluster.local:9092
+          export KAFKA_CONTROLLER_QUORUM_VOTERS="0@kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9093,1@kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9093,2@kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9093"
           
           # Verify storage is formatted
           if [ ! -f /var/lib/kafka/data/meta.properties ]; then
@@ -131,13 +148,23 @@ spec:
             exit 1
           fi
           
-          echo "Storage meta.properties:"
-          cat /var/lib/kafka/data/meta.properties
-          
           # Start Kafka using Confluent's entrypoint
           exec /etc/confluent/docker/run
         
-        env: 
+        env:
+        # Cluster ID (from secret)
+        - name: CLUSTER_ID
+          valueFrom:
+            secretKeyRef:
+              name: iot-pipeline-secrets
+              key: CLUSTER_ID
+
+        # Hostname for pod identity
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        
         # ===== KRaft Mode Configuration =====
         
         # Process roles: this node is both broker and controller
@@ -145,20 +172,22 @@ spec:
           value: "broker,controller"
         
         # Node ID: extracted from hostname in startup command
-        # Will be 0, 1, or 2 based on pod ordinal
+        # Format: 0, 1, or 2 based on pod ordinal
         
-        # Controller quorum voters: list of all controller nodes (Format: id@host:port,id@host:port,...)
-        - name: KAFKA_CONTROLLER_QUORUM_VOTERS
-          value: "0@kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9093,1@kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9093,2@kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9093"
+        # Controller quorum voters: exported in startup command
+        # Format: id@host:port,id@host:port,...)
 
         # ===== Listener Configuration =====
         
-        # Listeners: what ports Kafka listens on
         # PLAINTEXT: client connections (port 9092)
         # CONTROLLER: inter-controller communication (port 9093)
+
+        - name: KAFKA_CONTROLLER_LISTENER_NAMES
+          value: "CONTROLLER"
+
         - name: KAFKA_LISTENERS
-          value: "PLAINTEXT://:9092,CONTROLLER://:9093"
-        
+          value: PLAINTEXT://:9092,CONTROLLER://:9093
+
         # Advertised listeners: set dynamically in startup command
         # (removed from here to avoid variable expansion issues)
         
@@ -170,119 +199,64 @@ spec:
         - name: KAFKA_INTER_BROKER_LISTENER_NAME
           value: "PLAINTEXT"
         
-        # Controller listener: used for controller quorum
-        - name: KAFKA_CONTROLLER_LISTENER_NAMES
-          value: "CONTROLLER"
-        
         # ===== Replication & Durability =====
-        
-        # Default replication factor for auto-created topics
-        - name: KAFKA_DEFAULT_REPLICATION_FACTOR
-          value: "3"
-        
-        # Minimum in-sync replicas for producer acks=all
-        - name: KAFKA_MIN_INSYNC_REPLICAS
-          value: "2"
         
         # Offsets topic replication (internal topic)
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-          value: "3"
+          value: "3"  # Matches kafka.replication_factor: 3
         
         # Transaction state log settings (for exactly-once semantics)
         - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
-          value: "2"
+          value: "2"    # Matches kafka.topic_config.min_insync_replicas: 2
+
         - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-          value: "3"
-        
-        # ===== Performance Tuning =====
-        
-        # Number of threads for network requests
-        - name: KAFKA_NUM_NETWORK_THREADS
-          value: "6"
-        
-        # Number of threads for I/O operations
-        - name: KAFKA_NUM_IO_THREADS
-          value: "4"
-        
-        # Socket buffer sizes
-        - name: KAFKA_SOCKET_SEND_BUFFER_BYTES
-          value: "102400"
-        - name: KAFKA_SOCKET_RECEIVE_BUFFER_BYTES
-          value: "102400"
-        - name: KAFKA_SOCKET_REQUEST_MAX_BYTES
-          value: "104857600"
-        
-        # Log flush settings (for durability vs performance)
-        - name: KAFKA_LOG_FLUSH_INTERVAL_MESSAGES
-          value: "10000"
-        - name: KAFKA_LOG_FLUSH_INTERVAL_MS
-          value: "1000"
+          value: "3"  # Matches kafka.replication_factor: 3
         
         # Consumer group initial rebalance delay
         - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
           value: "3000"
+
+        # Default number of partitions for auto-created topics (from configmap.yaml: kafka.partitions)
+        - name: KAFKA_NUM_PARTITIONS
+          value: "6"  # Matches kafka.partitions: 6
+       
+        # Log retention (from configmap.yaml: kafka.topic_config.retention_ms)
+        - name: KAFKA_LOG_RETENTION_MS
+          value: "604800000"  # Matches kafka.topic_config.retention_ms: 604800000 (7 days)
+       
+        # Cleanup policy (from configmap.yaml: kafka.topic_config.cleanup_policy)
+        - name: KAFKA_LOG_CLEANUP_POLICY
+          value: "delete"  # Matches kafka.topic_config.cleanup_policy: delete
         
         # ===== Storage Configuration =====
-        
+
         # Where Kafka stores data (must match init container)
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
-        
-        # Log retention (7 days)
-        - name: KAFKA_LOG_RETENTION_HOURS
-          value: "168"
-        - name: KAFKA_LOG_RETENTION_BYTES
-          value: "536870912"  # 512MB per partition
-        
-        # Log segment size
-        - name: KAFKA_LOG_SEGMENT_BYTES
-          value: "536870912"  # 512MB segments
-        
-        # Compression (reduces storage and network usage)
-        - name: KAFKA_COMPRESSION_TYPE
-          value: "snappy"
         
         # ===== JMX Monitoring =====
         
         - name: KAFKA_JMX_PORT
           value: "7071"
-        - name: KAFKA_JMX_HOSTNAME
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
-        - name: KAFKA_JMX_OPTS
-          value: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote.rmi.port=7071"
+
+        # ==== Java Heap Settings - CRITICAL FOR RESOURCE CONSTRAINTS ====
         
-        # Java Heap Settings - CRITICAL FOR RESOURCE CONSTRAINTS
         - name: KAFKA_HEAP_OPTS
           value: "-Xmx512M -Xms512M" # Limited heap for low-resource environment
 
-        # ===== Other Settings =====
+        # ==== Other Settings ====
         
         # Auto-create topics when producer sends data
         - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
           value: "true"
-        
-        # Default number of partitions for auto-created topics
-        - name: KAFKA_NUM_PARTITIONS
-          value: "3"
-        
-        # Hostname for pod identity
-        - name: HOSTNAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        
-        # Cluster ID (from secret)
-        - name: CLUSTER_ID
-          valueFrom:
-            secretKeyRef:
-              name: iot-pipeline-secrets
-              key: CLUSTER_ID
 
-        # ===== Remove deprecated port configuration =====
+        # Remove deprecated port configuration
         - name: KAFKA_PORT
           value: ""  # Override any default port setting
+
+        # Disable Java DNS caching to prevent cached failures in K8s
+        - name: KAFKA_OPTS
+          value: "-Dnetworkaddress.cache.ttl=0 -Dnetworkaddress.cache.negative.ttl=0"
         
         # Volume mounts
         volumeMounts:
@@ -298,31 +272,34 @@ spec:
             memory: "1Gi"
             cpu: "800m"
         
-        # ===== Health checks with longer timeouts ===== 
+        # ===== Health checks with longer timeouts =====
+
         # Liveness probe: is Kafka running?
         livenessProbe:
-          tcpSocket:
-            port: 9092
-          initialDelaySeconds: 90
-          periodSeconds: 30
-          timeoutSeconds: 10
-          failureThreshold: 6
+          exec:
+            command:
+              - sh
+              - -c
+              - >
+                ps aux | grep -q "[k]afka.Kafka" || exit 1
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 5
         
         # Readiness probe: is Kafka ready for traffic?
         readinessProbe:
-          tcpSocket:
-            port: 9092
-          initialDelaySeconds: 60
+          exec:
+            command:
+              - sh
+              - c
+              - >
+                nc -z localhost 9092 || exit 1
+          initialDelaySeconds: 20
           periodSeconds: 10
           timeoutSeconds: 10
-          failureThreshold: 6
+          failureThreshold: 5
       
-      # Security context (optional, for production)
-      # securityContext:
-      #   fsGroup: 1000
-      #   runAsUser: 1000
-      #   runAsNonRoot: true
-  
   # Persistent volume claim templates
   volumeClaimTemplates:
   - metadata:
@@ -336,4 +313,3 @@ spec:
       resources:
         requests:
           storage: 10Gi
-

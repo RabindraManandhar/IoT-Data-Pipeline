@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: schema-registry
   namespace: iot-pipeline
+  labels:
+    app: schema-registry
 spec:
   replicas: 1
   selector:
@@ -18,6 +20,7 @@ spec:
         image: confluentinc/cp-schema-registry:7.9.0
         ports:
         - containerPort: 8081
+          name: http
         env:
         - name: SCHEMA_REGISTRY_HOST_NAME
           value: "schema-registry"

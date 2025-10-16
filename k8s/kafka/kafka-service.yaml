@@ -6,13 +6,10 @@ metadata:
   labels:
     app: kafka
 spec:
-  type: ClusterIP 
+  type: ClusterIP
+  selector:
+    app: kafka
   ports:
   - name: kafka
     port: 9092
     targetPort: 9092
-  - name: jmx
-    port: 7071
-    targetPort: 7071
-  selector:
-    app: kafka

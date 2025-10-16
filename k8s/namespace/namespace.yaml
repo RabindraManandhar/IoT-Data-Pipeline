@@ -4,6 +4,6 @@ metadata:
   name: iot-pipeline
   labels:
     name: iot-pipeline
-    environment: production
+    environment: development
     project: iot-data-pipeline
 

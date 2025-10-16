@@ -15,6 +15,7 @@ REGISTRY="rabindramdr" # Change to your container registry
 IMAGE_TAG="v1.0.0"
 
 echo -e "${GREEN}Starting Iot Data Pipeline Kuberenetes Deployment${NC}"
+echo -e "${YELLOW}Cluster Resources: 8 CPUs, ~1TB Storage${NC}"
 
 # Function to check if kubectl is available
 check_kubectl() {
@@ -32,6 +33,31 @@ check_cluster() {
         exit 1
     fi
     echo -e "${GREEN}✅ Connected to Kubernetes cluster${NC}"
+}
+
+# Function to check available resources
+check_resources() {
+    echo -e "\n${YELLOW}Checking available cluster resources...${NC}"
+    
+    # Get total allocatable resources
+    TOTAL_CPU=$(kubectl get nodes -o json | jq -r '.items[].status.allocatable.cpu' | awk '{s+=$1} END {print s}')
+    TOTAL_MEM=$(kubectl get nodes -o json | jq -r '.items[].status.allocatable.memory' | sed 's/Ki//' | awk '{s+=$1} END {printf "%.0f\n", s/1024/1024}')
+    
+    echo "Total Allocatable CPU: ${TOTAL_CPU} cores"
+    echo "Total Allocatable Memory: ${TOTAL_MEM} Gi"
+    
+    # Check if we have enough resources
+    REQUIRED_CPU=3
+    REQUIRED_MEM=8
+    
+    if (( $(echo "$TOTAL_CPU < $REQUIRED_CPU" | bc -l) )); then
+        echo -e "${RED}⚠️  Warning: Available CPU (${TOTAL_CPU}) is less than recommended (${REQUIRED_CPU})${NC}"
+        read -p "Continue anyway? (y/n) " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+    fi
 }
 
 # Function to build and push Docker images
@@ -78,9 +104,7 @@ create_configs() {
 # Function to deploy Kafka
 deploy_kafka() {
     echo -e "${YELLOW}Deploying Kafka cluster...${NC}"
-    kubectl apply -f k8s/kafka/kafka-headless-service.yaml
-    kubectl apply -f k8s/kafka/kafka-service.yaml
-    kubectl apply -f k8s/kafka/kafka-statefulset.yaml
+    kubectl apply -f k8s/kafka/
 
     # Wait for Kafka to be ready
     echo "Waiting for Kafka pods to be ready (this may take 2-3 minutes)..."
@@ -96,15 +120,15 @@ deploy_kafka() {
         echo -e "\nPod status:"
         kubectl get pods -n ${NAMESPACE} -l app=kafka
         
-        # Show init container logs for kafka
-        echo -e "\nInit container logs (kafka-0):"
+        # Show pod logs for kafka
+        echo -e "\Pod logs (kafka-0):"
         kubectl logs kafka-0 -n ${NAMESPACE} -c kafka --tail=30 2>/dev/null || echo "Not available"
 
         # Troubleshooting
         echo -e "\n${YELLOW}Troubleshooting options:${NC}"
         echo "1. Check full logs for kafka-init: kubectl logs kafka-0 -n ${NAMESPACE} -c kafka-init"
-        echo "2. Check full logs for pod kafka-0: kubectl logs kafka-0 -n ${NAMESPACE} -c kafka"
-        echo "3. Describe the pod kafka-0: kubectl describe pod kafka-0 -n ${NAMESPACE}"
+        echo "2. Check full logs for pod (kafka-0): kubectl logs kafka-0 -n ${NAMESPACE} -c kafka"
+        echo "3. Describe the pod (kafka-0): kubectl describe pod kafka-0 -n ${NAMESPACE}"
         echo "4. Show recent events: kubectl get events -n ${NAMESPACE} --sort-by='.lastTimestamp' | grep kafka | tail -10"
         echo "5. Watch the rollout: kubectl rollout status statefulset/kafka -n ${NAMESPACE}"
         echo "6. Get the logs from the previous run: kubectl logs kafka-0 -n ${namespace} -c kafka --previous"
@@ -126,7 +150,7 @@ deploy_schema_registry() {
     echo "Waiting for Schema Registry to be ready..."
 
     if kubectl wait --for=condition=ready pod -l app=schema-registry \
-        -n ${NAMESPACE} --timeout=300s 2>/dev/null; then
+        -n ${NAMESPACE} --timeout=180s 2>/dev/null; then
         echo -e "${GREEN}✅ Schema Registry deployed${NC}"
     else
         echo -e "${RED}❌ Schema registry pod failed to become ready${NC}"
@@ -138,10 +162,10 @@ deploy_schema_registry() {
 
         # Troubleshooting
         echo -e "\n${YELLOW}Troubleshooting options:${NC}"
-        echo "1. Check logs for schema-registry: kubectl logs schema-registry-9c475d89-98zn2 -n ${NAMESPACE} -c schema-registry"
-        echo "3. Describe the pod schema-registry-9c475d89-98zn2: kubectl describe pod schema-registry-9c475d89-98zn2 -n ${NAMESPACE}"
+        echo "1. Check logs of schema-registry pod: kubectl logs <pod_name> -n ${NAMESPACE} -c schema-registry"
+        echo "3. Describe schema-registry pod: kubectl describe pod <pod_name> -n ${NAMESPACE}"
         echo "4. Show recent events: kubectl get events -n ${NAMESPACE} --sort-by='.lastTimestamp' | grep schema-registry | tail -10"
-        echo "5. Get the logs from the previous run: kubectl logs schema-registry-9c475d89-98zn2 -n ${namespace} -c schema-registry --previous" 
+        echo "5. Get the logs from the previous run: kubectl logs <pod_name> -n ${namespace} -c schema-registry --previous" 
         
         read -p "Continue deployment anyway? (y/n) " -n 1 -r
         echo
@@ -182,12 +206,18 @@ deploy_app_services() {
     
     # Wait for application services to be ready
     echo "Waiting for application services to be ready..."
-    kubectl wait --for=condition=ready pod -l app=ruuvitag-adapter \
-        -n ${NAMESPACE} --timeout=180s || true
-    kubectl wait --for=condition=ready pod -l app=kafka-consumer \
-        -n ${NAMESPACE} --timeout=180s || true
-    kubectl wait --for=condition=ready pod -l app=timescaledb-sink \
-        -n ${NAMESPACE} --timeout=180s || true
+    sleep 10
+
+    # Check each service
+    for app in ruuvitag-adapter kafka-consumer timescaledb-sink; do
+        if kubectl wait --for=condition=ready pod -l app=$app \
+            -n ${NAMESPACE} --timeout=180s 2>/dev/null; then
+            echo -e "${GREEN}✅ $app deployed${NC}"
+        else
+            echo -e "${YELLOW}⚠️  $app not fully ready${NC}"
+        fi
+    done
+
     echo -e "${GREEN}✅ Application services deployed${NC}"
 }
 
@@ -201,10 +231,17 @@ deploy_monitoring() {
     
     # Wait for monitoring services to be ready
     echo "Waiting for monitoring services to be ready..."
-    kubectl wait --for=condition=ready pod -l app=prometheus \
-        -n ${NAMESPACE} --timeout=180s || true
-    kubectl wait --for=condition=ready pod -l app=grafana \
-        -n ${NAMESPACE} --timeout=180s || true
+    sleep 15
+
+    for app in prometheus grafana; do
+        if kubectl wait --for=condition=ready pod -l app=$app \
+            -n ${NAMESPACE} --timeout=180s 2>/dev/null; then
+            echo -e "${GREEN}✅ $app deployed${NC}"
+        else
+            echo -e "${YELLOW}⚠️  $app not fully ready${NC}"
+        fi
+    done
+    
     echo -e "${GREEN}✅ Monitoring stack deployed${NC}"
 }
 
@@ -222,9 +259,45 @@ display_status() {
     
     echo -e "\n${GREEN}PersistentVolumeClaims:${NC}"
     kubectl get pvc -n ${NAMESPACE}
+
+    echo -e "\n${YELLOW}Resource Usage:${NC}"
+    kubectl top pods -n ${NAMESPACE} 2>/dev/null || echo "Metrics server not available"
+
     
     echo -e "\n${YELLOW}Services and Endpoints:${NC}"
     kubectl get svc -n ${NAMESPACE}
+}
+
+# Function to show resource summary
+show_resource_summary() {
+    echo -e "\n${GREEN}=========================================="
+    echo "Resource Allocation Summary"
+    echo "==========================================${NC}"
+    
+    echo -e "${YELLOW}CPU Allocation:${NC}"
+    echo "  Requests: ~2.6 CPUs"
+    echo "  Limits: ~6.6 CPUs"
+    echo "  Available: 8 CPUs"
+    echo "  Usage: ~33% of capacity"
+    
+    echo -e "\n${YELLOW}Memory Allocation:${NC}"
+    echo "  Requests: ~3.5Gi"
+    echo "  Limits: ~7.5Gi"
+    
+    echo -e "\n${YELLOW}Storage Allocation:${NC}"
+    echo "  Kafka: 30Gi (3 x 10Gi)"
+    echo "  TimescaleDB: 20Gi"
+    echo "  Prometheus: 10Gi"
+    echo "  Grafana: 5Gi"
+    echo "  Mosquitto: 2Gi"
+    echo "  AlertManager: 2Gi"
+    echo "  Total: ~69Gi"
+    
+    echo -e "\n${YELLOW}Component Count:${NC}"
+    echo "  Kafka Brokers: 3"
+    echo "  Application Services: 3"
+    echo "  Monitoring Services: 6"
+    echo "  Total Pods: ~15"
 }
 
 # Main deployment flow
@@ -236,6 +309,7 @@ main() {
     # Pre-flight checks
     check_kubectl
     check_cluster
+    check_resources
     
     # Option to build images
     read -p "Build and push Docker images? (y/n) " -n 1 -r
@@ -271,6 +345,7 @@ main() {
     
     # Display final status
     display_status
+    show_resource_summary
     
     echo -e "\n${GREEN}=========================================="
     echo "Deployment Complete!"
@@ -283,6 +358,8 @@ main() {
     echo "  kubectl get pods -n ${NAMESPACE} -w"
     echo -e "\nView logs:"
     echo "  kubectl logs -n ${NAMESPACE} -l app=<app-name> -f"
+    echo -e "\n${YELLOW}Note: This is an optimized deployment for an 8-CPU cluster.${NC}"
+    echo -e "${YELLOW}For production, consider scaling to 16-32 CPUs.${NC}"
 }
 
 # Run main function
