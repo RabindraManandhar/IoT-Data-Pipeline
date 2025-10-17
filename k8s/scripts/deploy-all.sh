@@ -110,7 +110,7 @@ deploy_kafka() {
     echo "Waiting for Kafka pods to be ready (this may take 2-3 minutes)..."
     
     if kubectl wait --for=condition=ready pod -l app=kafka \
-        -n ${NAMESPACE} --timeout=300s 2>/dev/null; then
+        -n ${NAMESPACE} --timeout=600s 2>/dev/null; then
         echo -e "${GREEN}✅ Kafka cluster deployed${NC}"
     else
         echo -e "${RED}❌ Kafka pods failed to become ready${NC}"
@@ -150,7 +150,7 @@ deploy_schema_registry() {
     echo "Waiting for Schema Registry to be ready..."
 
     if kubectl wait --for=condition=ready pod -l app=schema-registry \
-        -n ${NAMESPACE} --timeout=180s 2>/dev/null; then
+        -n ${NAMESPACE} --timeout=600s 2>/dev/null; then
         echo -e "${GREEN}✅ Schema Registry deployed${NC}"
     else
         echo -e "${RED}❌ Schema registry pod failed to become ready${NC}"
