@@ -113,16 +113,6 @@ spec:
             memory: "1Gi"
             cpu: "500m"
         
-        # # Startup probe - gives more time for initial connection to Kafka
-        # startupProbe:
-        #   httpGet:
-        #     path: /
-        #     port: 8081
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 10
-        #   timeoutSeconds: 5
-        #   failureThreshold: 30  # 30 * 10s = 300s max startup time
-
         # Liveness probe
         livenessProbe:
           httpGet:

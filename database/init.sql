@@ -1,11 +1,11 @@
 -- TimescaleDB initialization script for IoT Data Pipeline
 
 -- Create the database (if running as superuser)
--- CREATE DATABASE iot_data;
+CREATE DATABASE iot_data;
 
 -- Create the user and grant permissions
--- CREATE USER iot_user WITH PASSWORD 'iot_password';
--- GRANT ALL PRIVILEGES ON DATABASE iot_data TO iot_user;
+CREATE USER iot_user WITH PASSWORD 'iot_password';
+GRANT ALL PRIVILEGES ON DATABASE iot_data TO iot_user;
 
 -- Connect to the iot_data database
 \c iot_data;

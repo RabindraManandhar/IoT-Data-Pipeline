@@ -32,14 +32,6 @@ chmod +x k8s/scripts/deploy-all.sh
 kubectl apply -f k8s/namespace/namespace.yaml
 
 # 2. Create secrets and configs
-kubectl create secret generic iot-pipeline-secrets \
-  --from-literal=CLUSTER_ID=$(uuidgen) \
-  --from-literal=POSTGRES_USER=iot_user \
-  --from-literal=POSTGRES_PASSWORD=iot_password \
-  --from-literal=GRAFANA_USER=admin \
-  --from-literal=GRAFANA_PASSWORD=admin123 \
-  -n iot-pipeline
-
 kubectl apply -f k8s/config/
 
 # 3. Create storage

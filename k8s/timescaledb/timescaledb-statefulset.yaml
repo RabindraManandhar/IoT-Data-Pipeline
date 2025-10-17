@@ -21,11 +21,6 @@ spec:
         - containerPort: 5432
           name: postgres
         env:
-        - name: POSTGRES_DB
-          valueFrom:
-            configMapKeyRef:
-              name: iot-pipeline-config
-              key: POSTGRES_DB
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
@@ -36,6 +31,11 @@ spec:
             secretKeyRef:
               name: iot-pipeline-secrets
               key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: iot-pipeline-secrets
+              key: POSTGRES_DB
         - name: POSTGRES_INITDB_ARGS
           value: "--encoding=UTF8 --locale=C"
         - name: TIMESCALEDB_TELEMETRY
@@ -85,6 +85,8 @@ spec:
       - name: init-script
         configMap:
           name: timescaledb-init
+
+  # Persistent volume claim templates
   volumeClaimTemplates:
   - metadata:
       name: timescaledb-data
