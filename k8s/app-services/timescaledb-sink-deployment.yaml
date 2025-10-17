@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
       - name: timescaledb-sink
-        image: rabindramdr/timescaledb-sink:1.0.0
-        imagePullPolicy: Always
+        image: rabindramdr/timescaledb-sink:v1.0.0
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8003
           name: metrics
@@ -58,7 +58,7 @@ spec:
       volumes:
       - name: app-config
         configMap:
-          name: app-config
+          name: iot-pipeline-config
       - name: schema
         configMap:
           name: avro-schemas
