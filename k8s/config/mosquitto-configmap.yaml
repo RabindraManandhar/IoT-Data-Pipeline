@@ -7,29 +7,45 @@ data:
   mosquitto.conf: |
     # MQTT Configuration File
 
-    # Listener Settings
-    listener 1883
+    # Listener Settings - bind to all interfaces
+    listener 1883 0.0.0.0
+    protocol mqtt
+
+    # Websocket listener
+    listener 9001 0.0.0.0
+    protocol websockets
+    
+    # Security Settings
     allow_anonymous true
 
     # Persistence Settings
     persistence true
     persistence_location /mosquitto/data/
 
-    # Logging
+    # Enhanced Logging for Debugging
     log_dest file /mosquitto/log/mosquitto.log
     log_dest stdout
     log_timestamp true
+    
+    # Enable all log types for debugging
     log_type all
+    
+    # Connection messages
     connection_messages true
+    max_keepalive 300 (important for ESP32)
+    retry_interval 20
+    sys_interval 10
 
     # Performance Settings
     max_queued_messages 1000
     max_inflight_messages 100
-    # max_packet_size 1048576  # Optional: 1 MB max packet
     queue_qos0_messages true
 
     # System Resources
     max_connections -1
+
+    # Timeout settings (increased for ESP32 connections)
+    persistent_client_expiration 1h
 
     # Advanced Settings
     set_tcp_nodelay true
