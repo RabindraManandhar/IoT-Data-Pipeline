@@ -34,9 +34,9 @@ spec:
               key: POSTGRES_PASSWORD
         - name: POSTGRES_DB
           valueFrom:
-            configMapKeyRef:
-              name: iot-pipeline-config
-              key: POSTGRES_DB
+            secretKeyRef:
+              name: iot-pipeline-secrets
+              key: POSTGRES_DB 
         resources:
           requests:
             memory: "64Mi"
