@@ -13,6 +13,17 @@ spec:
       labels:
         app: timescaledb-sink
     spec:
+      # Add init container to wait for database to be ready
+      initContainers:
+      - name: wait-for-db
+        image: postgres:15-alpine
+        command: ['sh', '-c', 
+          'until pg_isready -h timescaledb.iot-pipeline.svc.cluster.local -p 5432 -U iot_user -d iot_data; do echo "Waiting for database..."; sleep 5; done;
+           echo "Database is ready!"']
+        envFrom:
+        - secretRef:
+            name: iot-pipeline-secrets
+
       containers:
       - name: timescaledb-sink
         image: rabindramdr/timescaledb-sink:v1.0.0
@@ -36,6 +47,7 @@ spec:
           subPath: config.yaml
         - name: schema
           mountPath: /app/src/schemas
+
         resources:
           requests:
             memory: "256Mi"
@@ -43,18 +55,22 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+
         livenessProbe:
           httpGet:
             path: /metrics
             port: 8003
           initialDelaySeconds: 90
           periodSeconds: 30
+          failureThreshold: 3
+
         readinessProbe:
           httpGet:
             path: /metrics
             port: 8003
-          initialDelaySeconds: 60
+          initialDelaySeconds: 30
           periodSeconds: 10
+          failureThreshold: 3
       volumes:
       - name: app-config
         configMap:

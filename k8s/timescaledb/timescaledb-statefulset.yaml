@@ -14,6 +14,15 @@ spec:
       labels:
         app: timescaledb
     spec:
+      # Add init container to ensure data directory is properly set up
+      initContainers:
+      - name: init-db-directory
+        image: timescale/timescaledb:latest-pg16
+        command: ['sh', '-c', 'chown -R 999:999 /var/lib/postgresql/data && echo "Directory permissions set"']
+        volumeMounts:
+        - name: timescaledb-data
+          mountPath: /var/lib/postgresql/data
+
       containers:
       - name: timescaledb
         image: timescale/timescaledb:latest-pg16
@@ -37,7 +46,7 @@ spec:
               name: iot-pipeline-secrets
               key: POSTGRES_DB
         - name: POSTGRES_INITDB_ARGS
-          value: "--encoding=UTF8 --locale=C"
+          value: "--encoding=UTF8 --locale=C --auth-host=scram-sha-256"
         - name: TIMESCALEDB_TELEMETRY
           value: "off"
         # PostgreSQL performance tuning for low resources
@@ -54,6 +63,7 @@ spec:
           mountPath: /var/lib/postgresql/data
         - name: init-script
           mountPath: /docker-entrypoint-initdb.d
+
         resources:
           requests:
             memory: "512Mi"
@@ -61,6 +71,7 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "800m"
+
         livenessProbe:
           exec:
             command:
@@ -71,6 +82,9 @@ spec:
             - iot_data
           initialDelaySeconds: 60
           periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
         readinessProbe:
           exec:
             command:
@@ -81,6 +95,8 @@ spec:
             - iot_data
           initialDelaySeconds: 30
           periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
       volumes:
       - name: init-script
         configMap:

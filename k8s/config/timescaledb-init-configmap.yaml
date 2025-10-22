@@ -6,13 +6,19 @@ metadata:
 data:
   init.sql: |
     -- TimescaleDB initialization script for IoT Data Pipeline
+    
+    -- Check if database already exists and create if not
+    SELECT 'CREATE DATABASE iot_data' 
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'iot_data')\gexec
 
-    -- Create the database (if running as superuser)
-    CREATE DATABASE iot_data;
-
-    -- Create the user and grant permissions
-    CREATE USER iot_user WITH PASSWORD 'iot_password';
-    GRANT ALL PRIVILEGES ON DATABASE iot_data TO iot_user;
+    -- Create the user if it doesn't exist
+    DO $$
+    BEGIN
+      CREATE USER iot_user WITH PASSWORD 'iot_password';
+      EXCEPTION WHEN duplicate_object THEN
+      RAISE NOTICE 'User iot_user already exists';
+    END
+    $$;
 
     -- Connect to the iot_data database
     \c iot_data;
@@ -21,9 +27,11 @@ data:
     GRANT ALL ON SCHEMA public TO iot_user;
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO iot_user;
     GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO iot_user;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO iot_user;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO iot_user;
 
-    -- Enable TimescaleDB extension
-    CREATE EXTENSION IF NOT EXISTS timescaledb;
+    -- Enable TimescaleDB extension (this is critical)
+    CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
     -- Enable UUID extension
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
