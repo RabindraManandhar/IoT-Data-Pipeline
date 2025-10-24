@@ -234,6 +234,32 @@ spec:
           timeoutSeconds: 10
           failureThreshold: 5
       
+      # Add JMX Exporter as sidecar
+      - name: jmx-exporter
+        image: bitnami/jmx-exporter:latest
+        ports:
+        - containerPort: 9101
+          name: metrics
+        args:
+        - "9101"
+        - /etc/jmx-exporter/config.yml
+        volumeMounts:
+        - name: jmx-config
+          mountPath: /etc/jmx-exporter/config.yml
+          subPath: kafka-jmx-config.yml
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      
+      volumes:
+      - name: jmx-config
+        configMap:
+          name: kafka-jmx-config
+
   # Persistent volume claim templates
   volumeClaimTemplates:
   - metadata:
