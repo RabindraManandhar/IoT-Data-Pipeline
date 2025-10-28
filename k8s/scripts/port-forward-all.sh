@@ -1,5 +1,15 @@
 #!/bin/bash
 
+echo "============================================="
+
+# This command forwards port 1883 from the Mosquitto service in the "iot-pipeline" namespace 
+# to all network interfaces (0.0.0.0) on your host, making the MQTT broker accessible externally
+# at <Host-IP>:1883
+echo "Starting port forwarding from the Mosquitto service"
+kubectl port-forward -n iot-pipeline --address 0.0.0.0 svc/mosquitto 1883:1883 &
+
+echo "============================================="
+
 echo "Starting port forwarding for all monitoring interfaces..."
 
 # Main monitoring
@@ -16,6 +26,8 @@ kubectl port-forward -n iot-pipeline svc/timescaledb-sink 8003:8003 &
 kubectl port-forward -n iot-pipeline svc/kafka-jmx-exporter 9101:9101 &
 kubectl port-forward -n iot-pipeline svc/postgres-exporter 9187:9187 &
 kubectl port-forward -n iot-pipeline svc/mosquitto-exporter 9234:9234 &
+
+echo "============================================="
 
 echo ""
 echo "Port forwarding started for all services!"

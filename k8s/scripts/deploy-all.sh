@@ -13,6 +13,7 @@ NC='\033[0m' # No Color
 NAMESPACE="iot-pipeline"
 REGISTRY="rabindramdr" # Change to your container registry
 IMAGE_TAG="v1.0.0"
+MOSQUITTO_SERVICENAME="mosquitto"
 
 echo -e "${GREEN}Starting Iot Data Pipeline Kuberenetes Deployment${NC}"
 echo -e "${YELLOW}Cluster Resources: 8 CPUs, ~1TB Storage${NC}"
@@ -245,13 +246,6 @@ deploy_monitoring() {
     echo -e "${GREEN}✅ Monitoring stack deployed${NC}"
 }
 
-# Function to create ingress
-# create_ingress() {
-#     echo -e "${YELLOW}Creating ingress resources...${NC}"
-#     kubectl apply -f k8s/ingress/
-#     echo -e "${GREEN}✅ Ingress created${NC}"
-# }
-
 # Function to display status
 display_status() {
     echo -e "\n${GREEN}Deployment Status:${NC}"
@@ -266,38 +260,6 @@ display_status() {
     
     echo -e "\n${YELLOW}Services and Endpoints:${NC}"
     kubectl get svc -n ${NAMESPACE}
-}
-
-# Function to show resource summary
-show_resource_summary() {
-    echo -e "\n${GREEN}=========================================="
-    echo "Resource Allocation Summary"
-    echo "==========================================${NC}"
-    
-    echo -e "${YELLOW}CPU Allocation:${NC}"
-    echo "  Requests: ~2.6 CPUs"
-    echo "  Limits: ~6.6 CPUs"
-    echo "  Available: 8 CPUs"
-    echo "  Usage: ~33% of capacity"
-    
-    echo -e "\n${YELLOW}Memory Allocation:${NC}"
-    echo "  Requests: ~3.5Gi"
-    echo "  Limits: ~7.5Gi"
-    
-    echo -e "\n${YELLOW}Storage Allocation:${NC}"
-    echo "  Kafka: 30Gi (3 x 10Gi)"
-    echo "  TimescaleDB: 20Gi"
-    echo "  Prometheus: 10Gi"
-    echo "  Grafana: 5Gi"
-    echo "  Mosquitto: 2Gi"
-    echo "  AlertManager: 2Gi"
-    echo "  Total: ~69Gi"
-    
-    echo -e "\n${YELLOW}Component Count:${NC}"
-    echo "  Kafka Brokers: 3"
-    echo "  Application Services: 3"
-    echo "  Monitoring Services: 6"
-    echo "  Total Pods: ~15"
 }
 
 # Main deployment flow
@@ -345,19 +307,22 @@ main() {
     
     # Display final status
     display_status
-    show_resource_summary
     
     echo -e "\n${GREEN}=========================================="
     echo "Deployment Complete!"
     echo "==========================================${NC}"
-    echo -e "\nAccess services:"
+
+    echo -e "\nAccess Services:"
     echo "  Grafana: kubectl port-forward -n ${NAMESPACE} svc/grafana 3000:3000"
     echo "  Prometheus: kubectl port-forward -n ${NAMESPACE} svc/prometheus 9090:9090"
-    echo "  Kafka UI: kubectl port-forward -n ${NAMESPACE} svc/kafka-ui 8080:8080"
+    echo "  AlertManager: kubectl port-forward -n ${NAMESPACE} svc/alertmanager 9093:9093"
+    
     echo -e "\nMonitor pods:"
     echo "  kubectl get pods -n ${NAMESPACE} -w"
+
     echo -e "\nView logs:"
     echo "  kubectl logs -n ${NAMESPACE} -l app=<app-name> -f"
+    
     echo -e "\n${YELLOW}Note: This is an optimized deployment for an 8-CPU cluster.${NC}"
     echo -e "${YELLOW}For production, consider scaling to 16-32 CPUs.${NC}"
 }
