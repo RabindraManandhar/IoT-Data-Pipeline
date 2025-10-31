@@ -102,6 +102,13 @@ create_configs() {
     echo -e "${GREEN}✅ ConfigMaps and Secrets created${NC}"
 }
 
+# Function to create RBAC serviceaccount, roles and clusterroles
+create_rbac() {
+    echo -e "${YELLOW}Creating RBAC serviceaccount, roles and clusterroles...${NC}"
+    kubectl apply -f k8s/rbac/
+    echo -e "${GREEN}✅ RBAC serviceaccount, roles and clusterrole created${NC}"
+}
+
 # Function to deploy Kafka
 deploy_kafka() {
     echo -e "${YELLOW}Deploying Kafka cluster...${NC}"
@@ -284,6 +291,9 @@ main() {
     create_namespace
     create_storage
     create_configs
+
+    # Deploy RBAC
+    create_rbac
     
     # Deploy services in order
     deploy_kafka
@@ -298,12 +308,12 @@ main() {
     deploy_app_services
     deploy_monitoring
     
-    # Optional: Create ingress
-    read -p "Create ingress resources? (y/n) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        create_ingress
-    fi
+    # # Optional: Create ingress
+    # read -p "Create ingress resources? (y/n) " -n 1 -r
+    # echo
+    # if [[ $REPLY =~ ^[Yy]$ ]]; then
+    #     create_ingress
+    # fi
     
     # Display final status
     display_status

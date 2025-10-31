@@ -2,8 +2,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: iot-pipeline
   name: pod-reader
+  namespace: iot-pipeline
 rules:
   - apiGroups: ['']
     resources: ['pods']
@@ -12,8 +12,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  namespace: iot-pipeline
   name: pod-reader
+  namespace: iot-pipeline
 roleRef:
   kind: Role
   name: pod-reader
@@ -22,3 +22,6 @@ subjects:
   - kind: User
     name: Rabindra
     apiGroup: rbac.authorization.k8s.io
+  # - kind: ServiceAccount
+  #   name: pod-inspector
+  #   namespace: iot-pipeline
