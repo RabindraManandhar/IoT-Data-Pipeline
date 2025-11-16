@@ -108,7 +108,7 @@ spec:
       name: timescaledb-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: standard
+      storageClassName: fast-ssd
       resources:
         requests:
           storage: 20Gi

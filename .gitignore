@@ -23,6 +23,18 @@ secrets.yaml
 # Exception: Do not ignore this specific .txt file
 !requirements.txt
 
+# Local .terraform directories
+**/.terraform/*
+
+# Ignore terraform files
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# Crash log files
+crash.log
+
 # Ignore logs (TensorBoard logs or other logs)
 logs/
 *.log

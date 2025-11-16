@@ -269,7 +269,7 @@ spec:
     spec:
       accessModes: 
       - ReadWriteOnce
-      storageClassName: standard
+      storageClassName: fast-ssd
       resources:
         requests:
           storage: 10Gi
