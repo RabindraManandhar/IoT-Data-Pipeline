@@ -15,8 +15,8 @@ PROJECT_ID="${GCP_PROJECT_ID:-prj-mtp-aiot-dip}"
 CLUSTER_NAME="${GKE_CLUSTER_NAME:-iot-pipeline-cluster}"
 REGION="${GCP_REGION:-europe-north1}"
 ZONE="${GCP_ZONE:-europe-north1-a}"
-NAMESPACE="iot-pipeline"
-REPOSITORY="iot-pipeline"
+# NAMESPACE="iot-pipeline"
+# REPOSITORY="iot-pipeline"
 
 echo -e "${GREEN}=========================================="
 echo "IoT Data Pipeline - GKE Deployment"
@@ -83,11 +83,84 @@ check_prerequisites() {
     echo -e "${GREEN}✅ APIs enabled${NC}"
 }
 
+# Check existing resources
+check_existing_resources() {
+    echo -e "${BLUE}Checking for existing resources...${NC}\n"
+    
+    local found_resources=0
+    
+    # Check GKE Cluster
+    if gcloud container clusters describe ${CLUSTER_NAME} --zone=${ZONE} --project=${PROJECT_ID} &>/dev/null; then
+        echo -e "${YELLOW}⚠ GKE Cluster exists: ${CLUSTER_NAME}${NC}"
+        found_resources=$((found_resources + 1))
+    fi
+    
+    # Check VPC Network
+    if gcloud compute networks describe iot-pipeline-network --project=${PROJECT_ID} &>/dev/null; then
+        echo -e "${YELLOW}⚠ VPC Network exists: iot-pipeline-network${NC}"
+        found_resources=$((found_resources + 1))
+    fi
+    
+    # Check Service Accounts
+    if gcloud iam service-accounts describe ${CLUSTER_NAME}-nodes@${PROJECT_ID}.iam.gserviceaccount.com --project=${PROJECT_ID} &>/dev/null; then
+        echo -e "${YELLOW}⚠ Service Account exists: ${CLUSTER_NAME}-nodes${NC}"
+        found_resources=$((found_resources + 1))
+    fi
+    
+    # Check Artifact Registry
+    if gcloud artifacts repositories describe iot-pipeline --location=${REGION} --project=${PROJECT_ID} &>/dev/null; then
+        echo -e "${YELLOW}⚠ Artifact Registry exists: iot-pipeline${NC}"
+        found_resources=$((found_resources + 1))
+    fi
+    
+    # Check Secrets
+    for secret in postgres-password kafka-cluster-id grafana-password; do
+        if gcloud secrets describe ${secret} --project=${PROJECT_ID} &>/dev/null; then
+            echo -e "${YELLOW}⚠ Secret exists: ${secret}${NC}"
+            found_resources=$((found_resources + 1))
+        fi
+    done
+    
+    echo ""
+    if [ $found_resources -gt 0 ]; then
+        echo -e "${YELLOW}Found ${found_resources} existing resource(s)${NC}"
+    else
+        echo -e "${GREEN}✅ No conflicting resources found${NC}"
+    fi
+}
+
+# Import existing resources
+import_existing_resources() {
+    echo -e "${BLUE}Importing existing resources...${NC}"
+    
+    chmod +x k8s/scripts/import-existing-resources.sh
+    ./k8s/scripts/import-existing-resources.sh
+    
+    echo -e "${GREEN}✅ Import process completed${NC}"
+}
+
+# Clean up existing resources
+cleanup_existing_resources() {
+    echo -e "${RED}WARNING: This will DELETE existing resources!${NC}"
+    
+    chmod +x k8s/scripts/cleanup-existing-resources.sh
+    ./k8s/scripts/cleanup-existing-resources.sh
+
+    echo -e "${GREEN}✅ Cleanup process completed${NC}"
+}
+
 # Deploy infrastructure with Terraform
 deploy_infrastructure() {
     echo -e "${BLUE}Deploying infrastructure with Terraform...${NC}"
     
     cd terraform
+
+    # Check if terraform.tfvars exists
+    if [ ! -f "terraform.tfvars" ]; then
+        echo -e "${RED}terraform.tfvars does not exist. Create it first...${NC}"
+    else
+        echo -e "${BLUE} terraform.tfvars already exists."
+    fi
     
     # Initialize Terraform
     echo -e "${YELLOW}Initializing Terraform...${NC}"
@@ -273,7 +346,8 @@ cleanup_deployment() {
 
 # Full deployment
 full_deployment() {
-    check_prerequisites
+    check_existing_resources
+    cleanup_existing_resources
     deploy_infrastructure
     sleep 30  # Wait for cluster to stabilize
     build_and_push_images
