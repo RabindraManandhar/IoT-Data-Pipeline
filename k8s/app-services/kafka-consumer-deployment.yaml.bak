@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer
+  namespace: iot-pipeline
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kafka-consumer
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+    spec:
+      serviceAccountName: iot-pipeline-cluster-sa
+      containers:
+      - name: kafka-consumer
+        image: europe-north1-docker.pkg.dev/prj-mtp-aiot-dip/iot-pipeline/kafka-consumer:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8001
+          name: metrics
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: METRICS_PORT
+          value: "8001"
+        - name: CONFIG_FILE_PATH
+          value: "/app/config.yaml"
+        - name: GCP_PROJECT_ID
+          value: "prj-mtp-aiot-dip"
+        envFrom:
+        - secretRef:
+            name: iot-pipeline-secrets
+        volumeMounts:
+        - name: app-config
+          mountPath: /app/config.yaml
+          subPath: config.yaml
+        - name: schema
+          mountPath: /app/src/schemas
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "300m"
+          limits:
+            memory: "1Gi"
+            cpu: "800m"
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 8001
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: app-config
+        configMap:
+          name: iot-pipeline-config
+      - name: schema
+        configMap:
+          name: avro-schemas

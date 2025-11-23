@@ -1,11 +1,11 @@
-# VPC Network
+# VPC Network - This creates a Virtual Private Cloud where GKE cluster and all related services will run
 resource "google_compute_network" "vpc" {
   name                    = var.network_name
   auto_create_subnetworks = false
   project                 = var.project_id
 }
 
-# Subnet
+# Subnet - This creates a subnet inside the VPC wehre GKE nodes and Pods will get IP addresses
 resource "google_compute_subnetwork" "subnet" {
   name          = var.subnet_name
   ip_cidr_range = var.subnet_cidr
@@ -26,7 +26,7 @@ resource "google_compute_subnetwork" "subnet" {
   private_ip_google_access = true
 }
 
-# Cloud Router for NAT
+# Cloud Router for NAT - It dynamically manages routing for NAT in the VPC
 resource "google_compute_router" "router" {
   name    = "${var.cluster_name}-router"
   region  = var.region
@@ -34,7 +34,7 @@ resource "google_compute_router" "router" {
   project = var.project_id
 }
 
-# Cloud NAT for outbound internet access
+# Cloud NAT for outbound internet access - It allows GKE nodes to reach the internet securely without public IPs
 resource "google_compute_router_nat" "nat" {
   name                               = "${var.cluster_name}-nat"
   router                             = google_compute_router.router.name
@@ -49,7 +49,7 @@ resource "google_compute_router_nat" "nat" {
   }
 }
 
-# Firewall rules
+# Firewall rules - It allows internal communication inside the cluster VPC/subnet
 resource "google_compute_firewall" "allow_internal" {
   name    = "${var.cluster_name}-allow-internal"
   network = google_compute_network.vpc.name
@@ -72,7 +72,7 @@ resource "google_compute_firewall" "allow_internal" {
   source_ranges = [var.subnet_cidr, var.pods_cidr, var.services_cidr]
 }
 
-# Allow MQTT traffic (port 1883)
+# Allow MQTT traffic (port 1883) - It opens the MQTT port (1883) to external sources
 resource "google_compute_firewall" "allow_mqtt" {
   name    = "${var.cluster_name}-allow-mqtt"
   network = google_compute_network.vpc.name
@@ -87,7 +87,7 @@ resource "google_compute_firewall" "allow_mqtt" {
   target_tags   = ["gke-node"]
 }
 
-# Allow health checks
+# Allow health checks - It allows Google Load Balancer health checks to reach cluster nodes or services
 resource "google_compute_firewall" "allow_health_check" {
   name    = "${var.cluster_name}-allow-health-check"
   network = google_compute_network.vpc.name

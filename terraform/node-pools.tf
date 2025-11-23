@@ -75,8 +75,8 @@ resource "google_container_node_pool" "kafka_nodes" {
 
   node_config {
     preemptible  = false
-    machine_type = "e2-standard-4"
-    disk_size_gb = 100
+    machine_type = var.node_machine_type
+    disk_size_gb = var.disk_size_gb
     disk_type    = "pd-ssd" # SSD for better Kafka performance
 
     service_account = google_service_account.gke_nodes.email

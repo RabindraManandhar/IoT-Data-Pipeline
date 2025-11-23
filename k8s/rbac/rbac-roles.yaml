@@ -1,27 +1,27 @@
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: pod-reader
-  namespace: iot-pipeline
-rules:
-  - apiGroups: ['']
-    resources: ['pods']
-    verbs: ['get', 'list']
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: pod-reader
-  namespace: iot-pipeline
-roleRef:
-  kind: Role
-  name: pod-reader
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-  - kind: User
-    name: Rabindra
-    apiGroup: rbac.authorization.k8s.io
-  # - kind: ServiceAccount
-  #   name: pod-inspector
-  #   namespace: iot-pipeline
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: Role
+# metadata:
+#   name: iot-pipeline-role
+#   namespace: iot-pipeline
+# rules:
+#   - apiGroups: ['']
+#     resources: ['pods']
+#     verbs: ['get', 'list']
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   name: iot-pipeline-clusterbinding
+#   namespace: iot-pipeline
+# roleRef:
+#   kind: Role
+#   name: iot-pipeline-role
+#   apiGroup: rbac.authorization.k8s.io
+# subjects:
+#   - kind: User
+#     name: Rabindra
+#     apiGroup: rbac.authorization.k8s.io
+#   - kind: ServiceAccount
+#     name: iot-pipeline-sa
+#     namespace: iot-pipeline

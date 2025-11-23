@@ -9,13 +9,13 @@ variable "project_id" {
 variable "region" {
   description = "GCP region for resources"
   type        = string
-  default     = "europe-west4"
+  default     = "europe-north1"
 }
 
 variable "zone" {
   description = "GCP zone for resources"
   type        = string
-  default     = "europe-west4-a"
+  default     = "europe-north1-a"
 }
 
 variable "cluster_name" {
@@ -112,6 +112,12 @@ variable "postgres_password" {
 
 variable "kafka_cluster_id" {
   description = "Kafka cluster ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "grafana_password" {
+  description = "Grafana password"
   type        = string
   sensitive   = true
 }

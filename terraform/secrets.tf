@@ -4,8 +4,10 @@ resource "google_secret_manager_secret" "postgres_password" {
   project   = var.project_id
 
   replication {
-    auto {
-
+    user_managed {
+      replicas {
+        location = "europe-north1"
+      }
     }
   }
 }
@@ -20,8 +22,10 @@ resource "google_secret_manager_secret" "kafka_cluster_id" {
   project   = var.project_id
 
   replication {
-    auto {
-
+    user_managed {
+      replicas {
+        location = "europe-north1"
+      }
     }
   }
 }
@@ -30,6 +34,25 @@ resource "google_secret_manager_secret_version" "kafka_cluster_id" {
   secret      = google_secret_manager_secret.kafka_cluster_id.id
   secret_data = var.kafka_cluster_id
 }
+
+resource "google_secret_manager_secret" "grafana_password" {
+  secret_id = "grafana-password"
+  project   = var.project_id
+
+  replication {
+    user_managed {
+      replicas {
+        location = "europe-north1"
+      }
+    }
+  }
+}
+
+resource "google_secret_manager_secret_version" "grafana_password" {
+  secret      = google_secret_manager_secret.grafana_password.id
+  secret_data = var.grafana_password
+}
+
 
 # Service account for accessing secrets from GKE
 resource "google_service_account" "secret_accessor" {
@@ -46,6 +69,12 @@ resource "google_secret_manager_secret_iam_member" "postgres_password_access" {
 
 resource "google_secret_manager_secret_iam_member" "kafka_cluster_id_access" {
   secret_id = google_secret_manager_secret.kafka_cluster_id.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.secret_accessor.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "grafana_password_access" {
+  secret_id = google_secret_manager_secret.grafana_password.id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.secret_accessor.email}"
 }

@@ -5,18 +5,14 @@ metadata:
   name: iot-pipeline-ingress
   namespace: iot-pipeline
   annotations:
-    kubernetes.io/ingress.class: "nginx"  # or "gce" for GKE
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"  # For HTTPS
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "iot-pipeline-ip"
+    networking.gke.io/managed-certificates: "iot-pipeline-cert"
+    kubernetes.io/ingress.allow-http: "false"
 spec:
-  tls:
-  - hosts:
-    - grafana.your-domain.com
-    - prometheus.your-domain.com
-    secretName: iot-pipeline-tls
   rules:
   # Grafana
-  - host: grafana.your-domain.com
+  - host: grafana.iot-pipeline.example.com
     http:
       paths:
       - path: /
@@ -28,7 +24,7 @@ spec:
               number: 3000
 
   # Prometheus
-  - host: prometheus.your-domain.com
+  - host: prometheus.iot-pipeline.example.com
     http:
       paths:
       - path: /
@@ -40,7 +36,7 @@ spec:
               number: 9090
 
   # AlertManager
-  - host: alertmanager.your-domain.com
+  - host: alertmanager.iot-pipeline.example.com
     http:
       paths:
       - path: /

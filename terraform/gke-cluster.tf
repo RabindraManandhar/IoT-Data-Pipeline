@@ -19,24 +19,26 @@ resource "google_project_iam_member" "gke_nodes_roles" {
   member  = "serviceAccount:${google_service_account.gke_nodes.email}"
 }
 
-# GKE Cluster
+# GKE Cluster Configuration
 resource "google_container_cluster" "primary" {
   name     = var.cluster_name
   location = var.zone
   project  = var.project_id
 
+  # Do not protect the cluster from deletion (you want to destroy via Terraform)
   deletion_protection = false
 
-  # We can't create a cluster with no node pool defined, but we want to only use
-  # separately managed node pools. So we create the smallest possible default
-  # node pool and immediately delete it.
+  # Remove default node pool because we want full control using our own separate node pool resources
   remove_default_node_pool = true
   initial_node_count       = 1
 
-  # Network configuration
+  # Network configuration (VPC + Subnet)
+
+  # Attach cluster to custom VPC
   network    = google_compute_network.vpc.name
   subnetwork = google_compute_subnetwork.subnet.name
 
+  # Enable IP aliasing and map pod + service CIDRs
   ip_allocation_policy {
     cluster_secondary_range_name  = "pods"
     services_secondary_range_name = "services"
@@ -46,18 +48,24 @@ resource "google_container_cluster" "primary" {
   dynamic "private_cluster_config" {
     for_each = var.enable_private_cluster ? [1] : []
     content {
+      # Nodes have ONLY private IPs (more secure)
       enable_private_nodes    = true
+
+      # API server still publicly accessible (recommeded for dev)
       enable_private_endpoint = false
+
+      # CIDR block from which master assigns private IP
       master_ipv4_cidr_block  = var.master_ipv4_cidr
     }
   }
 
   # Workload Identity
+  # Allows Kubernetes service accounts to impersonate GCP service accounts
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
   }
 
-  # Add-ons
+  # Add-ons (Ingress, HPA, Network Policy)
   addons_config {
     http_load_balancing {
       disabled = false
@@ -77,6 +85,7 @@ resource "google_container_cluster" "primary" {
   }
 
   # Maintenance window
+  # Schedule cluster upgrades during low traffic window
   maintenance_policy {
     daily_maintenance_window {
       start_time = "03:00" # 3 AM Helsinki time
@@ -84,6 +93,7 @@ resource "google_container_cluster" "primary" {
   }
 
   # Monitoring and logging
+
   monitoring_config {
     enable_components = ["SYSTEM_COMPONENTS"]
     managed_prometheus {
@@ -96,11 +106,13 @@ resource "google_container_cluster" "primary" {
   }
 
   # Release channel
+  # REGULAR recommended for stability + good patching cadence
   release_channel {
     channel = "REGULAR"
   }
 
-  # Cluster autoscaling
+  # Cluster autoscaling (NOT NODE POOLS)
+  # This controls resource-based autoscaling at cluster-level
   cluster_autoscaling {
     enabled = true
     resource_limits {
@@ -108,6 +120,8 @@ resource "google_container_cluster" "primary" {
       minimum       = 4
       maximum       = 32
     }
+    
+    # Memory autoscaling boundaries
     resource_limits {
       resource_type = "memory"
       minimum       = 16
