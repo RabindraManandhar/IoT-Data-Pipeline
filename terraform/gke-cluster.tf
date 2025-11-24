@@ -32,6 +32,36 @@ resource "google_container_cluster" "primary" {
   remove_default_node_pool = true
   initial_node_count       = 1
 
+  # Configure the temporary default node pool to satisfy org policy
+  node_config {
+    service_account = google_service_account.gke_nodes.email
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+
+    # CRITICAL: This is what was missing - Shielded VM config for default pool
+    shielded_instance_config {
+      enable_secure_boot          = true # Required by org policy
+      enable_integrity_monitoring = true
+    }
+
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
+  }
+
+  # Add master_auth block to avoid empty list error
+  # This ensures the master_auth attribute is populated
+  master_auth {
+    client_certificate_config {
+      issue_client_certificate = false
+    }
+  }
+
   # Network configuration (VPC + Subnet)
 
   # Attach cluster to custom VPC
@@ -138,4 +168,11 @@ resource "google_container_cluster" "primary" {
     google_compute_subnetwork.subnet,
     google_project_iam_member.gke_nodes_roles
   ]
+
+  # Add timeouts to give the cluster more time to create
+  timeouts {
+    create = "30m"
+    update = "40m"
+    delete = "30m"
+  }
 }

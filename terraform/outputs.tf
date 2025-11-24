@@ -11,7 +11,7 @@ output "cluster_endpoint" {
 
 output "cluster_ca_certificate" {
   description = "GKE cluster CA certificate"
-  value       = google_container_cluster.primary.master_auth[0].cluster_ca_certificate
+  value       = try(google_container_cluster.primary.master_auth[0].cluster_ca_certificate, "")
   sensitive   = true
 }
 
@@ -43,4 +43,9 @@ output "subnet_name" {
 output "configure_kubectl_command" {
   description = "Command to configure kubectl"
   value       = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone ${var.zone} --project ${var.project_id}"
+}
+
+output "gke_service_account" {
+  description = "Service account used by GKE nodes"
+  value       = google_service_account.gke_nodes.email
 }

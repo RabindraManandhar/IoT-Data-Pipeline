@@ -1,421 +1,504 @@
 #!/bin/bash
-# Comprehensive GKE Deployment Script for IoT Data Pipeline
+# Intelligent GKE Deployment Script with comprehensive error handling
+# This script handles the complete deployment lifecycle for the IoT Data Pipeline
 
 set -e
 
-# Colors
+# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m'
 
 # Configuration
 PROJECT_ID="${GCP_PROJECT_ID:-prj-mtp-aiot-dip}"
-CLUSTER_NAME="${GKE_CLUSTER_NAME:-iot-pipeline-cluster}"
 REGION="${GCP_REGION:-europe-north1}"
 ZONE="${GCP_ZONE:-europe-north1-a}"
-# NAMESPACE="iot-pipeline"
-# REPOSITORY="iot-pipeline"
+CLUSTER_NAME="${GKE_CLUSTER_NAME:-iot-pipeline-cluster}"
+ARTIFACT_REPO="${ARTIFACT_REPO:-iot-pipeline}"
 
-echo -e "${GREEN}=========================================="
+# Script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+
+# Logging
+LOG_FILE="${PROJECT_ROOT}/deployment-$(date +%Y%m%d-%H%M%S).log"
+exec 1> >(tee -a "${LOG_FILE}")
+exec 2>&1
+
+echo -e "${CYAN}=========================================="
 echo "IoT Data Pipeline - GKE Deployment"
 echo "==========================================${NC}"
-echo -e "Project: ${BLUE}${PROJECT_ID}${NC}"
-echo -e "Cluster: ${BLUE}${CLUSTER_NAME}${NC}"
-echo -e "Region: ${BLUE}${REGION}${NC}"
-echo -e "Zone: ${BLUE}${ZONE}${NC}"
-echo ""
+echo -e "Log file: ${LOG_FILE}\n"
 
-# Function to display menu
-show_menu() {
-    echo -e "${BLUE}Deployment Options:${NC}"
-    echo "  1. Full deployment (Infrastructure + Applications)"
-    echo "  2. Infrastructure only (Terraform)"
-    echo "  3. Build and push Docker images"
-    echo "  4. Deploy Kubernetes manifests only"
-    echo "  5. Setup monitoring and logging"
-    echo "  6. Status check"
-    echo "  7. Port forwarding setup"
-    echo "  8. Cleanup deployment"
-    echo "  9. Exit"
-    echo ""
+# Function to print section headers
+print_section() {
+    echo -e "\n${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${CYAN}$1${NC}"
+    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
 }
 
-# Check prerequisites
-check_prerequisites() {
-    echo -e "${BLUE}Checking prerequisites...${NC}"
-    
-    # Check for required tools
-    local tools=("gcloud" "kubectl" "terraform" "docker")
-    for tool in "${tools[@]}"; do
-        if ! command -v $tool &> /dev/null; then
-            echo -e "${RED}❌ $tool is not installed${NC}"
-            exit 1
-        fi
-        echo -e "${GREEN}✅ $tool is installed${NC}"
-    done
-    
-    # Check gcloud authentication
-    if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" &>/dev/null; then
-        echo -e "${RED}❌ Not authenticated with gcloud${NC}"
-        echo "Please run: gcloud auth login"
+# Function to check command availability
+check_command() {
+    if ! command -v $1 &> /dev/null; then
+        echo -e "${RED}❌ $1 is not installed${NC}"
+        echo -e "${YELLOW}Please install $1 and try again${NC}"
         exit 1
     fi
-    echo -e "${GREEN}✅ Authenticated with gcloud${NC}"
-    
-    # Set project
-    gcloud config set project ${PROJECT_ID}
-    echo -e "${GREEN}✅ Project set to ${PROJECT_ID}${NC}"
-
-    # Enable required APIs
-    echo -e "${YELLOW}Enabling required Google Cloud APIs...${NC}"
-    gcloud services enable \
-    container.googleapis.com \
-    compute.googleapis.com \
-    artifactregistry.googleapis.com \
-    secretmanager.googleapis.com \
-    monitoring.googleapis.com \
-    logging.googleapis.com \
-    cloudtrace.googleapis.com \
-    clouderrorreporting.googleapis.com \
-    --project=${PROJECT_ID}
-    echo -e "${GREEN}✅ APIs enabled${NC}"
+    echo -e "${GREEN}✅ $1 is available${NC}"
 }
 
-# Check existing resources
-check_existing_resources() {
-    echo -e "${BLUE}Checking for existing resources...${NC}\n"
+# Function to check if resource exists in GCP
+resource_exists() {
+    local resource_type=$1
+    local resource_identifier=$2
+    local additional_param=$3
     
-    local found_resources=0
+    case $resource_type in
+        "gke_cluster")
+            gcloud container clusters describe "$resource_identifier" \
+                --zone=${ZONE} \
+                --project=${PROJECT_ID} &>/dev/null
+            ;;
+        "artifact_registry")
+            gcloud artifacts repositories describe "$resource_identifier" \
+                --location=${REGION} \
+                --project=${PROJECT_ID} &>/dev/null
+            ;;
+        "secret")
+            gcloud secrets describe "$resource_identifier" \
+                --project=${PROJECT_ID} &>/dev/null
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+# Function to wait for cluster to be ready
+wait_for_cluster() {
+    local max_attempts=60
+    local attempt=1
     
-    # Check GKE Cluster
-    if gcloud container clusters describe ${CLUSTER_NAME} --zone=${ZONE} --project=${PROJECT_ID} &>/dev/null; then
-        echo -e "${YELLOW}⚠ GKE Cluster exists: ${CLUSTER_NAME}${NC}"
-        found_resources=$((found_resources + 1))
-    fi
+    echo -e "${YELLOW}Waiting for cluster to be ready...${NC}"
     
-    # Check VPC Network
-    if gcloud compute networks describe iot-pipeline-network --project=${PROJECT_ID} &>/dev/null; then
-        echo -e "${YELLOW}⚠ VPC Network exists: iot-pipeline-network${NC}"
-        found_resources=$((found_resources + 1))
-    fi
-    
-    # Check Service Accounts
-    if gcloud iam service-accounts describe ${CLUSTER_NAME}-nodes@${PROJECT_ID}.iam.gserviceaccount.com --project=${PROJECT_ID} &>/dev/null; then
-        echo -e "${YELLOW}⚠ Service Account exists: ${CLUSTER_NAME}-nodes${NC}"
-        found_resources=$((found_resources + 1))
-    fi
-    
-    # Check Artifact Registry
-    if gcloud artifacts repositories describe iot-pipeline --location=${REGION} --project=${PROJECT_ID} &>/dev/null; then
-        echo -e "${YELLOW}⚠ Artifact Registry exists: iot-pipeline${NC}"
-        found_resources=$((found_resources + 1))
-    fi
-    
-    # Check Secrets
-    for secret in postgres-password kafka-cluster-id grafana-password; do
-        if gcloud secrets describe ${secret} --project=${PROJECT_ID} &>/dev/null; then
-            echo -e "${YELLOW}⚠ Secret exists: ${secret}${NC}"
-            found_resources=$((found_resources + 1))
+    while [ $attempt -le $max_attempts ]; do
+        if gcloud container clusters describe ${CLUSTER_NAME} \
+            --zone=${ZONE} \
+            --project=${PROJECT_ID} \
+            --format="value(status)" 2>/dev/null | grep -q "RUNNING"; then
+            echo -e "${GREEN}✅ Cluster is ready!${NC}"
+            return 0
         fi
+        
+        echo -e "${YELLOW}⏳ Attempt $attempt/$max_attempts - Cluster not ready yet...${NC}"
+        sleep 10
+        ((attempt++))
     done
     
-    echo ""
-    if [ $found_resources -gt 0 ]; then
-        echo -e "${YELLOW}Found ${found_resources} existing resource(s)${NC}"
+    echo -e "${RED}❌ Cluster failed to become ready within expected time${NC}"
+    return 1
+}
+
+# Function to wait for node pool to be ready
+wait_for_node_pool() {
+    local pool_name=$1
+    local max_attempts=60
+    local attempt=1
+    
+    echo -e "${YELLOW}Waiting for node pool ${pool_name} to be ready...${NC}"
+    
+    while [ $attempt -le $max_attempts ]; do
+        local status=$(gcloud container node-pools describe ${pool_name} \
+            --cluster=${CLUSTER_NAME} \
+            --zone=${ZONE} \
+            --project=${PROJECT_ID} \
+            --format="value(status)" 2>/dev/null || echo "NOT_FOUND")
+        
+        if [ "$status" = "RUNNING" ]; then
+            echo -e "${GREEN}✅ Node pool is ready!${NC}"
+            return 0
+        elif [ "$status" = "ERROR" ]; then
+            echo -e "${RED}❌ Node pool entered ERROR state${NC}"
+            return 1
+        fi
+        
+        echo -e "${YELLOW}⏳ Attempt $attempt/$max_attempts - Node pool status: ${status}${NC}"
+        sleep 10
+        ((attempt++))
+    done
+    
+    echo -e "${RED}❌ Node pool failed to become ready${NC}"
+    return 1
+}
+
+# Parse command line arguments
+CLEAN_START=false
+SKIP_TERRAFORM=false
+SKIP_BUILD=false
+SKIP_DEPLOY=false
+IMPORT_EXISTING=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --clean)
+            CLEAN_START=true
+            shift
+            ;;
+        --skip-terraform)
+            SKIP_TERRAFORM=true
+            shift
+            ;;
+        --skip-build)
+            SKIP_BUILD=true
+            shift
+            ;;
+        --skip-deploy)
+            SKIP_DEPLOY=true
+            shift
+            ;;
+        --import)
+            IMPORT_EXISTING=true
+            shift
+            ;;
+        --help)
+            echo "Usage: $0 [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  --clean            Perform clean start (delete existing resources)"
+            echo "  --skip-terraform   Skip Terraform infrastructure setup"
+            echo "  --skip-build       Skip Docker image building"
+            echo "  --skip-deploy      Skip Kubernetes deployment"
+            echo "  --import           Import existing resources into Terraform"
+            echo "  --help             Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  $0                           # Full deployment"
+            echo "  $0 --clean                   # Clean start"
+            echo "  $0 --import                  # Import existing resources"
+            echo "  $0 --skip-build --skip-deploy # Only setup infrastructure"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Unknown option: $1${NC}"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
+# Step 1: Prerequisites Check
+print_section "Step 1: Checking Prerequisites"
+
+check_command "gcloud"
+check_command "terraform"
+check_command "kubectl"
+check_command "docker"
+
+# Check gcloud authentication
+if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" &>/dev/null; then
+    echo -e "${RED}❌ Not authenticated with gcloud${NC}"
+    echo -e "${YELLOW}Please run: gcloud auth login${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✅ Authenticated with gcloud${NC}"
+
+# Check Docker authentication for Artifact Registry
+if ! gcloud auth print-access-token &>/dev/null; then
+    echo -e "${YELLOW}⚠️  Docker not configured for Artifact Registry${NC}"
+    echo -e "${YELLOW}Configuring Docker authentication...${NC}"
+    gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
+    echo -e "${GREEN}✅ Docker configured${NC}"
+else
+    echo -e "${GREEN}✅ Docker authentication configured${NC}"
+fi
+
+# Set project
+gcloud config set project ${PROJECT_ID} --quiet
+echo -e "${GREEN}✅ Project set to ${PROJECT_ID}${NC}"
+
+# Step 2: Clean Start (if requested)
+if [ "$CLEAN_START" = true ]; then
+    print_section "Step 2: Clean Start - Removing Existing Resources"
+    
+    echo -e "${YELLOW}⚠️  This will delete all existing resources!${NC}"
+    read -p "Are you sure you want to continue? (type 'yes' to confirm): " -r
+    echo
+    
+    if [[ $REPLY == "yes" ]]; then
+        if [ -f "${SCRIPT_DIR}/cleanup-existing-resources.sh" ]; then
+            bash "${SCRIPT_DIR}/cleanup-existing-resources.sh" --yes
+        else
+            echo -e "${RED}❌ cleanup-existing-resources.sh not found${NC}"
+            exit 1
+        fi
+        
+        # Clean Terraform state
+        echo -e "${YELLOW}Cleaning Terraform state...${NC}"
+        cd "${PROJECT_ROOT}/terraform"
+        rm -rf .terraform .terraform.lock.hcl terraform.tfstate*
+        echo -e "${GREEN}✅ Terraform state cleaned${NC}"
     else
-        echo -e "${GREEN}✅ No conflicting resources found${NC}"
+        echo -e "${YELLOW}Clean start cancelled${NC}"
+        exit 0
     fi
-}
+fi
 
-# Import existing resources
-import_existing_resources() {
-    echo -e "${BLUE}Importing existing resources...${NC}"
+# Step 3: Import Existing Resources (if requested)
+if [ "$IMPORT_EXISTING" = true ]; then
+    print_section "Step 3: Importing Existing Resources"
     
-    chmod +x k8s/scripts/import-existing-resources.sh
-    ./k8s/scripts/import-existing-resources.sh
+    if [ -f "${SCRIPT_DIR}/import-existing-resources.sh" ]; then
+        bash "${SCRIPT_DIR}/import-existing-resources.sh"
+    else
+        echo -e "${RED}❌ import-existing-resources.sh not found${NC}"
+        exit 1
+    fi
+fi
+
+# Step 4: Terraform Infrastructure Setup
+if [ "$SKIP_TERRAFORM" = false ]; then
+    print_section "Step 4: Setting Up Infrastructure with Terraform"
     
-    echo -e "${GREEN}✅ Import process completed${NC}"
-}
-
-# Clean up existing resources
-cleanup_existing_resources() {
-    echo -e "${RED}WARNING: This will DELETE existing resources!${NC}"
+    cd "${PROJECT_ROOT}/terraform"
     
-    chmod +x k8s/scripts/cleanup-existing-resources.sh
-    ./k8s/scripts/cleanup-existing-resources.sh
-
-    echo -e "${GREEN}✅ Cleanup process completed${NC}"
-}
-
-# Deploy infrastructure with Terraform
-deploy_infrastructure() {
-    echo -e "${BLUE}Deploying infrastructure with Terraform...${NC}"
-    
-    cd terraform
-
     # Check if terraform.tfvars exists
     if [ ! -f "terraform.tfvars" ]; then
-        echo -e "${RED}terraform.tfvars does not exist. Create it first...${NC}"
-    else
-        echo -e "${BLUE} terraform.tfvars already exists."
+        echo -e "${RED}❌ terraform.tfvars not found${NC}"
+        echo -e "${YELLOW}Please create terraform.tfvars from terraform.tfvars.example${NC}"
+        exit 1
     fi
     
     # Initialize Terraform
     echo -e "${YELLOW}Initializing Terraform...${NC}"
-    terraform init 
+    terraform init
+    echo -e "${GREEN}✅ Terraform initialized${NC}"
     
-    # Generate Terraform plan
-    echo -e "${YELLOW}Generating Terraform plan...${NC}"
+    # Validate configuration
+    echo -e "${YELLOW}Validating Terraform configuration...${NC}"
+    terraform validate
+    echo -e "${GREEN}✅ Configuration valid${NC}"
+    
+    # Plan
+    echo -e "${YELLOW}Creating Terraform plan...${NC}"
     terraform plan -out=tfplan
-
-
-    # Apply Terraform configuration
-    read -p "Apply Terraform configuration? (yes/no) " -r
-    if [[ $REPLY == "yes" ]]; then
-        echo -e "${YELLOW}Applying Terraform configuration...${NC}"
-        terraform apply tfplan
-        echo -e "${GREEN}✅ Terraform infrastructure deployed${NC}"
-    else
-        echo -e "${YELLOW}Skipping Terraform infrastructure deployment${NC}"
-        cd ..
-        return
+    echo -e "${GREEN}✅ Plan created${NC}"
+    
+    # Apply
+    echo -e "${YELLOW}Applying Terraform configuration...${NC}"
+    terraform apply tfplan
+    echo -e "${GREEN}✅ Infrastructure deployed${NC}"
+    
+    # Wait for cluster to be ready
+    if resource_exists "gke_cluster" "${CLUSTER_NAME}"; then
+        wait_for_cluster
+        
+        # Check node pool status
+        if resource_exists "node_pool" "${CLUSTER_NAME}-primary-pool" "${CLUSTER_NAME}"; then
+            wait_for_node_pool "${CLUSTER_NAME}-primary-pool"
+        fi
     fi
     
-    cd ..
+    cd "${PROJECT_ROOT}"
+else
+    echo -e "${BLUE}⊙ Skipping Terraform infrastructure setup${NC}"
+fi
 
-    # Configure kubectl
-    echo -e "${BLUE}Configuring kubectl...${NC}"
+# Step 5: Configure kubectl
+print_section "Step 5: Configuring kubectl"
+
+if resource_exists "gke_cluster" "${CLUSTER_NAME}"; then
+    echo -e "${YELLOW}Getting GKE credentials...${NC}"
     gcloud container clusters get-credentials ${CLUSTER_NAME} \
-        --zone ${ZONE} \
-        --project ${PROJECT_ID}
-    
+        --zone=${ZONE} \
+        --project=${PROJECT_ID}
     echo -e "${GREEN}✅ kubectl configured${NC}"
-}
-
-# Build and push Docker images
-build_and_push_images() {
-    echo -e "${BLUE}Building and Pushing Docker Images...${NC}"
-
-    chmod +x k8s/scripts/build-and-push-images.sh
-    ./k8s/scripts/build-and-push-images.sh
-
-    echo -e "{GREEN}✅ Docker Images built and pushed successfully${NC}"
-}
-
-# Create Kubernetes secrets
-create_secrets() {
-    echo -e "${BLUE}Creating Kubernetes secrets...${NC}"
     
-    chmod +x k8s/scripts/create-k8s-secrets.sh
-    ./k8s/scripts/create-k8s-secrets.sh
+    # Verify cluster access
+    echo -e "${YELLOW}Verifying cluster access...${NC}"
+    kubectl cluster-info
+    echo -e "${GREEN}✅ Cluster accessible${NC}"
     
-    echo -e "${GREEN}✅ Secrets created${NC}"
-}
+    # Check nodes
+    echo -e "${YELLOW}Checking cluster nodes...${NC}"
+    kubectl get nodes
+else
+    echo -e "${RED}❌ GKE cluster not found${NC}"
+    echo -e "${YELLOW}Please run Terraform to create the cluster first${NC}"
+    exit 1
+fi
 
-# Deploy Kubernetes manifests
-deploy_kubernetes() {
-    echo -e "${BLUE}Deploying Kubernetes manifests...${NC}"
-
-    # Update image references in manifests
-    echo -e "${BLUE}Updating image references...${NC}"
-    for file in k8s/app-services/*-deployment.yaml; do
-        # This is a simple replacement - in production, use kustomize or helm
-        sed -i.bak "s|image: rabindramdr/|image: ${REGISTRY_URL}/|g" "$file"
-        sed -i.bak "s|:v1.0.0|:${IMAGE_TAG}|g" "$file"
-    done
-    echo -e "${GREEN}✅ Image references updated${NC}"
+# Step 6: Build and Push Docker Images
+if [ "$SKIP_BUILD" = false ]; then
+    print_section "Step 6: Building and Pushing Docker Images"
     
-    # Create namespace
-    echo -e "${YELLOW} Creating namespace...${NC}"
-    kubectl apply -f k8s/namespace/namespace.yaml
+    if [ -f "${SCRIPT_DIR}/build-images.sh" ]; then
+        bash "${SCRIPT_DIR}/build-images.sh"
+    else
+        echo -e "${RED}❌ build-images.sh not found${NC}"
+        exit 1
+    fi
+else
+    echo -e "${BLUE}⊙ Skipping Docker image building${NC}"
+fi
+
+# Step 7: Deploy Kubernetes Resources
+if [ "$SKIP_DEPLOY" = false ]; then
+    print_section "Step 7: Deploying Kubernetes Resources"
+    
+    cd "${PROJECT_ROOT}"
+    
+    # Create namespaces
+    echo -e "${YELLOW}Creating namespaces...${NC}"
+    kubectl apply -f k8s/namespace/
+    echo -e "${GREEN}✅ Namespace created${NC}"
+    
+    # Deploy storage classes and PVCs
+    echo -e "${YELLOW}Deploying storage resources...${NC}"
+    kubectl apply -f k8s/storage/
+    echo -e "${GREEN}✅ Storage resources deployed${NC}"
+    
+    # Deploy ConfigMaps and Secrets
+    echo -e "${YELLOW}Deploying ConfigMaps...${NC}"
+    kubectl apply -f k8s/config/
+    echo -e "${GREEN}✅ ConfigMaps and secrets deployed${NC}"
+    
+    # Deploy infrastructure services (Kafka, TimescaleDB, etc.)
+    echo -e "${YELLOW}Deploying infrastructure services...${NC}"
     
     # Deploy in order
-    echo -e "${YELLOW}Deploying storage...${NC}"
-    kubectl apply -f k8s/storage/
-    
-    echo -e "${YELLOW}Deploying configs...${NC}"
-    kubectl apply -f k8s/config/
-    
-    echo -e "${YELLOW}Deploying RBAC...${NC}"
-    kubectl apply -f k8s/rbac/
-    
-    echo -e "${YELLOW}Deploying Kafka...${NC}"
+    echo -e "${CYAN}  → Deploying Kafka...${NC}"
     kubectl apply -f k8s/kafka/
-    echo "Waiting for Kafka pods to be ready (this may take 3-5 minutes)..."
-    kubectl wait --for=condition=ready pod -l app=kafka -n ${NAMESPACE} --timeout=600s || true
     
-    echo -e "${YELLOW}Deploying Schema Registry...${NC}"
-    kubectl apply -f k8s/schema-registry/
-    kubectl wait --for=condition=ready pod -l app=schema-registry -n ${NAMESPACE} --timeout=300s || true
-    
-    echo -e "${YELLOW}Deploying TimescaleDB...${NC}"
+    echo -e "${CYAN}  → Deploying TimescaleDB...${NC}"
     kubectl apply -f k8s/timescaledb/
-    kubectl wait --for=condition=ready pod -l app=timescaledb -n ${NAMESPACE} --timeout=300s || true
     
-    echo -e "${YELLOW}Deploying Mosquitto...${NC}"
+    echo -e "${CYAN}  → Deploying Schema Registry...${NC}"
+    kubectl apply -f k8s/schema-registry/
+    
+    echo -e "${CYAN}  → Deploying Mosquitto...${NC}"
     kubectl apply -f k8s/mosquitto/
-    kubectl wait --for=condition=ready pod -l app=mosquitto -n ${NAMESPACE} --timeout=120s || true
     
+    echo -e "${GREEN}✅ Infrastructure services deployed${NC}"
+    
+    # Wait for infrastructure to be ready
+    echo -e "${YELLOW}Waiting for infrastructure services to be ready...${NC}"
+    sleep 30
+    
+    echo -e "${YELLOW}Checking Kafka pods...${NC}"
+    kubectl wait --for=condition=ready pod -l app=kafka -n data --timeout=300s || true
+    
+    echo -e "${YELLOW}Checking TimescaleDB pods...${NC}"
+    kubectl wait --for=condition=ready pod -l app=timescaledb -n data --timeout=300s || true
+    
+    # Deploy application services
     echo -e "${YELLOW}Deploying application services...${NC}"
-    kubectl apply -f k8s/app-services/
     
+    echo -e "${CYAN}  → Deploying RuuviTag Adapter...${NC}"
+    kubectl apply -f k8s/app-services/ruuvitag-adapter-deployment.yaml
+    
+    echo -e "${CYAN}  → Deploying Consumer...${NC}"
+    kubectl apply -f k8s/app-services/kafka-consumer-deployment.yaml
+    
+    echo -e "${CYAN}  → Deploying Sink...${NC}"
+    kubectl apply -f k8s/app-services/timescaledb-sink-deployment.yaml
+    
+    echo -e "${GREEN}✅ Application services deployed${NC}"
+    
+    # Deploy monitoring stack
     echo -e "${YELLOW}Deploying monitoring stack...${NC}"
-    kubectl apply -f k8s/monitoring/
     
-    echo -e "${GREEN}✅ Kubernetes resources deployed${NC}"
-}
+    echo -e "${CYAN}  → Deploying Prometheus...${NC}"
+    kubectl apply -f k8s/monitoring/prometheus/
+    
+    echo -e "${CYAN}  → Deploying Grafana...${NC}"
+    kubectl apply -f k8s/monitoring/grafana/
+    
+    echo -e "${CYAN}  → Deploying AlertManager...${NC}"
+    kubectl apply -f k8s/monitoring/alertmanager/
 
-# Setup monitoring
-setup_monitoring() {
-    echo -e "${YELLOW}Setting up Google Cloud Operations...${NC}"
+    echo -e "${CYAN}  → Deploying Exporters...${NC}"
+    kubectl apply -f k8s/monitoring/exporters/
     
-    chmod +x scripts/setup-cloud-monitoring.sh
-    ./scripts/setup-cloud-monitoring.sh
-    
-    echo -e "${GREEN}✅ Monitoring configured${NC}"
-}
+    echo -e "${GREEN}✅ Monitoring stack deployed${NC}"
 
-# Check deployment status
-check_status() {
-    echo -e "${BLUE}Checking deployment status...${NC}"
+    # Deploy ingress
+    echo -e "${YELLOW}Deploying ingress resources...${NC}"
+    kubectl apply -f k8s/ingress/
+    echo -e "${GREEN}✅ Ingress resources deployed${NC}"
     
-    echo -e "\n${YELLOW}=== Pods ===${NC}"
-    kubectl get pods -n ${NAMESPACE}
-    
-    echo -e "\n${YELLOW}=== Services ===${NC}"
-    kubectl get svc -n ${NAMESPACE}
-    
-    echo -e "\n${YELLOW}=== PVCs ===${NC}"
-    kubectl get pvc -n ${NAMESPACE}
-    
-    echo -e "\n${YELLOW}=== Ingresses ===${NC}"
-    kubectl get ingress -n ${NAMESPACE} 2>/dev/null || echo "No ingresses found"
-    
-    # Get external IP for Mosquitto
-    echo -e "\n${YELLOW}=== MQTT Broker External IP ===${NC}"
-    kubectl get svc mosquitto -n ${NAMESPACE} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-    echo ""
-}
+else
+    echo -e "${BLUE}⊙ Skipping Kubernetes deployment${NC}"
+fi
 
-# Setup port forwarding
-setup_port_forwarding() {
-    echo -e "${YELLOW}Setting up port forwarding...${NC}"
-    
-    echo "Starting port forwarding (run in background)..."
-    
-    # Grafana
-    kubectl port-forward -n ${NAMESPACE} svc/grafana 3000:3000 &
-    echo "  Grafana: http://localhost:3000"
-    
-    # Prometheus
-    kubectl port-forward -n ${NAMESPACE} svc/prometheus 9090:9090 &
-    echo "  Prometheus: http://localhost:9090"
-    
-    # Application metrics
-    kubectl port-forward -n ${NAMESPACE} svc/ruuvitag-adapter 8002:8002 &
-    kubectl port-forward -n ${NAMESPACE} svc/kafka-consumer 8001:8001 &
-    kubectl port-forward -n ${NAMESPACE} svc/timescaledb-sink 8003:8003 &
-    
-    echo -e "\n${GREEN}Port forwarding established${NC}"
-    echo "Press Ctrl+C to stop port forwarding"
-    
-    wait
-}
+# Step 8: Deployment Summary
+print_section "Step 8: Deployment Summary"
 
-# Cleanup deployment
-cleanup_deployment() {
-    echo -e "${RED}WARNING: This will delete all resources${NC}"
-    read -p "Are you sure? (yes/no): " -r
-    
-    if [[ $REPLY == "yes" ]]; then
-        echo -e "${YELLOW}Cleaning up Kubernetes resources...${NC}"
-        kubectl delete namespace ${NAMESPACE} --wait=true
-        
-        echo -e "${YELLOW}Destroying infrastructure...${NC}"
-        cd terraform
-        terraform destroy -auto-approve
-        cd ..
-        
-        echo -e "${GREEN}✅ Cleanup complete${NC}"
-    else
-        echo "Cleanup cancelled"
-    fi
-}
+echo -e "${GREEN}✅ Deployment completed successfully!${NC}\n"
 
-# Full deployment
-full_deployment() {
-    check_existing_resources
-    cleanup_existing_resources
-    deploy_infrastructure
-    sleep 30  # Wait for cluster to stabilize
-    build_and_push_images
-    create_secrets
-    deploy_kubernetes
-    sleep 10
-    setup_monitoring
-    check_status
-    
-    echo -e "\n${GREEN}=========================================="
-    echo "Full deployment completed successfully!"
-    echo "==========================================${NC}"
-    
-    echo -e "\n${YELLOW}Next steps:${NC}"
-    echo "  1. Access Grafana: kubectl port-forward -n ${NAMESPACE} svc/grafana 3000:3000"
-    echo "  2. Get MQTT IP: kubectl get svc mosquitto -n ${NAMESPACE}"
-    echo "  3. View logs: kubectl logs -n ${NAMESPACE} -l app=<app-name>"
-    echo "  4. Access Google Cloud Console:"
-    echo "     https://console.cloud.google.com/kubernetes/clusters/details/${ZONE}/${CLUSTER_NAME}?project=${PROJECT_ID}"
-}
+# Show cluster information
+echo -e "${CYAN}Cluster Information:${NC}"
+echo "  Project: ${PROJECT_ID}"
+echo "  Region: ${REGION}"
+echo "  Zone: ${ZONE}"
+echo "  Cluster: ${CLUSTER_NAME}"
+echo ""
 
-# Main menu loop
-main() {
-    check_prerequisites
-    
-    while true; do
-        show_menu
-        read -p "Select an option (1-9): " choice
-        
-        case $choice in
-            1)
-                full_deployment
-                ;;
-            2)
-                deploy_infrastructure
-                ;;
-            3)
-                build_and_push_images
-                ;;
-            4)
-                create_secrets
-                deploy_kubernetes
-                ;;
-            5)
-                setup_monitoring
-                ;;
-            6)
-                check_status
-                ;;
-            7)
-                setup_port_forwarding
-                ;;
-            8)
-                cleanup_deployment
-                ;;
-            9)
-                echo "Exiting..."
-                exit 0
-                ;;
-            *)
-                echo -e "${RED}Invalid option${NC}"
-                ;;
-        esac
-        
-        echo ""
-        read -p "Press Enter to continue..."
-    done
-}
+# Show node status
+echo -e "${CYAN}Node Status:${NC}"
+kubectl get nodes -o wide
+echo ""
 
-# Run main
-main
+# Show pod status across all namespaces
+echo -e "${CYAN}Pod Status:${NC}"
+kubectl get pods --all-namespaces
+echo ""
+
+# Show services
+echo -e "${CYAN}Services:${NC}"
+kubectl get services --all-namespaces
+echo ""
+
+# Get external IPs for ingress
+echo -e "${CYAN}Ingress Information:${NC}"
+kubectl get ingress --all-namespaces
+echo ""
+
+# Show storage information
+echo -e "${CYAN}Persistent Volumes:${NC}"
+kubectl get pv,pvc --all-namespaces
+echo ""
+
+# Useful commands
+echo -e "${CYAN}Useful Commands:${NC}"
+echo "  Check pod logs:        kubectl logs <pod-name> -n <namespace>"
+echo "  Port forward Grafana:  kubectl port-forward svc/grafana 3000:3000 -n monitoring"
+echo "  Scale deployment:      kubectl scale deployment <name> --replicas=<count> -n <namespace>"
+echo "  Delete deployment:     kubectl delete -f k8s/"
+echo ""
+
+# Save endpoints to file
+ENDPOINTS_FILE="${PROJECT_ROOT}/deployment-endpoints.txt"
+echo "Deployment Endpoints" > ${ENDPOINTS_FILE}
+echo "====================" >> ${ENDPOINTS_FILE}
+echo "" >> ${ENDPOINTS_FILE}
+echo "Generated: $(date)" >> ${ENDPOINTS_FILE}
+echo "" >> ${ENDPOINTS_FILE}
+kubectl get ingress --all-namespaces >> ${ENDPOINTS_FILE}
+
+echo -e "${GREEN}Endpoints saved to: ${ENDPOINTS_FILE}${NC}"
+echo -e "${GREEN}Deployment log saved to: ${LOG_FILE}${NC}"
+
+# Final notes
+echo -e "\n${YELLOW}Important Notes:${NC}"
+echo "  1. Some services may take a few minutes to fully initialize"
+echo "  2. Check pod status with: kubectl get pods --all-namespaces"
+echo "  3. Access Grafana at the ingress endpoint (default password in secrets)"
+echo "  4. Monitor cluster with: kubectl top nodes && kubectl top pods --all-namespaces"
+echo ""
+
+echo -e "${GREEN}=========================================="
+echo "Deployment Completed Successfully!"
+echo "==========================================${NC}"
