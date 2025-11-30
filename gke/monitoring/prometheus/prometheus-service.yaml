@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: prometheus
   namespace: iot-pipeline
+  annotations:
+    cloud.google.com/backend-config: '{"default": "prometheus-backendconfig"}'
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
   type: ClusterIP
   ports:

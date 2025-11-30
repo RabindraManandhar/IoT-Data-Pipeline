@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: kafka-data-pvc-template
+  name: kafka-data
   namespace: iot-pipeline
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard
+  storageClassName: fast-ssd
   resources:
     requests:
       storage: 20Gi
@@ -22,7 +22,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard
+  storageClassName: fast-ssd
   resources:
     requests:
       storage: 20Gi
@@ -37,7 +37,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard
+  storageClassName: standard-storage
   resources:
     requests:
       storage: 10Gi
@@ -52,7 +52,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard
+  storageClassName: standard-storage
   resources:
     requests:
       storage: 5Gi
@@ -67,7 +67,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard
+  storageClassName: standard-storage
   resources:
     requests:
       storage: 2Gi
@@ -82,7 +82,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard
+  storageClassName: standard-storage
   resources:
     requests:
       storage: 2Gi

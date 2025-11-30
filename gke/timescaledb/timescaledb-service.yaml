@@ -1,12 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: prometheus
+  name: timescaledb
   namespace: iot-pipeline
+  labels:
+    app: timescaledb
 spec:
   type: ClusterIP
   ports:
-  - port: 9090
-    targetPort: 9090
+  - port: 5432
+    targetPort: 5432
   selector:
-    app: prometheus
+    app: timescaledb

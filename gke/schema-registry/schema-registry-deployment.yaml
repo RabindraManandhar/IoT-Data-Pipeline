@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schema-registry
+  namespace: iot-pipeline
+  labels:
+    app: schema-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: schema-registry
+  template:
+    metadata:
+      labels:
+        app: schema-registry
+    spec:
+      # Wait for Kafka to be ready
+      initContainers:
+      - name: wait-for-kafka
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Kafka to be available..."
+          MAX_RETRIES=60
+          RETRY=0
+          
+          while [ $RETRY -lt $MAX_RETRIES ]; do
+            if nc -z kafka-0.kafka-headless.iot-pipeline.svc.cluster.local 9092 && \
+               nc -z kafka-1.kafka-headless.iot-pipeline.svc.cluster.local 9092 && \
+               nc -z kafka-2.kafka-headless.iot-pipeline.svc.cluster.local 9092; then
+              echo "All Kafka brokers are ready!"
+              exit 0
+            fi
+            echo "Kafka not ready yet, attempt $((RETRY+1))/$MAX_RETRIES..."
+            RETRY=$((RETRY+1))
+            sleep 5
+          done
+          
+          echo "ERROR: Kafka did not become ready in time"
+          exit 1
+
+      containers:
+      - name: schema-registry
+        image: confluentinc/cp-schema-registry:7.9.0
+        command:
+        - sh
+        - -c
+        - |
+          # Unset the deprecated PORT variable
+          unset SCHEMA_REGISTRY_PORT
+          unset PORT
+          # Start Schema Registry
+          exec /etc/confluent/docker/run
+        ports:
+        - containerPort: 8081
+          name: http
+          protocol: TCP
+        env:
+        - name: SCHEMA_REGISTRY_HOST_NAME
+          value: "schema-registry"
+
+        - name: SCHEMA_REGISTRY_LISTENERS
+          value: "http://0.0.0.0:8081"
+        
+        # Kafka bootstrap servers
+        - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
+          value: "kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9092" 
+        
+        # Kafkastore configuration
+        - name: SCHEMA_REGISTRY_KAFKASTORE_TOPIC
+          value: "_schemas"
+
+        - name: SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR
+          value: "3"
+
+        # Timeout settings - important for K8s environments
+        - name: SCHEMA_REGISTRY_KAFKASTORE_TIMEOUT_MS
+          value: "30000"
+
+        - name: SCHEMA_REGISTRY_KAFKASTORE_INIT_TIMEOUT_MS
+          value: "60000"
+
+        # Schema settings
+        - name: SCHEMA_REGISTRY_SCHEMA_REGISTRY_GROUP_ID
+          value: "schema-registry"
+
+        # Schema compatibility
+        - name: SCHEMA_REGISTRY_AVRO_COMPATIBILITY_LEVEL
+          value: "BACKWARD"
+
+        # Leader eligibility
+        - name: SCHEMA_REGISTRY_LEADER_ELIGIBILITY
+          value: "true"
+
+        - name: SCHEMA_REGISTRY_HEAP_OPTS
+          value: "-Xmx512M -Xms512M"
+
+        # Logging
+        - name: SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL
+          value: "INFO"
+
+        - name: SCHEMA_REGISTRY_DEBUG
+          value: "false"
+
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        
+        # Liveness probe
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8081
+          initialDelaySeconds: 90
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+
+        # Readiness probe
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8081
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+
+

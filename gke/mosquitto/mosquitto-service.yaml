@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+  namespace: iot-pipeline
+  labels:
+    app: mosquitto
+spec:
+  type: LoadBalancer # Use this for both dev and cloud
+  ports:
+  - port: 1883
+    targetPort: 1883
+    protocol: TCP
+    name: mqtt
+  - port: 9001
+    targetPort: 9001
+    protocol: TCP
+    name: websocket
+  selector:
+    app: mosquitto
