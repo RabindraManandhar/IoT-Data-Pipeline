@@ -27,15 +27,15 @@ secrets.yaml
 **/.terraform/*
 
 # Ignore terraform files
-# .tfstate files
 *.tfstate
 *.tfstate.*
 *.tfvars
+.terraform.*
 
 # Crash log files
 crash.log
 
-# Ignore logs (TensorBoard logs or other logs)
+# Ignore logs (Terraform logs or other logs)
 logs/
 *.log
 

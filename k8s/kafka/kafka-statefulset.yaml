@@ -25,14 +25,16 @@ spec:
       # Anti-affinity to spread pods across nodes
       affinity:
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - kafka
-            topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - kafka
+              topologyKey: kubernetes.io/hostname
       
       # Init container for storage formatting
       initContainers:
@@ -81,11 +83,11 @@ spec:
           mountPath: /var/lib/kafka/data
         resources:
           requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
             memory: "256Mi"
             cpu: "200m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
       
       # Main Kafka container
       containers:
@@ -162,11 +164,11 @@ spec:
           mountPath: /var/lib/kafka/data
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "500Mi"
+            cpu: "400m"
           limits:
-            memory: "2Gi"
-            cpu: "1000m"
+            memory: "1Gi"
+            cpu: "800m"
         livenessProbe:
           exec:
             command:
@@ -203,11 +205,11 @@ spec:
           subPath: kafka-jmx-config.yml
         resources:
           requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
             memory: "128Mi"
             cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "200m"
       
       volumes:
       - name: jmx-config
@@ -225,4 +227,4 @@ spec:
       storageClassName: fast-ssd
       resources:
         requests:
-          storage: 50Gi
+          storage: 30Gi
