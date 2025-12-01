@@ -53,6 +53,12 @@ spec:
           NODE_ID=${POD_NAME##*-}
           echo "Initializing Kafka storage for node ${NODE_ID}"
           
+          # Remove lost+found directory if it exists
+          if [ -d /var/lib/kafka/data/lost+found ]; then
+            echo "Removing lost+found directory..."
+            rm -rf /var/lib/kafka/data/lost+found
+          fi
+
           if [ -f /var/lib/kafka/data/meta.properties ]; then
             echo "Storage already formatted, skipping format step"
           else
@@ -110,16 +116,27 @@ spec:
         - sh
         - -exc
         - |
+          # Unset deprecated PORT variable
+          unset PORT
+          unset KAFKA_PORT
+
+          # Export cluster and node identifiers
           export NODE_ID=${POD_NAME##*-}
           export KAFKA_NODE_ID=${NODE_ID}
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_NAME}.kafka-headless.iot-pipeline.svc.cluster.local:9092
           export KAFKA_CONTROLLER_QUORUM_VOTERS="0@kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9093,1@kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9093,2@kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9093"
           
+          # Verify storage is formatted
           if [ ! -f /var/lib/kafka/data/meta.properties ]; then
-            echo "ERROR: Storage not formatted!"
+            echo "ERROR: Storage not formatted! Init container may have failed."
             exit 1
           fi
+
+          echo "Starting Kafka node ${NODE_ID} in KRaft mode..."
+          echo "Advertised Listeners: ${KAFKA_ADVERTISED_LISTENERS}"
+          echo "Controller Quorum: ${KAFKA_CONTROLLER_QUORUM_VOTERS}"
           
+          # Start Kafka using Confluent's entrypoint
           exec /etc/confluent/docker/run
         env:
         - name: CLUSTER_ID
@@ -163,18 +180,22 @@ spec:
           value: "-Xmx1G -Xms1G"
         - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
           value: "true"
+        # Disable Java DNS caching
         - name: KAFKA_OPTS
-          value: "-Dnetworkaddress.cache.ttl=0"
+          value: "-Dnetworkaddress.cache.ttl=0 -Dnetworkaddress.cache.negative.ttl=0"
+        # Explicitly unset PORT to avoid conflicts
+        - name: PORT
+          value: ""
         volumeMounts:
         - name: kafka-data
           mountPath: /var/lib/kafka/data
         resources:
           requests:
-            memory: "500Mi"
-            cpu: "400m"
-          limits:
             memory: "1Gi"
-            cpu: "800m"
+            cpu: "500m"
+          limits:
+            memory: "3Gi"
+            cpu: "1000m"
         livenessProbe:
           exec:
             command:
@@ -211,11 +232,11 @@ spec:
           subPath: kafka-jmx-config.yml
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "50m"
-          limits:
             memory: "128Mi"
             cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
       
       volumes:
       - name: jmx-config
@@ -233,4 +254,6 @@ spec:
       storageClassName: fast-ssd
       resources:
         requests:
-          storage: 30Gi
+          storage: 50Gi
+
+
