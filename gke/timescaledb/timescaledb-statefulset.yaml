@@ -14,11 +14,27 @@ spec:
       labels:
         app: timescaledb
     spec:
+      # Set security context for the pod: allow group write for mounted volume
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsNonRoot: true
+        
       # Add init container to ensure data directory is properly set up
       initContainers:
       - name: init-db-directory
         image: timescale/timescaledb:latest-pg16
-        command: ['sh', '-c', 'chown -R 999:999 /var/lib/postgresql/data && echo "Directory permissions set"']
+        command:
+        - sh
+        - -c
+        - |
+          # Remove lost+found if it exists
+          rm -rf /var/lib/postgresql/data/lost+found
+          # Create pgdata subdirectory
+          mkdir -p /var/lib/postgresql/data/pgdata
+          # Set proper ownership
+          chown -R 999:999 /var/lib/postgresql/data
+          echo "Directory prepared successfully"
         volumeMounts:
         - name: timescaledb-data
           mountPath: /var/lib/postgresql/data
@@ -30,6 +46,8 @@ spec:
         - containerPort: 5432
           name: postgres
         env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
