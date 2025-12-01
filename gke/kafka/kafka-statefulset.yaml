@@ -22,6 +22,12 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9101"
     spec:
+      # Set security context for the pod: allow group write for mounted volume
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsNonRoot: true
+
       # Anti-affinity to spread pods across nodes
       affinity:
         podAntiAffinity:

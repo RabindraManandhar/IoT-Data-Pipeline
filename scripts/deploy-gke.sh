@@ -21,10 +21,11 @@ ARTIFACT_REPO="${ARTIFACT_REPO:-iot-pipeline}"
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 # Logging
-LOG_FILE="${PROJECT_ROOT}/deployment-$(date +%Y%m%d-%H%M%S).log"
+mkdir -p logs
+LOG_FILE="${PROJECT_ROOT}/logs/deployment-$(date +%Y%m%d-%H%M%S).log"
 exec 1> >(tee -a "${LOG_FILE}")
 exec 2>&1
 
@@ -352,17 +353,17 @@ if [ "$SKIP_DEPLOY" = false ]; then
     
     # Create namespaces
     echo -e "${YELLOW}Creating namespaces...${NC}"
-    kubectl apply -f k8s/namespace/
+    kubectl apply -f gke/namespace/
     echo -e "${GREEN}✅ Namespace created${NC}"
     
     # Deploy storage classes and PVCs
     echo -e "${YELLOW}Deploying storage resources...${NC}"
-    kubectl apply -f k8s/storage/
+    kubectl apply -f gke/storage/
     echo -e "${GREEN}✅ Storage resources deployed${NC}"
     
     # Deploy ConfigMaps and Secrets
     echo -e "${YELLOW}Deploying ConfigMaps...${NC}"
-    kubectl apply -f k8s/config/
+    kubectl apply -f gke/config/
     echo -e "${GREEN}✅ ConfigMaps and secrets deployed${NC}"
     
     # Deploy infrastructure services (Kafka, TimescaleDB, etc.)
@@ -370,16 +371,16 @@ if [ "$SKIP_DEPLOY" = false ]; then
     
     # Deploy in order
     echo -e "${CYAN}  → Deploying Kafka...${NC}"
-    kubectl apply -f k8s/kafka/
+    kubectl apply -f gke/kafka/
     
     echo -e "${CYAN}  → Deploying TimescaleDB...${NC}"
-    kubectl apply -f k8s/timescaledb/
+    kubectl apply -f gke/timescaledb/
     
     echo -e "${CYAN}  → Deploying Schema Registry...${NC}"
-    kubectl apply -f k8s/schema-registry/
+    kubectl apply -f gke/schema-registry/
     
     echo -e "${CYAN}  → Deploying Mosquitto...${NC}"
-    kubectl apply -f k8s/mosquitto/
+    kubectl apply -f gke/mosquitto/
     
     echo -e "${GREEN}✅ Infrastructure services deployed${NC}"
     
@@ -397,13 +398,13 @@ if [ "$SKIP_DEPLOY" = false ]; then
     echo -e "${YELLOW}Deploying application services...${NC}"
     
     echo -e "${CYAN}  → Deploying RuuviTag Adapter...${NC}"
-    kubectl apply -f k8s/app-services/ruuvitag-adapter-deployment.yaml
+    kubectl apply -f gke/app-services/ruuvitag-adapter-deployment.yaml
     
     echo -e "${CYAN}  → Deploying Consumer...${NC}"
-    kubectl apply -f k8s/app-services/kafka-consumer-deployment.yaml
+    kubectl apply -f gke/app-services/kafka-consumer-deployment.yaml
     
     echo -e "${CYAN}  → Deploying Sink...${NC}"
-    kubectl apply -f k8s/app-services/timescaledb-sink-deployment.yaml
+    kubectl apply -f gke/app-services/timescaledb-sink-deployment.yaml
     
     echo -e "${GREEN}✅ Application services deployed${NC}"
     
@@ -411,22 +412,22 @@ if [ "$SKIP_DEPLOY" = false ]; then
     echo -e "${YELLOW}Deploying monitoring stack...${NC}"
     
     echo -e "${CYAN}  → Deploying Prometheus...${NC}"
-    kubectl apply -f k8s/monitoring/prometheus/
+    kubectl apply -f gke/monitoring/prometheus/
     
     echo -e "${CYAN}  → Deploying Grafana...${NC}"
-    kubectl apply -f k8s/monitoring/grafana/
+    kubectl apply -f gke/monitoring/grafana/
     
     echo -e "${CYAN}  → Deploying AlertManager...${NC}"
-    kubectl apply -f k8s/monitoring/alertmanager/
+    kubectl apply -f gke/monitoring/alertmanager/
 
     echo -e "${CYAN}  → Deploying Exporters...${NC}"
-    kubectl apply -f k8s/monitoring/exporters/
+    kubectl apply -f gke/monitoring/exporters/
     
     echo -e "${GREEN}✅ Monitoring stack deployed${NC}"
 
     # Deploy ingress
     echo -e "${YELLOW}Deploying ingress resources...${NC}"
-    kubectl apply -f k8s/ingress/
+    kubectl apply -f gke/ingress/
     echo -e "${GREEN}✅ Ingress resources deployed${NC}"
     
 else
@@ -476,7 +477,7 @@ echo -e "${CYAN}Useful Commands:${NC}"
 echo "  Check pod logs:        kubectl logs <pod-name> -n <namespace>"
 echo "  Port forward Grafana:  kubectl port-forward svc/grafana 3000:3000 -n monitoring"
 echo "  Scale deployment:      kubectl scale deployment <name> --replicas=<count> -n <namespace>"
-echo "  Delete deployment:     kubectl delete -f k8s/"
+echo "  Delete deployment:     kubectl delete -f gke/"
 echo ""
 
 # Save endpoints to file

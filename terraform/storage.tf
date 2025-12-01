@@ -8,4 +8,4 @@
 # gcloud container clusters get-credentials <cluster-name> --zone <zone-name>
 
 # To create storage classes manually:
-# kubectl apply -f k8s/storage/storage-class.yaml
+# kubectl apply -f gke/storage/storage-class.yaml
