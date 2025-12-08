@@ -7,6 +7,8 @@ echo "============================================="
 # at <Host-IP>:1883
 echo "Starting port forwarding from the Mosquitto service"
 kubectl port-forward -n iot-pipeline --address 0.0.0.0 svc/mosquitto 1883:1883 &
+echo "Mosquitto service started at port 18883 ..."
+
 
 echo "============================================="
 

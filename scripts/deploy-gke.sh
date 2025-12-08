@@ -396,6 +396,7 @@ if [ "$SKIP_DEPLOY" = false ]; then
     
     # Deploy application services
     echo -e "${YELLOW}Deploying application services...${NC}"
+    kubectl apply -f gke/app-services/services.yaml
     
     echo -e "${CYAN}  → Deploying RuuviTag Adapter...${NC}"
     kubectl apply -f gke/app-services/ruuvitag-adapter-deployment.yaml
