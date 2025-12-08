@@ -1,3 +1,4 @@
+---
 # PVC template for Kafka
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -7,7 +8,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: fast-ssd
+  storageClassName: premium-rwo # GKE built-in ssd storage
   resources:
     requests:
       storage: 20Gi
@@ -22,7 +23,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: fast-ssd
+  storageClassName: premium-rwo # GKE built-in ssd storage
   resources:
     requests:
       storage: 20Gi
@@ -37,7 +38,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard-storage
+  storageClassName: standard-rwo  # GKE built-in HDD storage
   resources:
     requests:
       storage: 10Gi
@@ -52,7 +53,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard-storage
+  storageClassName: standard-rwo  # GKE built-in HDD storage
   resources:
     requests:
       storage: 5Gi
@@ -67,7 +68,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard-storage
+  storageClassName: standard-rwo  # GKE built-in HDD storage
   resources:
     requests:
       storage: 2Gi
@@ -82,7 +83,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: standard-storage
+  storageClassName: standard-rwo  # GKE built-in HDD storage
   resources:
     requests:
       storage: 2Gi

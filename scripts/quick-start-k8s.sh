@@ -19,8 +19,8 @@ kubectl get nodes
 # ==============================================
 
 # Option A: Use the automated deployment script
-chmod +x k8s/scripts/deploy-all.sh
-./k8s/scripts/deploy-all.sh
+chmod +x k8s/scripts/deploy-k8s.sh
+./scripts/deploy-k8s.sh
 
 # ==============================================
 # STEP 3: Manual Deployment (Alternative)
@@ -36,6 +36,9 @@ kubectl apply -f k8s/config/
 
 # 3. Create storage
 kubectl apply -f k8s/storage/
+
+# 4. Create rbac
+kubectl apply -f k8s/rbac
 
 # 4. Deploy Kafka (wait for ready)
 kubectl apply -f k8s/kafka/

@@ -31,12 +31,10 @@ secrets.yaml
 *.tfstate.*
 *.tfvars
 .terraform.*
-
-# Crash log files
-crash.log
+tfplan
 
 # Ignore logs (Terraform logs or other logs)
-logs/
+**/logs/
 *.log
 
 # Ignore Jupyter Notebook checkpoints

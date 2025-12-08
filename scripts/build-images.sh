@@ -82,17 +82,17 @@ build_and_push_images() {
     echo -e "${YELLOW}Building and pushing Docker images...${NC}"
     
     # Build RuuviTag Adapter
-    docker build -t ${REGISTRY_URL}/ruuvitag-adapter:${IMAGE_TAG} -f docker/Dockerfile.ruuvitag_adapter .
+    docker build --platform linux/amd64 -t ${REGISTRY_URL}/ruuvitag-adapter:${IMAGE_TAG} -f docker/Dockerfile.ruuvitag_adapter .
     docker push ${REGISTRY_URL}/ruuvitag-adapter:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed ruuvitag-adapter${NC}"
     
     # Build Consumer
-    docker build -t ${REGISTRY_URL}/kafka-consumer:${IMAGE_TAG} -f docker/Dockerfile.consumer .
+    docker build --platform linux/amd64 -t ${REGISTRY_URL}/kafka-consumer:${IMAGE_TAG} -f docker/Dockerfile.consumer .
     docker push ${REGISTRY_URL}/kafka-consumer:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed kafka-consumer${NC}"
     
     # Build TimescaleDB Sink
-    docker build -t ${REGISTRY_URL}/timescaledb-sink:${IMAGE_TAG} -f docker/Dockerfile.timescaledb_sink .
+    docker build --platform linux/amd64 -t ${REGISTRY_URL}/timescaledb-sink:${IMAGE_TAG} -f docker/Dockerfile.timescaledb_sink .
     docker push ${REGISTRY_URL}/timescaledb-sink:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed timescaledb-sink${NC}"
 }

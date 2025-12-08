@@ -426,9 +426,9 @@ if [ "$SKIP_DEPLOY" = false ]; then
     echo -e "${GREEN}✅ Monitoring stack deployed${NC}"
 
     # Deploy ingress
-    echo -e "${YELLOW}Deploying ingress resources...${NC}"
-    kubectl apply -f gke/ingress/
-    echo -e "${GREEN}✅ Ingress resources deployed${NC}"
+    # echo -e "${YELLOW}Deploying ingress resources...${NC}"
+    # kubectl apply -f gke/ingress/
+    # echo -e "${GREEN}✅ Ingress resources deployed${NC}"
     
 else
     echo -e "${BLUE}⊙ Skipping Kubernetes deployment${NC}"

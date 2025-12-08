@@ -12,7 +12,11 @@ spec:
     metadata:
       labels:
         app: timescaledb-sink
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8003"
     spec:
+      # serviceAccountName: iot-pipeline-cluster-sa
       # Add init container to wait for database to be ready
       initContainers:
       - name: wait-for-db
@@ -26,8 +30,8 @@ spec:
 
       containers:
       - name: timescaledb-sink
-        image: rabindramdr/timescaledb-sink:v1.0.0
-        imagePullPolicy: IfNotPresent
+        image: europe-north1-docker.pkg.dev/prj-mtp-aiot-dip/iot-pipeline/timescaledb-sink:v1.0.0
+        imagePullPolicy: Always
         ports:
         - containerPort: 8003
           name: metrics
@@ -50,11 +54,11 @@ spec:
 
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "200m"
-          limits:
             memory: "512Mi"
-            cpu: "500m"
+            cpu: "300m"
+          limits:
+            memory: "1Gi"
+            cpu: "800m"
 
         livenessProbe:
           httpGet:

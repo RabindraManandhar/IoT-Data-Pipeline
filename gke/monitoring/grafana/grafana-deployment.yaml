@@ -13,6 +13,11 @@ spec:
       labels:
         app: grafana
     spec:
+       # Set security context for the pod: allow group write for mounted volume
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsNonRoot: true
       containers:
       - name: grafana
         image: grafana/grafana:latest

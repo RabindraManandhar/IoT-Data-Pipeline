@@ -12,11 +12,15 @@ spec:
     metadata:
       labels:
         app: kafka-consumer
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
     spec:
+      # serviceAccountName: iot-pipeline-cluster-sa
       containers:
       - name: kafka-consumer
-        image: rabindramdr/kafka-consumer:v1.0.0
-        imagePullPolicy: IfNotPresent
+        image: europe-north1-docker.pkg.dev/prj-mtp-aiot-dip/iot-pipeline/kafka-consumer:v1.0.0
+        imagePullPolicy: Always
         ports:
         - containerPort: 8001
           name: metrics
@@ -27,6 +31,8 @@ spec:
           value: "8001"
         - name: CONFIG_FILE_PATH
           value: "/app/config.yaml"
+        - name: GCP_PROJECT_ID
+          value: "prj-mtp-aiot-dip"
         envFrom:
         - secretRef:
             name: iot-pipeline-secrets
@@ -38,11 +44,11 @@ spec:
           mountPath: /app/src/schemas
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "200m"
-          limits:
             memory: "512Mi"
-            cpu: "500m"
+            cpu: "300m"
+          limits:
+            memory: "1Gi"
+            cpu: "800m"
         livenessProbe:
           httpGet:
             path: /metrics

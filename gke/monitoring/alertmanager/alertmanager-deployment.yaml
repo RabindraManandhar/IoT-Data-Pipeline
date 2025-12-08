@@ -13,6 +13,11 @@ spec:
       labels:
         app: alertmanager
     spec:
+       # Set security context for the pod: allow group write for mounted volume
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsNonRoot: true
       containers:
       - name: alertmanager
         image: prom/alertmanager:v0.26.0
@@ -23,7 +28,7 @@ spec:
         - containerPort: 9093
           name: web
         volumeMounts:
-        - name: config
+        - name: alertmanager-config
           mountPath: /etc/alertmanager
         - name: data
           mountPath: /alertmanager
@@ -47,7 +52,7 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 5
       volumes:
-      - name: config
+      - name: alertmanager-config
         configMap:
           name: alertmanager-config
       - name: data

@@ -1,11 +1,8 @@
-# Storage classes are created via kubectl using kubernetes manifests after cluster creation
-# See: k8s/storage/storage-class.yaml
+# We'll use storage classes that already exist in GKE.
 
-# This avoids chicken-and-egg problem where Terraform's Kubernetes provider
-# needs cluster credentials that don't exist until after cluster creation.
-
-# Storage classes will be created by the deployment script after running:
-# gcloud container clusters get-credentials <cluster-name> --zone <zone-name>
-
-# To create storage classes manually:
-# kubectl apply -f gke/storage/storage-class.yaml
+# kafka => balanced-rwo kafka
+# timescaledb => premium-rwo
+# prometheus => balanced-rwo
+# grafana => standard-rwo
+# alertmanager => standard-rwo
+# mosquitto => standard-rwo

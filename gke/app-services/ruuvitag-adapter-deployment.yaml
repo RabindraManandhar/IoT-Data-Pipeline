@@ -12,11 +12,15 @@ spec:
     metadata:
       labels:
         app: ruuvitag-adapter
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8002"
     spec:
+      # serviceAccountName: iot-pipeline-cluster-sa
       containers:
       - name: ruuvitag-adapter
-        image: rabindramdr/ruuvitag-adapter:v1.0.0
-        imagePullPolicy: IfNotPresent
+        image: europe-north1-docker.pkg.dev/prj-mtp-aiot-dip/iot-pipeline/ruuvitag-adapter:v1.0.0
+        imagePullPolicy: Always
         ports:
         - containerPort: 8002
           name: metrics
@@ -27,6 +31,8 @@ spec:
           value: "8002"
         - name: CONFIG_FILE_PATH
           value: "/app/config.yaml"
+        - name: GCP_PROJECT_ID
+          value: "prj-mtp-aiot-dip"
         envFrom:
         - secretRef:
             name: iot-pipeline-secrets
@@ -38,11 +44,11 @@ spec:
           mountPath: /app/src/schemas
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "200m"
-          limits:
             memory: "512Mi"
-            cpu: "500m"
+            cpu: "300m"
+          limits:
+            memory: "1Gi"
+            cpu: "800m"
         livenessProbe:
           httpGet:
             path: /metrics

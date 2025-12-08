@@ -90,9 +90,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        
         volumeMounts:
         - name: kafka-data
           mountPath: /var/lib/kafka/data
+        
         resources:
           requests:
             memory: "128Mi"
@@ -186,6 +188,7 @@ spec:
         # Explicitly unset PORT to avoid conflicts
         - name: PORT
           value: ""
+        
         volumeMounts:
         - name: kafka-data
           mountPath: /var/lib/kafka/data
@@ -226,10 +229,12 @@ spec:
         args:
         - "9101"
         - /etc/jmx-exporter/config.yml
+        
         volumeMounts:
         - name: jmx-config
           mountPath: /etc/jmx-exporter/config.yml
           subPath: kafka-jmx-config.yml
+        
         resources:
           requests:
             memory: "128Mi"
@@ -251,7 +256,7 @@ spec:
     spec:
       accessModes:
       - ReadWriteOnce
-      storageClassName: fast-ssd
+      storageClassName: premium-rwo
       resources:
         requests:
           storage: 50Gi
