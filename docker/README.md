@@ -239,12 +239,7 @@ If you haven't installed ESP-IDF yet, follow these steps:
 
     - Configure your Wi-Fi and MQTT settigns
         
-        Create a `config.h` file inside the main folder. Copy the contents of main/config.h.example to the main/config.h and change REPLACE_ME in the following variables:
-        ```
-        #define WIFI_SSID			“REPLACE_ME”
-        #define WIFI_PASSWORD		“REPLACE_ME”
-        #define MQTT_BROKER_URL	    “mqtt://REPLACE_ME:1883”
-        ```
+        Create a `config.h` file inside the main directory. Copy the contents of main/config.h.example to the main/config.h and replace REPLACE_ME in the values of all variables with your values:
 
         Include the config.h file in your main/main.c source
         ```

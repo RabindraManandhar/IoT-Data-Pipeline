@@ -1,0 +1,20 @@
+project_id = "REPLACE_ME"
+region     = "REPLACE_ME"
+zone       = "REPLACE_ME"
+
+cluster_name = "REPLACE_ME"
+
+# Node configuration
+node_machine_type = "REPLACE_ME"
+min_node_count    = "REPLACE_ME"
+max_node_count    = "REPLACE_ME"
+disk_size_gb      = "REPLACE_ME"
+
+# Network configuration
+enable_private_cluster   = "REPLACE_ME"
+enable_workload_identity = "REPLACE_ME"
+
+# Secrets
+postgres_password = "REPLACE_ME"
+kafka_cluster_id  = "REPLACE_ME"
+grafana_password = "REPLACE_ME"
