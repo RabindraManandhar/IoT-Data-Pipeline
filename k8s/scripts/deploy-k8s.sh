@@ -66,17 +66,17 @@ build_and_push_images() {
     echo -e "${YELLOW}Building and pushing Docker images...${NC}"
     
     # Build RuuviTag Adapter
-    docker build -t ${REGISTRY}/ruuvitag-adapter:${IMAGE_TAG} -f docker/Dockerfile.ruuvitag_adapter .
+    docker build -t ${REGISTRY}/ruuvitag-adapter:${IMAGE_TAG} -f ../docker/Dockerfile.ruuvitag_adapter ..
     docker push ${REGISTRY}/ruuvitag-adapter:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed ruuvitag-adapter${NC}"
     
     # Build Consumer
-    docker build -t ${REGISTRY}/kafka-consumer:${IMAGE_TAG} -f docker/Dockerfile.consumer .
+    docker build -t ${REGISTRY}/kafka-consumer:${IMAGE_TAG} -f ../docker/Dockerfile.consumer ..
     docker push ${REGISTRY}/kafka-consumer:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed kafka-consumer${NC}"
     
     # Build TimescaleDB Sink
-    docker build -t ${REGISTRY}/timescaledb-sink:${IMAGE_TAG} -f docker/Dockerfile.timescaledb_sink .
+    docker build -t ${REGISTRY}/timescaledb-sink:${IMAGE_TAG} -f ../docker/Dockerfile.timescaledb_sink ..
     docker push ${REGISTRY}/timescaledb-sink:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed timescaledb-sink${NC}"
 }
@@ -84,35 +84,35 @@ build_and_push_images() {
 # Function to create namespace
 create_namespace() {
     echo -e "${YELLOW}Creating namespace...${NC}"
-    kubectl apply -f k8s/namespace/namespace.yaml
+    kubectl apply -f namespace/namespace.yaml
     echo -e "${GREEN}✅ Namespace created${NC}"
 }
 
 # Function to create storage
 create_storage() {
     echo -e "${YELLOW}Creating storage classes and PVCs...${NC}"
-    kubectl apply -f k8s/storage/
+    kubectl apply -f storage/
     echo -e "${GREEN}✅ Storage created${NC}"
 }
 
 # Function to create configs and secrets
 create_configs() {
     echo -e "${YELLOW}Creating ConfigMaps and Secrets...${NC}"
-    kubectl apply -f k8s/config/
+    kubectl apply -f config/
     echo -e "${GREEN}✅ ConfigMaps and Secrets created${NC}"
 }
 
 # Function to create RBAC serviceaccount, roles and clusterroles
 create_rbac() {
     echo -e "${YELLOW}Creating RBAC serviceaccount, roles and clusterroles...${NC}"
-    kubectl apply -f k8s/rbac/
+    kubectl apply -f rbac/
     echo -e "${GREEN}✅ RBAC serviceaccount, roles and clusterrole created${NC}"
 }
 
 # Function to deploy Kafka
 deploy_kafka() {
     echo -e "${YELLOW}Deploying Kafka cluster...${NC}"
-    kubectl apply -f k8s/kafka/
+    kubectl apply -f kafka/
 
     # Wait for Kafka to be ready
     echo "Waiting for Kafka pods to be ready (this may take 2-3 minutes)..."
@@ -152,7 +152,7 @@ deploy_kafka() {
 # Function to deploy Schema Registry
 deploy_schema_registry() {
     echo -e "${YELLOW}Deploying Schema Registry...${NC}"
-    kubectl apply -f k8s/schema-registry/
+    kubectl apply -f schema-registry/
     
     # Wait for Schema Registry to be ready
     echo "Waiting for Schema Registry to be ready..."
@@ -186,7 +186,7 @@ deploy_schema_registry() {
 # Function to deploy TimescaleDB
 deploy_timescaledb() {
     echo -e "${YELLOW}Deploying TimescaleDB...${NC}"
-    kubectl apply -f k8s/timescaledb/
+    kubectl apply -f timescaledb/
     
     # Wait for TimescaleDB to be ready
     echo "Waiting for TimescaleDB to be ready..."
@@ -198,7 +198,7 @@ deploy_timescaledb() {
 # Function to deploy Mosquitto
 deploy_mosquitto() {
     echo -e "${YELLOW}Deploying Mosquitto MQTT Broker...${NC}"
-    kubectl apply -f k8s/mosquitto/
+    kubectl apply -f mosquitto/
     
     # Wait for Mosquitto to be ready
     echo "Waiting for Mosquitto to be ready..."
@@ -210,7 +210,7 @@ deploy_mosquitto() {
 # Function to deploy application services
 deploy_app_services() {
     echo -e "${YELLOW}Deploying application services...${NC}"
-    kubectl apply -f k8s/app-services/
+    kubectl apply -f app-services/
     
     # Wait for application services to be ready
     echo "Waiting for application services to be ready..."
@@ -232,10 +232,10 @@ deploy_app_services() {
 # Function to deploy monitoring
 deploy_monitoring() {
     echo -e "${YELLOW}Deploying monitoring stack...${NC}"
-    kubectl apply -f k8s/monitoring/prometheus/
-    kubectl apply -f k8s/monitoring/grafana/
-    kubectl apply -f k8s/monitoring/alertmanager/
-    kubectl apply -f k8s/monitoring/exporters/
+    kubectl apply -f monitoring/prometheus/
+    kubectl apply -f monitoring/grafana/
+    kubectl apply -f monitoring/alertmanager/
+    kubectl apply -f monitoring/exporters/
     
     # Wait for monitoring services to be ready
     echo "Waiting for monitoring services to be ready..."
@@ -307,13 +307,6 @@ main() {
     
     deploy_app_services
     deploy_monitoring
-    
-    # # Optional: Create ingress
-    # read -p "Create ingress resources? (y/n) " -n 1 -r
-    # echo
-    # if [[ $REPLY =~ ^[Yy]$ ]]; then
-    #     create_ingress
-    # fi
     
     # Display final status
     display_status

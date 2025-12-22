@@ -18,11 +18,6 @@ route:
       receiver: 'warning-alerts'
 
 receivers:
-  # - name: 'web.hook'
-  #   webhook_configs:
-  #     - url: 'http://localhost:9095/alerts'
-  #       send_resolved: true
-
   - name: 'critical-alerts'
     email_configs:
       - to: 'admin@iot-pipeline.local'
