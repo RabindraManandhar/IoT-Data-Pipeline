@@ -8,7 +8,7 @@ route:
   group_wait: 10s
   group_interval: 10s
   repeat_interval: 1h
-  receiver: 'web.hook'
+  receiver: 'critical-alerts'
   routes:
     - match:
         severity: critical
@@ -18,10 +18,10 @@ route:
       receiver: 'warning-alerts'
 
 receivers:
-  - name: 'web.hook'
-    webhook_configs:
-      - url: 'http://localhost:5001/alerts'
-        send_resolved: true
+  # - name: 'web.hook'
+  #   webhook_configs:
+  #     - url: 'http://localhost:9095/alerts'
+  #       send_resolved: true
 
   - name: 'critical-alerts'
     email_configs:

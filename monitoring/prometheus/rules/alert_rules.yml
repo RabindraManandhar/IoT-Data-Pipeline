@@ -99,13 +99,13 @@ groups:
           summary: "High memory usage"
           description: "Memory usage on {{ $labels.instance }} is {{ $value }}%."
 
-  - name: test_alerts
+  - name: test
     rules:
-      - alert: TestAlert
+      - alert: PrometheusTestAlert
         expr: vector(1)  # This always returns 1, so always fires
         for: 0s
         labels:
           severity: info
         annotations:
-          summary: "Manual test"
+          summary: "Prometheus test alert"
           description: "This test alert should always fire to verify the pipeline"

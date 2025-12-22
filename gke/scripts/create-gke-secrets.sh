@@ -43,7 +43,7 @@ get_secret() {
 }
 
 # Create Kubernetes secret
-create_k8s_secret() {
+create_gke_secret() {
     echo -e "${YELLOW}Fetching secrets from Google Secret Manager...${NC}"
     
     # Fetch secrets
@@ -84,7 +84,7 @@ create_k8s_secret() {
 main() {
     check_kubectl
     check_namespace
-    create_k8s_secret
+    create_gke_secret
     
     echo -e "\n${GREEN}=========================================="
     echo "Secrets created successfully!"

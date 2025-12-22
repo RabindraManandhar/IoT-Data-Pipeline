@@ -21,11 +21,11 @@ ARTIFACT_REPO="${ARTIFACT_REPO:-iot-pipeline}"
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 # Logging
 mkdir -p logs
-LOG_FILE="${PROJECT_ROOT}/logs/deployment-$(date +%Y%m%d-%H%M%S).log"
+LOG_FILE="${PROJECT_ROOT}/gke/logs/deployment-$(date +%Y%m%d-%H%M%S).log"
 exec 1> >(tee -a "${LOG_FILE}")
 exec 2>&1
 
@@ -238,7 +238,7 @@ if [ "$CLEAN_START" = true ]; then
         
         # Clean Terraform state
         echo -e "${YELLOW}Cleaning Terraform state...${NC}"
-        cd "${PROJECT_ROOT}/terraform"
+        cd "${PROJECT_ROOT}/gke/terraform"
         rm -rf .terraform .terraform.lock.hcl terraform.tfstate*
         echo -e "${GREEN}✅ Terraform state cleaned${NC}"
     else
@@ -263,7 +263,7 @@ fi
 if [ "$SKIP_TERRAFORM" = false ]; then
     print_section "Step 4: Setting Up Infrastructure with Terraform"
     
-    cd "${PROJECT_ROOT}/terraform"
+    cd "${PROJECT_ROOT}/gke/terraform"
     
     # Check if terraform.tfvars exists
     if [ ! -f "terraform.tfvars" ]; then
@@ -372,10 +372,24 @@ if [ "$SKIP_DEPLOY" = false ]; then
     # Deploy in order
     echo -e "${CYAN}  → Deploying Kafka...${NC}"
     kubectl apply -f gke/kafka/
+
+    # Wait for Kafka to be ready
+    echo -e "${YELLOW}Waiting for Kafka services to be ready...${NC}"
+    sleep 30
+
+    echo -e "${YELLOW}Checking Kafka pods...${NC}"
+    kubectl wait --for=condition=ready pod -l app=kafka -n data --timeout=300s || true
     
     echo -e "${CYAN}  → Deploying TimescaleDB...${NC}"
     kubectl apply -f gke/timescaledb/
     
+    # Wait for TimescaleDB to be ready
+    echo -e "${YELLOW}Waiting for TimescaleDB services to be ready...${NC}"
+    sleep 30
+    
+    echo -e "${YELLOW}Checking TimescaleDB pods...${NC}"
+    kubectl wait --for=condition=ready pod -l app=timescaledb -n data --timeout=300s || true
+
     echo -e "${CYAN}  → Deploying Schema Registry...${NC}"
     kubectl apply -f gke/schema-registry/
     
@@ -383,16 +397,6 @@ if [ "$SKIP_DEPLOY" = false ]; then
     kubectl apply -f gke/mosquitto/
     
     echo -e "${GREEN}✅ Infrastructure services deployed${NC}"
-    
-    # Wait for infrastructure to be ready
-    echo -e "${YELLOW}Waiting for infrastructure services to be ready...${NC}"
-    sleep 30
-    
-    echo -e "${YELLOW}Checking Kafka pods...${NC}"
-    kubectl wait --for=condition=ready pod -l app=kafka -n data --timeout=300s || true
-    
-    echo -e "${YELLOW}Checking TimescaleDB pods...${NC}"
-    kubectl wait --for=condition=ready pod -l app=timescaledb -n data --timeout=300s || true
     
     # Deploy application services
     echo -e "${YELLOW}Deploying application services...${NC}"
@@ -425,11 +429,6 @@ if [ "$SKIP_DEPLOY" = false ]; then
     kubectl apply -f gke/monitoring/exporters/
     
     echo -e "${GREEN}✅ Monitoring stack deployed${NC}"
-
-    # Deploy ingress
-    # echo -e "${YELLOW}Deploying ingress resources...${NC}"
-    # kubectl apply -f gke/ingress/
-    # echo -e "${GREEN}✅ Ingress resources deployed${NC}"
     
 else
     echo -e "${BLUE}⊙ Skipping Kubernetes deployment${NC}"
@@ -463,11 +462,6 @@ echo -e "${CYAN}Services:${NC}"
 kubectl get services --all-namespaces
 echo ""
 
-# Get external IPs for ingress
-echo -e "${CYAN}Ingress Information:${NC}"
-kubectl get ingress --all-namespaces
-echo ""
-
 # Show storage information
 echo -e "${CYAN}Persistent Volumes:${NC}"
 kubectl get pv,pvc --all-namespaces
@@ -482,13 +476,12 @@ echo "  Delete deployment:     kubectl delete -f gke/"
 echo ""
 
 # Save endpoints to file
-ENDPOINTS_FILE="${PROJECT_ROOT}/deployment-endpoints.txt"
+ENDPOINTS_FILE="${PROJECT_ROOT}/gke/deployment-endpoints.txt"
 echo "Deployment Endpoints" > ${ENDPOINTS_FILE}
 echo "====================" >> ${ENDPOINTS_FILE}
 echo "" >> ${ENDPOINTS_FILE}
 echo "Generated: $(date)" >> ${ENDPOINTS_FILE}
 echo "" >> ${ENDPOINTS_FILE}
-kubectl get ingress --all-namespaces >> ${ENDPOINTS_FILE}
 
 echo -e "${GREEN}Endpoints saved to: ${ENDPOINTS_FILE}${NC}"
 echo -e "${GREEN}Deployment log saved to: ${LOG_FILE}${NC}"
