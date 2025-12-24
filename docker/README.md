@@ -220,15 +220,18 @@ If you haven't installed ESP-IDF yet, follow these steps:
         cd <repository-name>
         ```
 
-    - Create an environment variable in docker/.env file
-        ```bash
-        CLUSTER_ID=bdPLhBd7R2azWv-YLNO3LQ
-        ```
-        
-        OR Generate the CLUSTER_ID using the following command
+    - Generate the CLUSTER_ID using the following command
         ```bash
         docker run --rm confluentinc/cp-kafka:7.9.0 kafka-storage random-uuid
         ```
+    
+    - Create an environment file named .env inside /docker directory. Create the following CLUSTER_ID variable with the value of the kafka_cluster_id generated above.
+        
+        ```bash
+        CLUSTER_ID="kafka_cluster_id"
+        ```
+
+        Also, create all other necessary environmental variables in the .env file.
 
 2. Configure ESP32 Gateway
 
@@ -414,7 +417,7 @@ If you haven't installed ESP-IDF yet, follow these steps:
     iot_data=# SELECT * FROM timescaledb_information.chunks WHERE hypertable_name = '<hypertable-name>';
 
     -- Check compression statistics
-    SELECT * FROM timescaledb_information.compression_settings;
+    iot_data=# SELECT * FROM timescaledb_information.compression_settings;
     ```
 
 8. Accessing Monitoring interfaces

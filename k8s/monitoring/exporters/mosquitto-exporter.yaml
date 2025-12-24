@@ -39,6 +39,7 @@ metadata:
   name: mosquitto-exporter
   namespace: iot-pipeline
 spec:
+  type: ClusterIP
   ports:
   - port: 9234
     targetPort: 9234

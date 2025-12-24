@@ -1,6 +1,6 @@
-# IoT Data Ingestion Pipeline on Google Kubernetes Engine (GKE)
+# IoT Data Ingestion Pipeline on Kubernetes (with Minikube Cluster)
 
-A scalable and fault-tolerant data pipeline built on Google Kubernetes Engine (GKE) that processes real-time IoT sensor data from RuuviTag devices through ESP32 gateway, utilizing  Kafka for distributed streaming, TimescaleDB for time-series storage, and comprehensive monitoring with Prometheus and Grafana.
+A scalable and fault-tolerant data pipeline built on Kubernetes  that processes real-time IoT sensor data from RuuviTag devices through ESP32 gateway, utilizing  Kafka for distributed streaming, TimescaleDB for time-series storage, and comprehensive monitoring with Prometheus and Grafana.
 
 ## Project Overview
 
@@ -18,9 +18,9 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
 - `Real-time Processing`: Sub-second latency from sensor to database.
 - `High availability`: 3-node Kafka cluster with replication factor 3.
 - `Time-series Optimization`: TimescaleDB with automatic compression and retention.
-- `Schema Evolution`: Avro serialization with backward compabiliity. 
+- `Schema Evolution`: Avro serialization with backward compabiliity.
 - `Comprehensive Monitoring`: Prometheus metrics with Grafana dashboards.
-- `Containerization and Orchestration`: Docker containers and GKE orchestration.
+- `Containerization and Orchestration`: Docker containers and k8s orchestration.
 - `Infrastructure as Code`: Complete Terraform configuration
 
 ## Use Cases
@@ -43,7 +43,7 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
     └──────────────────────────┬──────────────────────────────┘
                             | MQTT (Port 1833)
     ┌──────────────────────────▼──────────────────────────────┐
-    │               Application Layer (GKE)                   │
+    │               Application Layer (K8S)                   │
     |                                                         |
     │  ┌─────────────┐     ┌──────────────────┐               │
     │  │  Mosquitto  │---▶ │    RuuviTag      │               │
@@ -102,15 +102,21 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
 
 3. Network Architecture
 
-    **VPC Configuration:**
-    - Network: `iot-pipeline-network`
-    - Subnet: `10.0.0.0/24` (256 IPs)
-    - Pods: `10.1.0.0/16` (65,536 IPs)
-    - Services: `10.2.0.0/16` (65,536 IPs)
+    **Core Kubernetes Networking**
+    - Pod Network (Flat L3 Network) -> Implemented by Container Network Interface (CNI) (Flannel / Calico / bridge /etc.)
+    - Service Networking (Virtual IPs and Load Balancing)
+        - ClusterIP
+        - Headless Services
+        - kube-proxy (iptables / IPVS)
+    - DNS-Based Service Discovery
+        - CoreDNS
+    -Ingress
+        - LoadBalancer
+
 
     **Service Mesh:**
     - mosquitto.iot-pipeline.svc.cluster.local:1883
-    - kafka-headless.iot-pipeline.svc.cluster.local:9092
+    - kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9092
     - schema-registry.iot-pipeline.svc.cluster.local:8081
     - timescaledb.iot-pipeline.svc.cluster.local:5432
 
@@ -121,17 +127,16 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
     | Category | Technology | Version | Purpose |
     |----------|-----------|---------|---------|
     | IoT Development Framework | ESP-IDF | Latest | IoT Sensor Programming |
-    | Orchestration | Kubernetes (GKE) | 1.27+ | Container management |
+    | Orchestration | Kubernetes | 1.27+ | Container management |
     | Streaming | Confluent Kafka | 7.9.0 | Event streaming |
     | Schema | Schema Registry | 7.9.0 | Avro management |
     | Database | TimescaleDB | PG 16 | Time-series storage |
     | Broker | Mosquitto | 2.0 | MQTT messaging |
     | Monitoring | Prometheus | 2.48 | Metrics collection |
     | Visualization | Grafana | Latest | Dashboards |
-    | IaC | Terraform | 1.5+ | Infrastructure |
 
 2. Python Stack
-
+    ```bash
     - confluent-kafka==2.9.0
     - confluent-kafka[avro]==2.9.0
     - python-dotenv==1.1.0
@@ -149,6 +154,7 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
     - loguru==0.7.3
     - psutil==5.9.8 # System and process utilities for monitoring
     - flask==3.0.0 # Web framework for metrics endpoints and health check
+    ```
 
 ## Prerequisites
 
@@ -166,12 +172,12 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
     - Build tools - CMake and Ninja to build a full application for ESP32
     - ESP-IDF v4.4 or newer that essentially contains API (software libraries and source code) for ESP32 and scripts to operate the Toolchain
     
-    2.2 For GKE
+    2.2 For K8s
     
-    - Docker (>=20.10)
-    - Kubectl (>=1.27)
-    - Google Cloud Platform Account with billing enabled
-    - gcloud CLI (>=400.0.0)
+    - Docker -> Builds images, Used by Minikube as container runtime
+    - Kubectl -> Deploys and manages Kubernetes resources
+    - Minikube -> Local Kubernetes cluster
+    - Git - Source control
 
 3. Network Requirements
 
@@ -230,7 +236,6 @@ If you haven't installed ESP-IDF yet, follow these steps:
 
     - Download the ESP-IDF Tools Installer from [official ESP-IDF installation guide](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html)
     - Follow the installer and follow the instructions
-    - Open the ESP-IDF Command Prompt from the Start menu
 
 ## Quick Start
 
@@ -362,12 +367,12 @@ If you haven't installed ESP-IDF yet, follow these steps:
 3. MQTT Broker Configuration
 
     The MQTT broker service is set up as loadbalancer and you may need to:
-    - Check MQTT broker logs in GKE
+    - Check MQTT broker logs in K8S
     - Test connectivity with MQTT clients
 
-### Google Kubernetes Engine (GKE) Deployment
+### Local Kubernetes Deployment
 
-1. GKE Configuration
+1. K8S Configuration
 
     - Navigate to /docker folder inside the project's root directory.
         
@@ -390,14 +395,14 @@ If you haven't installed ESP-IDF yet, follow these steps:
 
         Also, create all other necessary environmental variables in the .env file.
 
-    - Navigate to /gke/config folder inside the project's root directory.
+    - Navigate to /k8s/config folder inside the project's root directory.
 
         ```bash
         cd ..
-        cd gke/config
+        cd k8s/config
         ```
     
-    - Generate a `secrets.yaml` file inside gke/config folder. Copy the contents of secrets.yaml.example to the secrets.yaml file and change the placeholder value "REPLACE_ME" for all variables.
+    - Generate a `secrets.yaml` file inside k8s/config folder. Copy the contents of secrets.yaml.example to the secrets.yaml file and change the placeholder value "REPLACE_ME" for all variables.
 
         ```
         POSTGRES_USER: "REPLACE_ME"
@@ -411,50 +416,26 @@ If you haven't installed ESP-IDF yet, follow these steps:
 
         NOTE: Replace the placeholder value "REPLACE_ME" for the variable CLUSTER_ID with the kafka_cluster_id generated above.
 
-2. Automatic GKE Deployment (Using bash script)
+2. Automatic Kubernetes Deployment (Using bash script)
 
-    - Navigate to /scripts folder in the project's /gke directory.
+    - Navigate to /scripts folder in the project's root directory.
 
         ```bash
         cd ..
         cd scripts
         ```
 
-    - Deploy the GKE project using deployment script.
+    - Deploy the Kubernetes project using deployment script.
 
         ```bash
-        ./deploy-gke.sh
-
-        # Options:
-        # --clean: Clean start
-        # --skip-build: Skip image building
-        # --skip-terraform: Skip infrastructure
-        # --import: Import existing resources
+        ./deploy-k8s.sh
         ```
 
-3. Manual GKE Deployment (ALTERNATIVE)
+3. Manual K8S Deployment (ALTERNATIVE)
 
-    a. Terraform Deployment
+    a. Build and Push images to Docker Hub Registry.
 
-    - Navigate to terraform folder in the project's /gke directory.
-
-        ```bash
-        cd ..
-        cd terraform
-        ```
-
-    - Deploy infrastructure in GKE.
-
-        ```bash
-        terraform init
-        terraform validate
-        terraform plan -out=tfplan
-        terraform apply tfplan
-        ```
-
-    b. Build and Push images to Google Cloud's Artifact Registry.
-
-    - Navigate to /scripts folder in the project's /gke directory.
+    - Navigate to /scripts folder in the project's /k8s directory.
 
         ```bash
         cd ..
@@ -464,11 +445,11 @@ If you haven't installed ESP-IDF yet, follow these steps:
     
     c. Deploy Kubernetes resources.
 
-    - Navigate to /gke folder in the project's root directory.
+    - Navigate to /k8s folder in the project's root directory.
 
         ```bash
         cd ..
-        cd gke
+        cd k8s
         ```
 
     - Run the following commands to deploy kubernetes resources.
@@ -493,9 +474,10 @@ If you haven't installed ESP-IDF yet, follow these steps:
 
 ## Accessing Services
 
-- Navigate to /scripts folder in the project's /gke directory.
+- Navigate to /scripts folder in the project's /k8s directory.
 
     ```bash
+    cd ..
     cd scripts
     ```
 
@@ -518,30 +500,26 @@ If you haven't installed ESP-IDF yet, follow these steps:
 
 ## Cleanup
 
-- Navigate to /gke folder in the project's root directory.
+1. Automatic Kubernetes Resources Deletion (Using bash script)
 
-    ```bash
-    cd ..
-    cd gke
-    ```
+    - In /scripts folder, run the following bash script to delete all kubernetes resources
 
-- Delete the kubernetes resources
-    
-    ```bash
-    kubectl delete --force namespace iot-pipeline
-    ```
+        ```bash
+        ./teardown.sh
+        ```
 
-- Navigate to /terraform folder in the project's /gke directory.
+2. Manual Kubernetes Resources Deletion (ALTERNATIVE)
 
-    ```bash
-    cd ..
-    cd terraform
-    ``` 
+    - Navigate to /k8s folder in the project's root directory
+        
+        ```bash
+        cd ..
+        ```
 
-- Delete the GKE infrastructure
-    ```bash
-    terraform destroy -auto-approve
-    ```
+    - Delete all kubernetes resources using the following command
+        ```bash
+        kubectl delete --force namespace iot-pipeline
+        ```
 
 ## Documentation
 

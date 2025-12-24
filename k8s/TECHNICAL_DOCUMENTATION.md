@@ -7,7 +7,7 @@
 
 ---
 
-This document provides comprehensive technical documentation for an IoT data pipeline deployed on Google Kubernetes Engine. The system processes real-time environmental sensor data from RuuviTag devices through ESP32 gateways.
+This document provides comprehensive technical documentation for an IoT data pipeline deployed on a local Kubernetes Cluster. The system processes real-time environmental sensor data from RuuviTag devices through ESP32 gateways.
 
 ---
 
@@ -32,7 +32,7 @@ This document provides comprehensive technical documentation for an IoT data pip
 
 ### 1.1 Overview
 
-A scalable and fault-tolerant data pipeline built on Google Kubernetes Engine (GKE) that processes real-time IoT sensor data from RuuviTag devices through ESP32 gateway, utilizing  Kafka for distributed streaming, TimescaleDB for time-series storage, and comprehensive monitoring with Prometheus and Grafana.
+A scalable and fault-tolerant data pipeline built on Kubernetes that processes real-time IoT sensor data from RuuviTag devices through ESP32 gateway, utilizing  Kafka for distributed streaming, TimescaleDB for time-series storage, and comprehensive monitoring with Prometheus and Grafana.
 
 This project implements an end-to-end IoT data pipeline capable of ingesting, processing, storing, and visualizing sensor data at scale. It composes of the following components:
 
@@ -48,15 +48,15 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
 - `Real-time Processing`: Sub-second latency from sensor to database.
 - `High availability`: 3-node Kafka cluster with replication factor 3.
 - `Time-series Optimization`: TimescaleDB with automatic compression and retention.
-- `Schema Evolution`: Avro serialization with backward compabiliity. 
+- `Schema Evolution`: Avro serialization with backward compabiliity.
 - `Comprehensive Monitoring`: Prometheus metrics with Grafana dashboards.
-- `Containerization and Orchestration`: Docker containers and GKE orchestration.
+- `Containerization and Orchestration`: Docker containers and k8s orchestration.
 - `Infrastructure as Code`: Complete Terraform configuration
 
 ### 1.3 Key Metrics
 
 - **Components**: 15 pods across 10 services
-- **Throughput**: 10,000+ messages/second
+- **Throughput**: > 10,000 messages/second
 - **Data Retention**: 90 days with automatic archival
 - **Availability**: 99.9% uptime with 3x replication
 - **Latency**: < 1 second end-to-end
@@ -83,7 +83,7 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
     └──────────────────────────┬──────────────────────────────┘
                             | MQTT (Port 1833)
     ┌──────────────────────────▼──────────────────────────────┐
-    │               Application Layer (GKE)                   │
+    │               Application Layer (K8S)                   │
     |                                                         |
     │  ┌─────────────┐     ┌──────────────────┐               │
     │  │  Mosquitto  │---▶ │    RuuviTag      │               │
@@ -142,15 +142,20 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
 
 ### 2.3 Network Architecture
 
-**VPC Configuration:**
-- Network: `iot-pipeline-network`
-- Subnet: `10.0.0.0/24` (256 IPs)
-- Pods: `10.1.0.0/16` (65,536 IPs)
-- Services: `10.2.0.0/16` (65,536 IPs)
+**Core Kubernetes Networking**
+  - Pod Network (Flat L3 Network) -> Implemented by Container Network Interface (CNI) (Flannel / Calico / bridge /etc.)
+  - Service Networking (Virtual IPs and Load Balancing)
+      - ClusterIP
+      - Headless Services
+      - kube-proxy (iptables / IPVS)
+  - DNS-Based Service Discovery
+      - CoreDNS
+  -Ingress
+      - LoadBalancer
 
 **Service Mesh:**
 - mosquitto.iot-pipeline.svc.cluster.local:1883
-- kafka-headless.iot-pipeline.svc.cluster.local:9092
+- kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9092
 - schema-registry.iot-pipeline.svc.cluster.local:8081
 - timescaledb.iot-pipeline.svc.cluster.local:5432
 
@@ -162,14 +167,14 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
 
 | Category | Technology | Version | Purpose |
 |----------|-----------|---------|---------|
-| Orchestration | Kubernetes (GKE) | 1.27+ | Container management |
+| IoT Development Framework | ESP-IDF | Latest | IoT Sensor Programming |
+| Orchestration | Kubernetes | 1.27+ | Container management |
 | Streaming | Confluent Kafka | 7.9.0 | Event streaming |
 | Schema | Schema Registry | 7.9.0 | Avro management |
 | Database | TimescaleDB | PG 16 | Time-series storage |
 | Broker | Mosquitto | 2.0 | MQTT messaging |
 | Monitoring | Prometheus | 2.48 | Metrics collection |
 | Visualization | Grafana | Latest | Dashboards |
-| IaC | Terraform | 1.5+ | Infrastructure |
 
 ### 3.2 Python Stack
 
@@ -198,16 +203,15 @@ This project implements an end-to-end IoT data pipeline capable of ingesting, pr
 
 ## 4. Infrastructure
 
-### 4.1 GKE Cluster
+### 4.1 Kubernetes Cluster
 
 **Cluster Specifications:**
 ```bash
-name     = "iot-pipeline-cluster"
-location = "europe-north1-a"
-node_pools = 1
-min_nodes = 1
-max_nodes = 3
-machine_type = "e2-standard-4"  # 4 vCPUs, 16GB RAM
+name    = "minikube"
+driver  = "docker"
+nodes   = 1
+cpus    = 8
+memory  = "16384mb"  # 16GB RAM
 ```
 
 **Features:**
@@ -219,26 +223,36 @@ machine_type = "e2-standard-4"  # 4 vCPUs, 16GB RAM
 
 ### 4.2 Storage Configuration
 
-| Service | Storage Class | Size | Type |
-|---------|--------------|------|------|
-| Kafka | premium-rwo | 50Gi | SSD |
-| TimescaleDB | premium-rwo | 20Gi | SSD |
-| Prometheus | standard-rwo | 10Gi | HDD |
-| Grafana | standard-rwo | 5Gi | HDD |
-| AlertManager | standard-rwo | 5Gi | HDD |
-| Mosquitto | standard-rwo | 2Gi | HDD |
+| Service | Storage Class | Size |
+|---------|---------------|------|
+| Kafka | standard | 20Gi |
+| TimescaleDB | standard | 20Gi |
+| Prometheus | standard | 10Gi |
+| Grafana | standard | 5Gi |
+| AlertManager | standard | 2Gi |
+| Mosquitto | standard | 2 Gi |
 
 ### 4.3 Networking
 
-**Firewall Rules:**
-- Internal: All ports within VPC
-- MQTT: Port 1883 external
-- Health Checks: GCP LB IPs
+- Cluster Networking
+  - Signle-node local kubernets cluster running on developer machine
+  - Flat pod-to-pod network provided by Minikube CNI (Docker/bridge)
+  - All pods can communicate directly without NAT inside the cluster
 
-**NAT Configuration:**
-- Cloud Router for outbound
-- Auto-allocated NAT IPs
-- All nodes private
+- Service Exposure
+  - MQTT Broker (Mosquitto)
+    - Accessed via LoadBalancer, kubectl port-forwarded service
+    - Default port: 1883
+  - Grafana / Prometheus
+    - Accessed via ClusterIP, kubectl port-forwarded, or minikube service
+
+- Health Checks
+  - Kubernetes-native liveness and readiness probe
+  - No external load balancer health checks 
+
+- Outbound Connect
+  - Pods inherit outbound internet access from host machine
+  - No NAT Gateway or Cloud Router required
 
 ---
 
@@ -712,7 +726,6 @@ FROM sensor_readings_daily
 WHERE bucket >= NOW() - INTERVAL '30 days'
 ORDER BY bucket DESC, avg_value DESC;
 ```
-
 ---
 
 ## 9. Security
@@ -720,57 +733,38 @@ ORDER BY bucket DESC, avg_value DESC;
 ### 9.1 Authentication
 
 **Workload Identity:**
-- Pods use GCP service accounts
 - No static credentials
-- Fine-grained IAM permissions
 
 **RBAC:**
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: prometheus
+  name: pod-admin
 rules:
 - apiGroups: [""]
-  resources:
-  - nodes
-  - nodes/proxy
-  - services
-  - endpoints
-  - pods
-  verbs: ["get", "list", "watch"]
-- apiGroups:
-  - extensions
-  resources:
-  - ingresses
-  verbs: ["get", "list", "watch"]
-- nonResourceURLs: ["/metrics"]
-  verbs: ["get"]
+  resources: ['pods', 'pods/log', 'pods/exec', 'pods/attach', 'deployments', 'deployments/scale']
+  verbs: ['*']
 
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: prometheus
+  name: pod-admin
 roleRef:
-  apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: prometheus
+  name: pod-admin
+  apiGroup: rbac.authorization.k8s.io
 subjects:
-- kind: ServiceAccount
-  name: prometheus
-  namespace: iot-pipeline
+  - kind: Group
+    name: admin
+    apiGroup: rbac.authorization.k8s.io
 ```
 
 ### 9.2 Secrets Management
 
-**Google Secret Manager:**
-- postgres-password
-- kafka-cluster-id
-- grafana-password
-
-**Kubernetes Secrets:**
+**Base64-hashed Kubernetes Secrets:**
 ```yaml
 apiVersion: v1
 kind: Secret
@@ -794,21 +788,6 @@ data:
   DATA_SOURCE_NAME: "REPLACE_ME"
 ```
 
-### 9.3 Network Security
-
-**Network Policies:**
-- Internal traffic only
-- MQTT external (1883)
-- Health checks from GCP LB
-
-**Pod Security:**
-```yaml
-securityContext:
-  fsGroup: 1000
-  runAsUser: 1000
-  runAsNonRoot: true
-```
-
 ---
 
 ## 10. Deployment
@@ -823,19 +802,18 @@ securityContext:
 
 2. Software Requirements
 
-    2.1 For ESP32 Gateway
-    
-    - Toolchain to compile code for ESP32
-    - Build tools - CMake and Ninja to build a full application for ESP32
-    - ESP-IDF v4.4 or newer that essentially contains API (software libraries and source code) for ESP32 and scripts to operate the Toolchain
-    
-    2.2 For GKE
-    
-    - Docker (>=20.10)
-    - Kubectl (>=1.27)
-    - Google Cloud Platform Account with billing enabled
-    - gcloud CLI (>=400.0.0)
-    - Terraform
+    2.1. For ESP32 Gateway
+
+      - Toolchain to compile code for ESP32
+      - Build tools - CMake and Ninja to build a full application for ESP32
+      - ESP-IDF v4.4 or newer that essentially contains API (software libraries and source code) for ESP32 and scripts to operate the Toolchain
+
+    2.2 For Kubernetes
+
+      - Docker -> Builds images, Used by Minikube as container runtime
+      - Kubectl -> Deploys and manages Kubernetes resources
+      - Minikube -> Local Kubernetes cluster
+      - Git - Source control
 
 3. Network Requirements
 
@@ -1022,12 +1000,12 @@ securityContext:
 3. MQTT Broker Configuration
 
     The MQTT broker service is set up as loadbalancer and you may need to:
-    - Check MQTT broker logs in GKE
+    - Check MQTT broker logs
     - Test connectivity with MQTT clients
 
-### 10.5 Google Kubernetes Engine (GKE) Deployment
+### 10.5 Local Kubernetes Deployment
 
-1. GKE Configuration
+1. K8S Configuration
 
     - Navigate to /docker folder inside the project's root directory.
         
@@ -1050,14 +1028,14 @@ securityContext:
 
         Also, create all other necessary environmental variables in the .env file.
 
-    - Navigate to /gke/config folder inside the project's root directory.
+    - Navigate to /k8s/config folder inside the project's root directory.
 
         ```bash
         cd ..
-        cd gke/config
+        cd k8s/config
         ```
     
-    - Generate a `secrets.yaml` file inside gke/config folder. Copy the contents of secrets.yaml.example to the secrets.yaml file and change the placeholder value "REPLACE_ME" for all variables.
+    - Generate a `secrets.yaml` file inside k8s/config folder. Copy the contents of secrets.yaml.example to the secrets.yaml file and change the placeholder value "REPLACE_ME" for all variables.
 
         ```
         POSTGRES_USER: "REPLACE_ME"
@@ -1071,50 +1049,26 @@ securityContext:
 
         NOTE: Replace the placeholder value "REPLACE_ME" for the variable CLUSTER_ID with the kafka_cluster_id generated above.
 
-2. Automatic GKE Deployment (Using bash script)
+2. Automatic Kubernetes Deployment (Using bash script)
 
-    - Navigate to /scripts folder in the project's /gke directory.
+    - Navigate to /scripts folder in the project's root directory.
 
         ```bash
         cd ..
         cd scripts
         ```
 
-    - Deploy the GKE project using deployment script.
+    - Deploy the Kubernetes project using deployment script.
 
         ```bash
-        ./deploy-gke.sh
-
-        # Options:
-        # --clean: Clean start
-        # --skip-build: Skip image building
-        # --skip-terraform: Skip infrastructure
-        # --import: Import existing resources
+        ./deploy-k8s.sh
         ```
 
-3. Manual GKE Deployment (ALTERNATIVE)
+3. Manual K8S Deployment (ALTERNATIVE)
 
-    a. Terraform Deployment
+    a. Build and Push images to Docker Hub Registry.
 
-    - Navigate to terraform folder in the project's /gke directory.
-
-        ```bash
-        cd ..
-        cd terraform
-        ```
-
-    - Deploy infrastructure in GKE.
-
-        ```bash
-        terraform init
-        terraform validate
-        terraform plan -out=tfplan
-        terraform apply tfplan
-        ```
-
-    b. Build and Push images to Google Cloud's Artifact Registry.
-
-    - Navigate to /scripts folder in the project's /gke directory.
+    - Navigate to /scripts folder in the project's /k8s directory.
 
         ```bash
         cd ..
@@ -1124,11 +1078,11 @@ securityContext:
     
     c. Deploy Kubernetes resources.
 
-    - Navigate to /gke folder in the project's root directory.
+    - Navigate to /k8s folder in the project's root directory.
 
         ```bash
         cd ..
-        cd gke
+        cd k8s
         ```
 
     - Run the following commands to deploy kubernetes resources.
@@ -1153,9 +1107,10 @@ securityContext:
 
 ### 10.6 Accessing Services
 
-- Navigate to /scripts folder in the project's /gke directory.
+- Navigate to /scripts folder in the project's /k8s directory.
 
     ```bash
+    cd ..
     cd scripts
     ```
 
@@ -1178,30 +1133,26 @@ securityContext:
 
 ### 10.7 Cleanup
 
-- Navigate to /gke folder in the project's root directory.
+1. Automatic Kubernetes Resources Deletion (Using bash script)
 
-    ```bash
-    cd ..
-    cd gke
-    ```
+    - In /scripts folder, run the following bash script to delete all kubernetes resources
 
-- Delete the kubernetes resources
-    
-    ```bash
-    kubectl delete --force namespace iot-pipeline
-    ```
+        ```bash
+        ./teardown.sh
+        ```
 
-- Navigate to /terraform folder in the project's /gke directory.
+2. Manual Kubernetes Resources Deletion (ALTERNATIVE)
 
-    ```bash
-    cd ..
-    cd terraform
-    ``` 
+    - Navigate to /k8s folder in the project's root directory
+        
+        ```bash
+        cd ..
+        ```
 
-- Delete the GKE infrastructure
-    ```bash
-    terraform destroy -auto-approve
-    ```
+    - Delete all kubernetes resources using the following command
+        ```bash
+        kubectl delete --force namespace iot-pipeline
+        ```
 
 ---
 
@@ -1239,12 +1190,10 @@ kubectl rollout undo deployment/ruuvitag-adapter -n iot-pipeline
 ```bash
 kubectl exec timescaledb-0 -n iot-pipeline -- pg_dump -U iot_user iot_data > backup.sql
 gzip backup.sql
-gsutil cp backup.sql.gz gs://backup-bucket/
 ```
 
 **Restore:**
 ```bash
-gsutil cp gs://backup-bucket/backup.sql.gz .
 gunzip backup.sql.gz
 kubectl exec -i timescaledb-0 -n iot-pipeline -- psql -U iot_user iot_data < backup.sql
 ```
@@ -1361,7 +1310,7 @@ max_overflow = 10
 ### Environment Variables
 
 ```bash
-KAFKA_BOOTSTRAP_SERVERS=kafka-0:9092,kafka-1:9092,kafka-2:9092
+KAFKA_BOOTSTRAP_SERVERS=kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-1.kafka-headless.iot-pipeline.svc.cluster.local:9092,kafka-2.kafka-headless.iot-pipeline.svc.cluster.local:9092
 KAFKA_TOPIC_NAME=iot-sensor-data
 SCHEMA_REGISTRY_URL=http://schema-registry:8081
 POSTGRES_HOST=timescaledb
@@ -1369,8 +1318,6 @@ POSTGRES_PORT=5432
 MQTT_BROKER_HOST=mosquitto
 MQTT_BROKER_PORT=1883
 ```
-
----
 
 ## Appendix B: Troubleshooting
 
@@ -1425,6 +1372,7 @@ MQTT_BROKER_PORT=1883
         ```bash
         kubectl logs <kafka-pod> -n iot-pipeline
         kubectl describe <kafka-pod> -n iot-pipeline
+        kubectl get endpoints -n iot-pipeline
         ```
 - Kafka Connection Issues
     - Ensure all containers are on the same Docker network
@@ -1443,6 +1391,7 @@ MQTT_BROKER_PORT=1883
         ```bash
         kubectl logs <timescaledb_pod> -n iot-pipeline
         kubectl describe <timescaledb_pod> -n iot-pipeline
+        kubectl get endpoints -n iot-pipeline
         ```
     - Verify database credentials
     - Ensure database initialization completed
@@ -1453,6 +1402,7 @@ MQTT_BROKER_PORT=1883
         ```bash
         kubectl logs <timescaledb-sink_pod> -n iot-pipeline
         kubectl describe <timescaledb-sink_pod> -n iot-pipeline
+        kubectl get endpoints -n iot-pipeline
             ```
     - Verify Kafka connectivity from sink
     - Check database permissions
@@ -1524,6 +1474,15 @@ MQTT_BROKER_PORT=1883
     - Missing Data Points: Check scrape_duration vs scrape_interval
     - Dashboard Loading Slowly: Optimize query time ranges
     - Alerts Not Firing: Verify expression evaluation in Prometheus
+
+**8. Postgres-Exporter Issues**
+
+- "Failed to create PostgresCollector" err="empty dsn" Error
+
+    - Create the DSN secret and use the secret in the postgres-exporter deployment
+        ```bash
+        DATA_SOURCE_NAME="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@timescaledb.iot-pipeline.svc.cluster.local:5432/${POSTGRES_DB}?sslmode=disable"
+        ```
 
 ---
 
