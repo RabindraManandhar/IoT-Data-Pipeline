@@ -1263,13 +1263,13 @@ kubectl exec -it -n iot-pipeline kafka-0 -- kafka-console-consumer --bootstrap-s
 kubectl exec -it -n iot-pipeline kafka-0 -- kafka-consumer-groups --bootstrap-server kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9092 --describe --group iot-data-consumer
 
 -- Create topic autocreation
-kubectl exec kafka-0 -n iot-pipeline -c kafka -- kafka-topics --bootstrap-server localhost:9092 --create --topic new-topic --partitions 1 --replication-factor 1
+kubectl exec kafka-0 -n iot-pipeline -c kafka -- kafka-topics --bootstrap-server kafka-0.kafka-headless.iot-pipeline.svc.cluster.local:9092 --create --topic new-topic --partitions 1 --replication-factor 1
 ```
 
 **Database:**
 ```sql
 -- Connect to TimescaleDB using psql cli
-kubectl exec -it timescaledb-0 psql -n iot-pipeline -- psql -U iot_user -d iot_data
+kubectl exec -it timescaledb-0 -n iot-pipeline -- psql -U iot_user -d iot_data
 
 -- Inside psql, list databases
 iot_dat=# \l

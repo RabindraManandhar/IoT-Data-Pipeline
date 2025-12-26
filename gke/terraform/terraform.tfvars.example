@@ -6,13 +6,13 @@ cluster_name = "REPLACE_ME"
 
 # Node configuration
 node_machine_type = "REPLACE_ME"
-min_node_count    = "REPLACE_ME"
-max_node_count    = "REPLACE_ME"
-disk_size_gb      = "REPLACE_ME"
+min_node_count    = REPLACE_ME
+max_node_count    = REPLACE_ME
+disk_size_gb      = REPLACE_ME
 
-# Network configuration
-enable_private_cluster   = "REPLACE_ME"
-enable_workload_identity = "REPLACE_ME"
+# Network configuration (Boolean)
+enable_private_cluster   = REPLACE_ME
+enable_workload_identity = REPLACE_ME
 
 # Secrets
 postgres_password = "REPLACE_ME"
