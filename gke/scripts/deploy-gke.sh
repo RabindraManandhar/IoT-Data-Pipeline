@@ -12,16 +12,16 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
+# Script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+
 # Configuration
 PROJECT_ID="${GCP_PROJECT_ID:-prj-mtp-aiot-dip}"
 REGION="${GCP_REGION:-europe-north1}"
 ZONE="${GCP_ZONE:-europe-north1-a}"
 CLUSTER_NAME="${GKE_CLUSTER_NAME:-iot-pipeline-cluster}"
 ARTIFACT_REPO="${ARTIFACT_REPO:-iot-pipeline}"
-
-# Script directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 # Logging
 mkdir -p logs

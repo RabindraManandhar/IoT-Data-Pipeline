@@ -10,6 +10,10 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+
 # Configuration
 PROJECT_ID="${GCP_PROJECT_ID:-prj-mtp-aiot-dip}"
 REGION="${GCP_REGION:-europe-north1}"
@@ -82,17 +86,17 @@ build_and_push_images() {
     echo -e "${YELLOW}Building and pushing Docker images...${NC}"
     
     # Build RuuviTag Adapter
-    docker build -t ${REGISTRY_URL}/ruuvitag-adapter:${IMAGE_TAG} -f ../docker/Dockerfile.ruuvitag_adapter ..
+    docker build --platform linux/amd64 -t ${REGISTRY_URL}/ruuvitag-adapter:${IMAGE_TAG} -f "${PROJECT_ROOT}/docker/Dockerfile.ruuvitag_adapter" "${PROJECT_ROOT}"
     docker push ${REGISTRY_URL}/ruuvitag-adapter:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed ruuvitag-adapter${NC}"
     
     # Build Consumer
-    docker build -t ${REGISTRY_URL}/kafka-consumer:${IMAGE_TAG} -f ../docker/Dockerfile.consumer ..
+    docker build --platform linux/amd64 -t ${REGISTRY_URL}/kafka-consumer:${IMAGE_TAG} -f "${PROJECT_ROOT}/docker/Dockerfile.consumer" "${PROJECT_ROOT}"
     docker push ${REGISTRY_URL}/kafka-consumer:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed kafka-consumer${NC}"
     
     # Build TimescaleDB Sink
-    docker build -t ${REGISTRY_URL}/timescaledb-sink:${IMAGE_TAG} -f ../docker/Dockerfile.timescaledb_sink ..
+    docker build --platform linux/amd64 -t ${REGISTRY_URL}/timescaledb-sink:${IMAGE_TAG} -f "${PROJECT_ROOT}/docker/Dockerfile.timescaledb_sink" "${PROJECT_ROOT}"
     docker push ${REGISTRY_URL}/timescaledb-sink:${IMAGE_TAG}
     echo -e "${GREEN}✅ Built and pushed timescaledb-sink${NC}"
 }
