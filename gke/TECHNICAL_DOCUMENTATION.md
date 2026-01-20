@@ -1029,11 +1029,11 @@ securityContext:
 
 1. GKE Configuration
 
-    - Navigate to /docker folder inside the project's root directory.
-        
+    - Navigate to /gke/config folder inside the project's root directory.
+
         ```bash
         cd ../..
-        cd docker
+        cd gke/config
         ```
     
     - Generate a kafka_cluster_id using the following command
@@ -1042,21 +1042,6 @@ securityContext:
         docker run --rm confluentinc/cp-kafka:7.9.0 kafka-storage random-uuid
         ```
 
-    - Create an environment file named .env inside /docker directory. Create the following CLUSTER_ID variable with the value of the kafka_cluster_id generated above.
-        
-        ```bash
-        CLUSTER_ID="kafka_cluster_id"
-        ```
-
-        Also, create all other necessary environmental variables in the .env file.
-
-    - Navigate to /gke/config folder inside the project's root directory.
-
-        ```bash
-        cd ..
-        cd gke/config
-        ```
-    
     - Generate a `secrets.yaml` file inside gke/config folder. Copy the contents of secrets.yaml.example to the secrets.yaml file and change the placeholder value "REPLACE_ME" for all variables.
 
         ```
