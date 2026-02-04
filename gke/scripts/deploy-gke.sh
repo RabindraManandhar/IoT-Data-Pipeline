@@ -378,7 +378,7 @@ if [ "$SKIP_DEPLOY" = false ]; then
     sleep 30
 
     echo -e "${YELLOW}Checking Kafka pods...${NC}"
-    kubectl wait --for=condition=ready pod -l app=kafka -n data --timeout=300s || true
+    kubectl wait --for=condition=ready pod -l app=kafka -n iot-pipeline --timeout=600s || true
     
     echo -e "${CYAN}  → Deploying TimescaleDB...${NC}"
     kubectl apply -f gke/timescaledb/
@@ -388,7 +388,7 @@ if [ "$SKIP_DEPLOY" = false ]; then
     sleep 30
     
     echo -e "${YELLOW}Checking TimescaleDB pods...${NC}"
-    kubectl wait --for=condition=ready pod -l app=timescaledb -n data --timeout=300s || true
+    kubectl wait --for=condition=ready pod -l app=timescaledb -n iot-pipeline --timeout=300s || true
 
     echo -e "${CYAN}  → Deploying Schema Registry...${NC}"
     kubectl apply -f gke/schema-registry/
@@ -412,6 +412,34 @@ if [ "$SKIP_DEPLOY" = false ]; then
     kubectl apply -f gke/app-services/timescaledb-sink-deployment.yaml
     
     echo -e "${GREEN}✅ Application services deployed${NC}"
+
+    # Deploy Horizontal Pod Autoscalers
+    echo -e "${YELLOW}Deploying Horizontal Pod Autoscalers...${NC}"
+
+    # Check if metrics-server is installed
+    if ! kubectl get deployment metrics-server -n iot-pipeline &>/dev/null; then
+        echo -e "${YELLOW}⚠️  Metrics Server not found. Installing...${NC}"
+        kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+        
+        # Wait for metrics-server to be ready
+        echo -e "${YELLOW}Waiting for Metrics Server to be ready...${NC}"
+        kubectl wait --for=condition=ready pod -l k8s-app=metrics-server -n iot-pipeline --timeout=120s || true
+        echo -e "${GREEN}✅ Metrics Server installed${NC}"
+    else
+        echo -e "${GREEN}✅ Metrics Server already installed${NC}"
+    fi
+    
+    echo -e "${CYAN}  → Deploying RuuviTag Adapter HPA...${NC}"
+    kubectl apply -f gke/app-services/ruuvitag-adapter-hpa.yaml
+    
+    echo -e "${CYAN}  → Deploying Kafka Consumer HPA...${NC}"
+    kubectl apply -f gke/app-services/kafka-consumer-hpa.yaml
+    
+    echo -e "${CYAN}  → Deploying TimescaleDB Sink HPA...${NC}"
+    kubectl apply -f gke/app-services/timescaledb-sink-hpa.yaml
+    
+    echo -e "${GREEN}✅ Horizontal Pod Autoscalers deployed${NC}"
+
     
     # Deploy monitoring stack
     echo -e "${YELLOW}Deploying monitoring stack...${NC}"
@@ -422,8 +450,14 @@ if [ "$SKIP_DEPLOY" = false ]; then
     echo -e "${CYAN}  → Deploying Grafana...${NC}"
     kubectl apply -f gke/monitoring/grafana/
     
-    echo -e "${CYAN}  → Deploying AlertManager...${NC}"
+    echo -e "${CYAN}  → Deploying AlertManager and MailPit SMTP server...${NC}"
     kubectl apply -f gke/monitoring/alertmanager/
+
+    # Wait for Mailpit to be ready
+    echo -e "${YELLOW}Waiting for Mailpit to be ready...${NC}"
+    kubectl wait --for=condition=available --timeout=120s deployment/mailpit -n iot-pipeline --timeout=120s || true
+    echo -e "${GREEN}✅ MailPit is ready ${NC}"
+    
 
     echo -e "${CYAN}  → Deploying Exporters...${NC}"
     kubectl apply -f gke/monitoring/exporters/
@@ -467,11 +501,19 @@ echo -e "${CYAN}Persistent Volumes:${NC}"
 kubectl get pv,pvc --all-namespaces
 echo ""
 
+# Show HPA status
+echo -e "${CYAN}Horizontal Pod Autoscalers:${NC}"
+kubectl get hpa -n iot-pipeline
+echo ""
+
 # Useful commands
 echo -e "${CYAN}Useful Commands:${NC}"
 echo "  Check pod logs:        kubectl logs <pod-name> -n <namespace>"
 echo "  Port forward Grafana:  kubectl port-forward svc/grafana 3000:3000 -n monitoring"
 echo "  Scale deployment:      kubectl scale deployment <name> --replicas=<count> -n <namespace>"
+echo "  View HPA status:       kubectl get hpa -n <namespace>"
+echo "  Describe HPA:          kubectl describe hpa <hpa-name> -n <namespace>"
+echo "  View HPA events:       kubectl get events -n <namespace> --field-selector involvedObject.kind=HorizontalPodAutoscaler"
 echo "  Delete deployment:     kubectl delete -f gke/"
 echo ""
 

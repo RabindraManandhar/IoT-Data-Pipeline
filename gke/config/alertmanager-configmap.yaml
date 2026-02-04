@@ -7,7 +7,12 @@ data:
   alertmanager.yml: |
     global:
       resolve_timeout: 5m
-    
+      smtp_smarthost: 'mailpit.iot-pipeline.svc.cluster.local:1025'
+      smtp_from: 'alertmanager@iot-pipeline.local'
+      smtp_require_tls: false
+      smtp_auth_username: ''
+      smtp_auth_password: ''
+
     route:
       group_by: ['alertname', 'cluster', 'service']
       group_wait: 10s
@@ -17,27 +22,172 @@ data:
       routes:
       - match:
           severity: critical
-        receiver: 'critical-receiver'
+        receiver: critical-receiver
+        repeat_interval: 1h
+        continue: false
       - match:
           severity: warning
-        receiver: 'warning-receiver'
-    
+        receiver: warning-receiver
+        repeat_interval: 4h
+        continue: false
+
     receivers:
     - name: 'default-receiver'
-      webhook_configs:
-      - url: 'http://localhost:5001/alerts'
+      email_configs:
+      - to: 'default@iot-pipeline.local'
+        headers:
+          Subject: 'IoT Pipeline Alert: {{ .GroupLabels.alertname }}'
+        html: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .alert-container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .alert-header { background: #f4f4f4; padding: 15px; border-left: 4px solid #666; margin-bottom: 20px; }
+              .alert-info { background: #fff; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; }
+              .alert-label { font-weight: bold; color: #555; }
+              .alert-value { color: #333; }
+              .firing { border-left-color: #ff6b6b; }
+              .resolved { border-left-color: #51cf66; }
+            </style>
+          </head>
+          <body>
+            <div class="alert-container">
+              <div class="alert-header">
+                <h2>{{ .GroupLabels.alertname }}</h2>
+                <p><strong>Cluster:</strong> {{ .GroupLabels.cluster }}</p>
+              </div>
+              {{ range .Alerts }}
+              <div class="alert-info {{ if eq .Status "firing" }}firing{{ else }}resolved{{ end }}">
+                <h3>{{ if eq .Status "firing" }}🔴 FIRING{{ else }}✅ RESOLVED{{ end }}</h3>
+                <p><span class="alert-label">Alert:</span> <span class="alert-value">{{ .Labels.alertname }}</span></p>
+                {{ if .Labels.severity }}
+                <p><span class="alert-label">Severity:</span> <span class="alert-value">{{ .Labels.severity }}</span></p>
+                {{ end }}
+                {{ if .Labels.service }}
+                <p><span class="alert-label">Service:</span> <span class="alert-value">{{ .Labels.service }}</span></p>
+                {{ end }}
+                {{ if .Annotations.summary }}
+                <p><span class="alert-label">Summary:</span> <span class="alert-value">{{ .Annotations.summary }}</span></p>
+                {{ end }}
+                {{ if .Annotations.description }}
+                <p><span class="alert-label">Description:</span> <span class="alert-value">{{ .Annotations.description }}</span></p>
+                {{ end }}
+                <p><span class="alert-label">Started:</span> <span class="alert-value">{{ .StartsAt }}</span></p>
+                {{ if .EndsAt }}
+                <p><span class="alert-label">Ended:</span> <span class="alert-value">{{ .EndsAt }}</span></p>
+                {{ end }}
+              </div>
+              {{ end }}
+            </div>
+          </body>
+          </html>
         send_resolved: true
     
     - name: 'critical-receiver'
-      webhook_configs:
-      - url: 'http://localhost:5001/critical-alerts'
+      email_configs:
+      - to: 'critical@iot-pipeline.local'
+        headers:
+          Subject: '🚨 CRITICAL: {{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}'
+        html: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #fff5f5; }
+              .alert-container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .alert-header { background: #ff6b6b; color: white; padding: 20px; border-radius: 5px 5px 0 0; }
+              .alert-info { background: #fff; border: 2px solid #ff6b6b; padding: 20px; margin-bottom: 10px; border-radius: 0 0 5px 5px; }
+              .alert-label { font-weight: bold; color: #c92a2a; }
+              .alert-value { color: #333; }
+              .critical-banner { background: #c92a2a; color: white; padding: 10px; text-align: center; font-weight: bold; }
+            </style>
+          </head>
+          <body>
+            <div class="critical-banner">⚠️ CRITICAL ALERT - IMMEDIATE ACTION REQUIRED ⚠️</div>
+            <div class="alert-container">
+              <div class="alert-header">
+                <h1>🚨 {{ .GroupLabels.alertname }}</h1>
+                <h3>Cluster: {{ .GroupLabels.cluster }}</h3>
+              </div>
+              {{ range .Alerts }}
+              <div class="alert-info">
+                <h2>{{ if eq .Status "firing" }}🔴 FIRING{{ else }}✅ RESOLVED{{ end }}</h2>
+                <p><span class="alert-label">Alert:</span> <span class="alert-value">{{ .Labels.alertname }}</span></p>
+                <p><span class="alert-label">Severity:</span> <span class="alert-value">{{ .Labels.severity }}</span></p>
+                {{ if .Labels.service }}
+                <p><span class="alert-label">Service:</span> <span class="alert-value">{{ .Labels.service }}</span></p>
+                {{ end }}
+                {{ if .Annotations.summary }}
+                <p><span class="alert-label">Summary:</span> <span class="alert-value">{{ .Annotations.summary }}</span></p>
+                {{ end }}
+                {{ if .Annotations.description }}
+                <p><span class="alert-label">Description:</span> <span class="alert-value">{{ .Annotations.description }}</span></p>
+                {{ end }}
+                {{ if .Annotations.runbook }}
+                <p><span class="alert-label">Runbook:</span> <span class="alert-value"><a href="{{ .Annotations.runbook }}">{{ .Annotations.runbook }}</a></span></p>
+                {{ end }}
+                <p><span class="alert-label">Started:</span> <span class="alert-value">{{ .StartsAt }}</span></p>
+                {{ if .EndsAt }}
+                <p><span class="alert-label">Ended:</span> <span class="alert-value">{{ .EndsAt }}</span></p>
+                {{ end }}
+              </div>
+              {{ end }}
+            </div>
+          </body>
+          </html>
         send_resolved: true
     
     - name: 'warning-receiver'
-      webhook_configs:
-      - url: 'http://localhost:5001/warning-alerts'
+      email_configs:
+      - to: 'warning@iot-pipeline.local'
+        headers:
+          Subject: '⚠️ WARNING: {{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}'
+        html: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .alert-container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .alert-header { background: #ffd43b; padding: 15px; border-left: 4px solid #fab005; margin-bottom: 20px; }
+              .alert-info { background: #fff; border: 1px solid #ffd43b; padding: 15px; margin-bottom: 10px; }
+              .alert-label { font-weight: bold; color: #e67700; }
+              .alert-value { color: #333; }
+            </style>
+          </head>
+          <body>
+            <div class="alert-container">
+              <div class="alert-header">
+                <h2>⚠️ {{ .GroupLabels.alertname }}</h2>
+                <p><strong>Cluster:</strong> {{ .GroupLabels.cluster }}</p>
+              </div>
+              {{ range .Alerts }}
+              <div class="alert-info">
+                <h3>{{ if eq .Status "firing" }}⚠️ ACTIVE{{ else }}✅ RESOLVED{{ end }}</h3>
+                <p><span class="alert-label">Alert:</span> <span class="alert-value">{{ .Labels.alertname }}</span></p>
+                <p><span class="alert-label">Severity:</span> <span class="alert-value">{{ .Labels.severity }}</span></p>
+                {{ if .Labels.service }}
+                <p><span class="alert-label">Service:</span> <span class="alert-value">{{ .Labels.service }}</span></p>
+                {{ end }}
+                {{ if .Annotations.summary }}
+                <p><span class="alert-label">Summary:</span> <span class="alert-value">{{ .Annotations.summary }}</span></p>
+                {{ end }}
+                {{ if .Annotations.description }}
+                <p><span class="alert-label">Description:</span> <span class="alert-value">{{ .Annotations.description }}</span></p>
+                {{ end }}
+                <p><span class="alert-label">Started:</span> <span class="alert-value">{{ .StartsAt }}</span></p>
+                {{ if .EndsAt }}
+                <p><span class="alert-label">Ended:</span> <span class="alert-value">{{ .EndsAt }}</span></p>
+                {{ end }}
+              </div>
+              {{ end }}
+            </div>
+          </body>
+          </html>
         send_resolved: true
-    
+
     inhibit_rules:
     - source_match:
         severity: 'critical'

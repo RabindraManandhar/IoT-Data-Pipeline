@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: alertmanager
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9093"
     spec:
        # Set security context for the pod: allow group write for mounted volume
       securityContext:
@@ -24,14 +27,27 @@ spec:
         args:
         - '--config.file=/etc/alertmanager/alertmanager.yml'
         - '--storage.path=/alertmanager'
+        - '--log.level=info'
+        - '--cluster.advertise-address=0.0.0.0:9094'
+        - '--web.external-url=http://alertmanager.iot-pipeline.svc.cluster.local:9093'
         ports:
-        - containerPort: 9093
-          name: web
+        - name: web
+          containerPort: 9093
+          protocol: TCP
+        - name: cluster
+          containerPort: 9094
+          protocol: TCP
         volumeMounts:
         - name: alertmanager-config
           mountPath: /etc/alertmanager
+          readOnly: true
         - name: data
           mountPath: /alertmanager
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         resources:
           requests:
             memory: "64Mi"
@@ -45,12 +61,16 @@ spec:
             port: 9093
           initialDelaySeconds: 30
           periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /-/ready
             port: 9093
           initialDelaySeconds: 30
           periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
       volumes:
       - name: alertmanager-config
         configMap:

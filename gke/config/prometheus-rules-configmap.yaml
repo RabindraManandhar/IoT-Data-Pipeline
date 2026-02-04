@@ -6,73 +6,264 @@ metadata:
 data:
   alert_rules.yml: |
     groups:
+    # Kafka Alerts
     - name: kafka_alerts
+      interval: 30s
       rules:
       - alert: KafkaBrokerDown
-        expr: up{job=~"kafka-.*"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Kafka broker is down"
-          description: "Kafka broker {{ $labels.instance }} has been down for more than 1 minute."
-      
-      - alert: KafkaUnderReplicatedPartitions
-        expr: kafka_server_replica_manager_under_replicated_partitions > 0
+        expr: up{job=~"kafka-jmx-exporter"} == 0
         for: 2m
         labels:
           severity: critical
+          component: kafka
         annotations:
-          summary: "Kafka under-replicated partitions"
-          description: "Kafka has {{ $value }} under-replicated partitions."
-    
-    - name: timescaledb_alerts
-      rules:
-      - alert: TimescaleDBDown
-        expr: up{job="timescaledb"} == 0
+          summary: "Kafka broker is down"
+          description: "Kafka broker {{ $labels.instance }} has been down for more than 2 minutes."
+      
+      - alert: KafkaUnderReplicatedPartitions
+        expr: kafka_server_replica_manager_under_replicated_partitions > 0
+        for: 5m
+        labels:
+          severity: critical
+          component: kafka
+        annotations:
+          summary: "Kafka has under-replicated partitions"
+          description: "Kafka broker {{ $labels.instance }} has {{ $value }} under-replicated partitions for more than 5 minutes."
+      
+      - alert: KafkaOfflinePartitions
+        expr: kafka_server_replica_manager_offline_partitions_count > 0
         for: 1m
         labels:
           severity: critical
+          component: kafka
+        annotations:
+          summary: "Kafka has offline partitions"
+          description: "Kafka broker {{ $labels.instance }} has {{ $value }} offline partitions."
+      
+      - alert: KafkaHighRequestLatency
+        expr: kafka_server_request_handler_avg_idle_percent < 0.2
+        for: 10m
+        labels:
+          severity: warning
+          component: kafka
+        annotations:
+          summary: "Kafka broker high request latency"
+          description: "Kafka broker {{ $labels.instance }} has high request latency (idle percent: {{ $value }})."
+    
+    # TimescaleDB Alerts
+    - name: timescaledb_alerts
+      interval: 30s
+      rules:
+      - alert: TimescaleDBDown
+        expr: up{job="postgres-exporter"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: timescaledb
         annotations:
           summary: "TimescaleDB is down"
-          description: "TimescaleDB has been down for more than 1 minute."
+          description: "TimescaleDB has been down for more than 2 minutes."
       
       - alert: TimescaleDBHighConnections
         expr: pg_stat_database_numbackends > 80
         for: 5m
         labels:
           severity: warning
+          component: timescaledb
         annotations:
           summary: "TimescaleDB high connection usage"
-          description: "TimescaleDB connection usage is {{ $value }}."
-    
-    - name: mqtt_alerts
-      rules:
-      - alert: MQTTBrokerDown
-        expr: up{job="mosquitto"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "MQTT broker is down"
-          description: "MQTT broker has been down for more than 1 minute."
-    
-    - name: application_alerts
-      rules:
-      - alert: ApplicationDown
-        expr: up{job=~"ruuvitag-adapter|kafka-consumer|timescaledb-sink"} == 0
-        for: 2m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Application service is down"
-          description: "Service {{ $labels.job }} has been down for more than 2 minutes."
+          description: "TimescaleDB connection usage is {{ $value }} (threshold: 80)."
       
-      - alert: HighErrorRate
-        expr: rate(iot_messages_failed_total[5m]) > 0.1
+      - alert: TimescaleDBSlowQueries
+        expr: rate(pg_stat_database_xact_commit[5m]) < 10
+        for: 10m
+        labels:
+          severity: warning
+          component: timescaledb
+        annotations:
+          summary: "TimescaleDB slow query performance"
+          description: "TimescaleDB transaction rate is {{ $value }} commits/sec (threshold: 10)."
+      
+      - alert: TimescaleDBDiskSpaceWarning
+        expr: (pg_database_size_bytes / 1024 / 1024 / 1024) > 15
         for: 5m
         labels:
           severity: warning
+          component: timescaledb
+        annotations:
+          summary: "TimescaleDB disk space warning"
+          description: "TimescaleDB database size is {{ $value }}GB (threshold: 15GB)."
+    
+    # MQTT Alerts
+    - name: mqtt_alerts
+      interval: 30s
+      rules:
+      - alert: MQTTBrokerDown
+        expr: up{job="mosquitto-exporter"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: mqtt
+        annotations:
+          summary: "MQTT broker is down"
+          description: "MQTT broker has been down for more than 2 minutes."
+      
+      - alert: MQTTHighMessageRate
+        expr: rate(mosquitto_messages_received_total[5m]) > 1000
+        for: 10m
+        labels:
+          severity: warning
+          component: mqtt
+        annotations:
+          summary: "MQTT high message rate"
+          description: "MQTT broker is receiving {{ $value }} messages/sec (threshold: 1000)."
+    
+    # Application Alerts (HPA-aware)
+    - name: application_alerts
+      interval: 30s
+      rules:
+      - alert: ApplicationServiceDown
+        expr: up{job=~"ruuvitag-adapter|kafka-consumer|timescaledb-sink"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          component: application
+        annotations:
+          summary: "Application service is down"
+          description: "Service {{ $labels.job }} instance {{ $labels.instance }} has been down for more than 3 minutes."
+      
+      - alert: HighErrorRate
+        expr: rate(iot_messages_failed_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: application
         annotations:
           summary: "High application error rate"
-          description: "Service {{ $labels.job }} has error rate of {{ $value }} errors/sec."
+          description: "Service {{ $labels.service }} has error rate of {{ $value }} errors/sec (threshold: 10)."
+      
+      - alert: HighProcessingLatency
+        expr: histogram_quantile(0.95, rate(iot_processing_duration_seconds_bucket[5m])) > 5
+        for: 10m
+        labels:
+          severity: warning
+          component: application
+        annotations:
+          summary: "High processing latency"
+          description: "Service {{ $labels.service }} has p95 latency of {{ $value }}s (threshold: 5s)."
+      
+      - alert: MessageQueueBacklog
+        expr: iot_queue_size > 1000
+        for: 5m
+        labels:
+          severity: warning
+          component: application
+        annotations:
+          summary: "Large message queue backlog"
+          description: "Service {{ $labels.service }} has queue size of {{ $value }} (threshold: 1000)."
+      
+      - alert: AnomalyRateHigh
+        expr: rate(iot_anomaly_detected_total[10m]) > 50
+        for: 15m
+        labels:
+          severity: info
+          component: data-quality
+        annotations:
+          summary: "High anomaly detection rate"
+          description: "Anomaly detection rate is {{ $value }} anomalies/sec for device type {{ $labels.device_type }}."
+    
+    # HPA-Related Alerts
+    - name: hpa_alerts
+      interval: 30s
+      rules:
+      - alert: HPAMaxReplicasReached
+        expr: |
+          kube_horizontalpodautoscaler_status_current_replicas{namespace="iot-pipeline"}
+          >=
+          kube_horizontalpodautoscaler_spec_max_replicas{namespace="iot-pipeline"}
+        for: 15m
+        labels:
+          severity: warning
+          component: autoscaling
+        annotations:
+          summary: "HPA reached maximum replicas"
+          description: "HPA {{ $labels.horizontalpodautoscaler }} has reached its maximum replica count and may need scaling limit adjustment."
+      
+      - alert: HPAScalingDisabled
+        expr: kube_horizontalpodautoscaler_status_condition{condition="ScalingActive",status="false",namespace="iot-pipeline"} == 1
+        for: 10m
+        labels:
+          severity: warning
+          component: autoscaling
+        annotations:
+          summary: "HPA scaling is disabled"
+          description: "HPA {{ $labels.horizontalpodautoscaler }} has scaling disabled."
+    
+    # System Resource Alerts
+    - name: system_alerts
+      interval: 30s
+      rules:
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
+        for: 10m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High CPU usage"
+          description: "Node {{ $labels.instance }} CPU usage is {{ $value }}% (threshold: 85%)."
+      
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High memory usage"
+          description: "Node {{ $labels.instance }} memory usage is {{ $value }}% (threshold: 85%)."
+      
+      - alert: PodCrashLooping
+        expr: rate(kube_pod_container_status_restarts_total{namespace="iot-pipeline"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          component: kubernetes
+        annotations:
+          summary: "Pod is crash looping"
+          description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is crash looping."
+      
+      - alert: PodNotReady
+        expr: |
+          sum by(namespace, pod) (kube_pod_status_phase{namespace="iot-pipeline", phase=~"Pending|Unknown|Failed"}) > 0
+        for: 15m
+        labels:
+          severity: warning
+          component: kubernetes
+        annotations:
+          summary: "Pod not ready"
+          description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in {{ $labels.phase }} state for more than 15 minutes."
+      
+      - alert: PersistentVolumeClaimPending
+        expr: kube_persistentvolumeclaim_status_phase{namespace="iot-pipeline",phase="Pending"} == 1
+        for: 5m
+        labels:
+          severity: warning
+          component: storage
+        annotations:
+          summary: "PVC is pending"
+          description: "PersistentVolumeClaim {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} is pending."
+      
+      - alert: ContainerOOMKilled
+        expr: |
+          (kube_pod_container_status_terminated_reason{namespace="iot-pipeline",reason="OOMKilled"} == 1)
+        for: 1m
+        labels:
+          severity: warning
+          component: kubernetes
+        annotations:
+          summary: "Container OOM killed"
+          description: "Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} was OOM killed."
+

@@ -28,6 +28,7 @@ echo "Starting port forwarding for all monitoring interfaces..."
 # Main monitoring
 kubectl port-forward -n ${NAMESPACE} svc/grafana 3000:3000 &
 kubectl port-forward -n ${NAMESPACE} svc/prometheus 9090:9090 &
+kubectl port-forward -n ${NAMESPACE} svc/mailpit 8025:8025 &
 kubectl port-forward -n ${NAMESPACE} svc/alertmanager 9093:9093 &
 
 # Application metrics
@@ -49,6 +50,7 @@ echo "Access the following URLs:"
 echo "  Grafana:              http://localhost:3000"
 echo "  Prometheus:           http://localhost:9090"
 echo "  AlertManager:         http://localhost:9093"
+echo "  MailPit:              http://localhost:8025"
 echo "  RuuviTag Adapter:     http://localhost:8002/metrics"
 echo "  Kafka Consumer:       http://localhost:8001/metrics"
 echo "  TimescaleDB Sink:     http://localhost:8003/metrics"

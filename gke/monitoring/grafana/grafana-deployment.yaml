@@ -15,8 +15,8 @@ spec:
     spec:
        # Set security context for the pod: allow group write for mounted volume
       securityContext:
-        fsGroup: 1000
-        runAsUser: 1000
+        fsGroup: 472 # Grafana's default GID
+        runAsUser: 472 # Grafana's default UID
         runAsNonRoot: true
       containers:
       - name: grafana
@@ -35,6 +35,8 @@ spec:
             secretKeyRef:
               name: iot-pipeline-secrets
               key: GRAFANA_PASSWORD
+        - name: GF_PATHS_PROVISIONING  # Explicitly set provisioning path
+          value: /etc/grafana/provisioning
         volumeMounts:
         - name: data
           mountPath: /var/lib/grafana
@@ -42,6 +44,8 @@ spec:
           mountPath: /etc/grafana/provisioning/datasources
         - name: dashboards-config
           mountPath: /etc/grafana/provisioning/dashboards
+        - name: dashboards  # Mount for dashboard files
+          mountPath: /var/lib/grafana/dashboards
         resources:
           requests:
             memory: "128Mi"
@@ -71,3 +75,5 @@ spec:
       - name: dashboards-config
         configMap:
           name: grafana-dashboards-config
+      - name: dashboards
+        emptyDir: {}

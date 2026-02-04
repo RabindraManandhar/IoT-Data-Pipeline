@@ -150,6 +150,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        
+        # CORE KAFKA SETTINGS
         - name: KAFKA_PROCESS_ROLES
           value: "broker,controller"
         - name: KAFKA_CONTROLLER_LISTENER_NAMES
@@ -160,12 +162,54 @@ spec:
           value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
         - name: KAFKA_INTER_BROKER_LISTENER_NAME
           value: "PLAINTEXT"
+
+        # REPLICATION SETTINGS
         - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
           value: "3"
         - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
           value: "2"
         - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
           value: "3"
+        - name: KAFKA_DEFAULT_REPLICATION_FACTOR
+          value: "3"
+        - name: KAFKA_MIN_INSYNC_REPLICAS
+          value: "2"
+
+        # TIMEOUT SETTINGS
+        - name: KAFKA_REPLICA_SOCKET_TIMEOUT_MS
+          value: "60000"  # ⬅️ Increased from default 30s to 60s
+        - name: KAFKA_CONTROLLER_SOCKET_TIMEOUT_MS
+          value: "60000"  # ⬅️ Controller timeout (critical!)
+        - name: KAFKA_REPLICA_LAG_TIME_MAX_MS
+          value: "30000"  # ⬅️ How long before replica considered out of sync
+        - name: KAFKA_REQUEST_TIMEOUT_MS
+          value: "60000"  # ⬅️ Client request timeout
+        - name: KAFKA_CONNECTIONS_MAX_IDLE_MS
+          value: "600000"  # ⬅️ Keep connections alive for 10 minutes
+
+        # NETWORK SETTINGS (IMPROVE RELIABILITY)
+        - name: KAFKA_SOCKET_SEND_BUFFER_BYTES
+          value: "1048576"  # ⬅️ 1MB send buffer (increased from 100KB default)
+        - name: KAFKA_SOCKET_RECEIVE_BUFFER_BYTES
+          value: "1048576"  # ⬅️ 1MB receive buffer
+        - name: KAFKA_SOCKET_REQUEST_MAX_BYTES
+          value: "104857600"  # ⬅️ 100MB max request size
+        - name: KAFKA_REPLICA_FETCH_MAX_BYTES
+          value: "10485760"  # ⬅️ 10MB max fetch size
+        - name: KAFKA_REPLICA_FETCH_WAIT_MAX_MS
+          value: "1000"  # ⬅️ Replica fetch wait time
+
+        # LOG SETTINGS (REDUCE I/O SPIKES)
+        - name: KAFKA_LOG_SEGMENT_BYTES
+          value: "1073741824"  # ⬅️ 1GB segments (prevents frequent rolling)
+        - name: KAFKA_LOG_ROLL_MS
+          value: "604800000"  # ⬅️ Roll logs weekly
+        - name: KAFKA_LOG_FLUSH_INTERVAL_MESSAGES
+          value: "10000"  # ⬅️ Flush every 10k messages
+        - name: KAFKA_LOG_FLUSH_INTERVAL_MS
+          value: "1000"  # ⬅️ Or flush every second
+
+        # GENERAL SETTINGS
         - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
           value: "3000"
         - name: KAFKA_NUM_PARTITIONS
@@ -176,15 +220,27 @@ spec:
           value: "delete"
         - name: KAFKA_LOG_DIRS
           value: "/var/lib/kafka/data"
+        - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+          value: "true"
+
+        # JVM SETTINGS          
         - name: KAFKA_JMX_PORT
           value: "7071"
         - name: KAFKA_HEAP_OPTS
-          value: "-Xmx1G -Xms1G"
-        - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
-          value: "true"
+          value: "-Xmx1G -Xms1G" # Increased from 16 to 26
+        
+
         # Disable Java DNS caching
         - name: KAFKA_OPTS
-          value: "-Dnetworkaddress.cache.ttl=0 -Dnetworkaddress.cache.negative.ttl=0"
+          value: >-
+            -Dnetworkaddress.cache.ttl=0
+            -Dnetworkaddress.cache.negative.ttl=0 -XX:+UseG1GC
+            -XX:MaxGCPauseMillis=20
+            -XX:InitiatingHeapOccupancyPercent=35
+            -XX:G1HeapRegionSize=16M
+            -XX:MinMetaspaceFreeRatio=50
+            -XX:MaxMetaspaceFreeRatio=80
+        
         # Explicitly unset PORT to avoid conflicts
         - name: PORT
           value: ""
@@ -192,33 +248,36 @@ spec:
         volumeMounts:
         - name: kafka-data
           mountPath: /var/lib/kafka/data
+        
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
-          limits:
-            memory: "3Gi"
+            memory: "2Gi"
             cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        
         livenessProbe:
           exec:
             command:
             - sh
             - -c
             - ps aux | grep -q "[k]afka.Kafka" || exit 1
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 5
+          initialDelaySeconds: 90
+          periodSeconds: 15
+          timeoutSeconds: 10
+          failureThreshold: 6
+        
         readinessProbe:
           exec:
             command:
             - sh
             - -c
             - nc -z localhost 9092 || exit 1
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 5
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 15
+          failureThreshold: 6
       
       # JMX Exporter sidecar
       - name: jmx-exporter
