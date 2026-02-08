@@ -27,12 +27,12 @@ data:
       database: iot_data
       pool_size: 5
       max_overflow: 10
-      batch_size: 100
-      commit_interval: 5.0
+      batch_size: 50
+      commit_interval: 0.5
       main_table: sensor_readings
       archive_table: sensor_readings_archive
       chunk_time_interval: "1 day"
-      compress_after: "7 days"
+      compression_after: "7 days"
       drop_after: "90 days"
       enable_continuous_aggregates: true
 
@@ -64,6 +64,9 @@ data:
         zone: main
         room: room-101
       battery:
+        # RuuviTag uses CR2477 battery (3.9V nominal)
+        # Map voltage to percentage (approx)
+        # 3.0V = 100%, 2.0V = 0%
         min_voltage: 2.0
         max_voltage: 3.0
       anomaly_thresholds:
@@ -88,7 +91,7 @@ data:
     consumer:
       kafka_consumer_group_id: iot-data-consumer
       enable_auto_commit: true
-      auto_commit_interval_ms: 5000
+      auto_commit_interval_ms: 1000
       fetch_min_bytes: 1
       session_timeout_ms: 30000
       heartbeat_interval_ms: 10000
@@ -97,10 +100,10 @@ data:
     
     data_sink:
       data_sink_consumer_group_id: iot-data-sink
-      batch_size: 100
-      commit_interval: 5.0
+      batch_size: 50
+      commit_interval: 0.5
       max_retries: 3
-      retry_backoff: 2.0
+      retry_backoff: 1.0
     
     app:
       name: IoT Data Pipeline (Kubernetes)

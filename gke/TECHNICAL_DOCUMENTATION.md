@@ -711,6 +711,57 @@ SELECT
 FROM sensor_readings_daily
 WHERE bucket >= NOW() - INTERVAL '30 days'
 ORDER BY bucket DESC, avg_value DESC;
+
+-- Calculate latency from sensor emission to database insertion
+SELECT 
+    device_id,
+    timestamp as sensor_emission_time,
+    created_at as db_insertion_time,
+    EXTRACT(EPOCH FROM (created_at - timestamp)) * 1000 AS latency_ms
+FROM sensor_readings
+WHERE timestamp >= NOW() - INTERVAL '24 hours'
+ORDER BY timestamp DESC
+LIMIT 10;
+
+-- Get latency statistics (median, p95, p99)
+WITH latency_data AS (
+    SELECT 
+        EXTRACT(EPOCH FROM (created_at - timestamp)) * 1000 AS latency_ms
+    FROM sensor_readings
+    WHERE timestamp >= NOW() - INTERVAL '24 hours'
+        AND created_at IS NOT NULL
+        AND timestamp IS NOT NULL
+)
+SELECT 
+    COUNT(*) as sample_size,
+    ROUND(AVG(latency_ms)::numeric, 2) as mean_latency_ms,
+    ROUND(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY latency_ms)::numeric, 2) as median_latency_ms,
+    ROUND(PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY latency_ms)::numeric, 2) as p95_latency_ms,
+    ROUND(PERCENTILE_CONT(0.99) WITHIN GROUP (ORDER BY latency_ms)::numeric, 2) as p99_latency_ms,
+    ROUND(MIN(latency_ms)::numeric, 2) as min_latency_ms,
+    ROUND(MAX(latency_ms)::numeric, 2) as max_latency_ms,
+    ROUND(STDDEV(latency_ms)::numeric, 2) as stddev_ms
+FROM latency_data;
+
+-- Latency distribution over time (hourly buckets)
+WITH latency_data AS (
+    SELECT 
+        time_bucket('1 hour', timestamp) AS hour,
+        EXTRACT(EPOCH FROM (created_at - timestamp)) * 1000 AS latency_ms
+    FROM sensor_readings
+    WHERE timestamp >= NOW() - INTERVAL '24 hours'
+)
+SELECT 
+    hour,
+    COUNT(*) as message_count,
+    ROUND(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY latency_ms)::numeric, 2) as median_ms,
+    ROUND(PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY latency_ms)::numeric, 2) as p95_ms,
+    ROUND(PERCENTILE_CONT(0.99) WITHIN GROUP (ORDER BY latency_ms)::numeric, 2) as p99_ms
+FROM latency_data
+GROUP BY hour
+ORDER BY hour DESC;
+
+
 ```
 
 ---
