@@ -1,5 +1,6 @@
 """
 TimescaleDB Data Sink - Consumes data from Kafka and stores in TimescaleDB.
+OPTIMIZED FOR LOW LATENCY PERFORMANCE
 """
 
 import time
@@ -28,6 +29,11 @@ class TimescaleDBSink:
     - Error handling and recovery
     - TimescaleDB-specific optimizations
     - Continuous aggregate refresh
+    
+    PERFORMANCE NOTE:
+    Configured for low-latency operation with smaller batch sizes (50) and shorter
+    commit intervals (500ms) to achieve sub-second median latency while maintaining
+    reasonable database efficiency.
     """
     
     def __init__(self):
@@ -58,8 +64,9 @@ class TimescaleDBSink:
             raise Exception("TimescaleDB is not available")
         
         log.info("TimescaleDB data sink initialized")
-        log.info(f"Batch size: {settings.data_sink.batch_size}")
-        log.info(f"Commit interval: {settings.data_sink.commit_interval} seconds")
+        log.info(f"Batch size: {settings.data_sink.batch_size} (optimized for low latency)")
+        log.info(f"Commit interval: {settings.data_sink.commit_interval} seconds (optimized for low latency)")
+        log.info(f"Expected median latency: <1 second")
         log.info(f"TimescaleDB chunk interval: {settings.timescaledb.chunk_time_interval}")
         log.info(f"Compression after: {settings.timescaledb.compression_after}")
         
@@ -168,16 +175,21 @@ class TimescaleDBSink:
     
     def add_to_batch(self, sensor_reading: SensorReadingDTO):
         """
-        Add a sensor reading to the current batch with TimescaleDB optimizations.
+        Add a sensor reading to the current batch with configurable latency-throughput trade-off.
         
         Args:
             sensor_reading: Validated sensor reading DTO
+        
+        PERFORMANCE NOTE:
+        This method respects the configured batch_size and commit_interval settings.
+        For low latency: Use smaller batch_size (e.g., 50) and shorter commit_interval (e.g., 0.5s)
+        For high throughput: Use larger batch_size (e.g., 1000) and longer commit_interval (e.g., 5s)
         """
         self.batch.append(sensor_reading.to_dict())
         
         # Check if we should commit the batch
-        # Use larger batch sizes for TimescaleDB for better performance
-        batch_size_threshold = max(settings.data_sink.batch_size, 100)
+        # Use configured batch size for optimal latency-throughput balance
+        batch_size_threshold = settings.data_sink.batch_size
         
         should_commit = (
             len(self.batch) >= batch_size_threshold or
@@ -255,7 +267,7 @@ class TimescaleDBSink:
                 self.add_to_batch(sensor_reading)
                 
                 # Log periodic status with TimescaleDB-specific metrics
-                if self.stats['messages_processed'] % 500 == 0:  # Less frequent logging for high-throughput
+                if self.stats['messages_processed'] % 100 == 0:  # More frequent for low-latency monitoring
                     log.info(f"Processed {self.stats['messages_processed']} messages, "
                            f"stored {self.stats['messages_stored']} readings, "
                            f"current batch size: {len(self.batch)}, "
@@ -270,6 +282,7 @@ class TimescaleDBSink:
         Start the TimescaleDB data sink service.
         """
         log.info("Starting TimescaleDB data sink service...")
+        log.info("PERFORMANCE MODE: Low latency optimized")
         
         # Start maintenance thread
         if self.maintenance_thread:
@@ -338,6 +351,11 @@ class TimescaleDBSink:
             success_rate = (self.stats['messages_stored'] / self.stats['messages_processed']) * 100
             log.info(f"Success rate: {success_rate:.2f}%")
         
+        # Calculate average batch size
+        if self.stats['batch_count'] > 0:
+            avg_batch_size = self.stats['messages_stored'] / self.stats['batch_count']
+            log.info(f"Average batch size: {avg_batch_size:.1f} messages")
+        
         # Log TimescaleDB hypertable information
         try:
             hypertable_info = db_manager.get_hypertable_info()
@@ -387,7 +405,12 @@ class TimescaleDBSink:
             'recent_activity': recent_activity,
             'batch_size': len(self.batch),
             'statistics': self.stats.copy(),
-            'timescaledb_info': timescaledb_info
+            'timescaledb_info': timescaledb_info,
+            'performance_mode': 'low_latency',
+            'config': {
+                'batch_size': settings.data_sink.batch_size,
+                'commit_interval': settings.data_sink.commit_interval
+            }
         }
     
     def force_maintenance(self):

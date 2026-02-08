@@ -1,5 +1,6 @@
 # IoT Data Ingestion Pipeline Configuration
 # This file contains all configuration options for the data pipeline
+# OPTIMIZED FOR LOW LATENCY PERFORMANCE
 
 # Kafka configuration
 kafka:
@@ -74,9 +75,11 @@ timescaledb:
   pool_timeout: 30
   pool_recycle: 3600
   
-  # Performance settings
-  batch_size: 100
-  commit_interval: 5.0  # seconds
+  # Performance settings - OPTIMIZED FOR LOW LATENCY
+  # Previous: batch_size: 100, commit_interval: 5.0
+  # New settings target <1 second median latency
+  batch_size: 50           # Reduced from 100 for faster commits
+  commit_interval: 0.5     # Reduced from 5.0 seconds to 500ms for near real-time
   
   # Table configuration
   main_table: sensor_readings
@@ -88,7 +91,7 @@ timescaledb:
   
   # TimescaleDB specific settings
   chunk_time_interval: "1 day"
-  compress_after: "7 days"
+  compression_after: "7 days"
   drop_after: "90 days"
 
   # Continuous aggregates
@@ -188,10 +191,10 @@ producer:
   retry_backoff_ms: 500
   max_in_flight_requests_per_connection: 1
   
-  # Performance tuning
-  queue_buffering_max_ms: 5
+  # Performance tuning - OPTIMIZED FOR LOW LATENCY
+  queue_buffering_max_ms: 1      # Reduced from 5 for faster sends
   queue_buffering_max_kbytes: 32768
-  batch_num_messages: 1000
+  batch_num_messages: 100        # Reduced from 1000 for lower latency
   socket_timeout_ms: 30000
   message_timeout_ms: 10000
   
@@ -202,7 +205,7 @@ producer:
 consumer:
   # Commit settings
   enable_auto_commit: true
-  auto_commit_interval_ms: 5000
+  auto_commit_interval_ms: 1000  # Reduced from 5000 for faster offset commits
   
   # Performance settings
   fetch_min_bytes: 1
@@ -215,13 +218,13 @@ consumer:
   # Load balancing
   partition_assignment_strategy: cooperative-sticky
 
-# Data Sink configuration
+# Data Sink configuration - OPTIMIZED FOR LOW LATENCY
 data_sink:
   consumer_group_id: iot-data-sink
-  batch_size: 50
-  commit_interval: 5.0
+  batch_size: 50              # Reduced from original for faster commits
+  commit_interval: 0.5        # 500ms instead of 5 seconds
   max_retries: 3
-  retry_backoff: 2.0
+  retry_backoff: 1.0          # Reduced from 2.0 for faster retries
 
 # UI configuration
 kafka_ui:
@@ -230,6 +233,5 @@ kafka_ui:
 
 # Application settings
 app:
-  name: IoT Data Pipeline (Multi-Broker with Schema Registry)
+  name: IoT Data Pipeline (Multi-Broker with Schema Registry) - Low Latency Mode
   environment: development  # Change to production for production deployment
-
