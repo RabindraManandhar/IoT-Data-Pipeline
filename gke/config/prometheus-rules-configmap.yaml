@@ -94,6 +94,31 @@ data:
           summary: "TimescaleDB disk space warning"
           description: "TimescaleDB database size is {{ $value }}GB (threshold: 15GB)."
     
+    # TimescaleDB Storage metrics
+    - name: timescaledb_storage
+      interval: 60s
+      rules:
+      # Database size in bytes
+      - record: timescaledb:database_size_bytes:total
+        expr: pg_database_size_bytes{datname="iot_data"}
+      
+      # Database size in GB
+      - record: timescaledb:database_size_gb:total
+        expr: pg_database_size_bytes{datname="iot_data"} / 1024 / 1024 / 1024
+      
+      # sensor_data table size
+      - record: timescaledb:sensor_data_size_bytes:total
+        expr: pg_table_size_bytes{schemaname="public", tablename="sensor_data"}
+      
+      # Total rows (requires custom exporter or periodic export)
+      # This would come from a custom query exporter
+      - record: timescaledb:sensor_data_rows:total
+        expr: pg_stat_user_tables_n_live_tup{schemaname="public", relname="sensor_data"}
+      
+      # Growth rate (bytes per hour)
+      - record: timescaledb:database_growth_rate_bytes_per_hour
+        expr: rate(pg_database_size_bytes{datname="iot_data"}[1h])    
+
     # MQTT Alerts
     - name: mqtt_alerts
       interval: 30s
@@ -198,6 +223,43 @@ data:
         annotations:
           summary: "HPA scaling is disabled"
           description: "HPA {{ $labels.horizontalpodautoscaler }} has scaling disabled."
+    
+    # Node Exporter Alerts
+    - name: cluster_capacity
+      interval: 60s
+      rules:
+      # === Node Metrics ===
+      - record: cluster:node_count:total
+        expr: count(up{job="node-exporter"} == 1)
+      
+      - record: cluster:node_cpu_cores:total
+        expr: count(count by (cpu, instance) (node_cpu_seconds_total{mode="idle"}))
+      
+      - record: cluster:node_memory_bytes:total
+        expr: sum(node_memory_MemTotal_bytes)
+      
+      # === Pod Metrics (using cAdvisor) ===
+      - record: cluster:pod_count:total
+        expr: count(count by (pod) (container_cpu_usage_seconds_total{namespace="iot-pipeline", container!="", container!="POD"}))
+      
+      - record: cluster:pods_per_node:avg
+        expr: |
+          count(count by (pod) (container_cpu_usage_seconds_total{namespace="iot-pipeline", container!="POD"}))
+          /
+          count(up{job="node-exporter"} == 1)
+      
+      # === Resource Utilization ===
+      - record: node:cpu_utilization:percent
+        expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+      
+      - record: node:memory_utilization:percent
+        expr: 100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))
+      
+      - record: cluster:cpu_utilization:avg
+        expr: avg(100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100))
+      
+      - record: cluster:memory_utilization:avg
+        expr: avg(100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)))
     
     # System Resource Alerts
     - name: system_alerts

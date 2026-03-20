@@ -18,7 +18,7 @@ echo -e "${GREEN}=========================================="
 
 echo "Starting port forwarding from the Mosquitto service"
 kubectl port-forward -n ${NAMESPACE} --address 0.0.0.0 svc/mosquitto 1883:1883 &
-echo "Mosquitto service started at port 18883 ..."
+echo "Mosquitto service started at port 1883 ..."
 
 
 echo "============================================="
@@ -28,8 +28,12 @@ echo "Starting port forwarding for all monitoring interfaces..."
 # Main monitoring
 kubectl port-forward -n ${NAMESPACE} svc/grafana 3000:3000 &
 kubectl port-forward -n ${NAMESPACE} svc/prometheus 9090:9090 &
-kubectl port-forward -n ${NAMESPACE} svc/mailpit 8025:8025 &
 kubectl port-forward -n ${NAMESPACE} svc/alertmanager 9093:9093 &
+kubectl port-forward -n ${NAMESPACE} svc/mailpit 8025:8025 &
+
+# ---- Node exporter (pick ONE pod explicitly) ----
+NODE_EXPORTER_POD=$(kubectl get pods -n ${NAMESPACE} -l app=node-exporter -o jsonpath='{.items[0].metadata.name}')
+kubectl port-forward -n ${NAMESPACE} pod/${NODE_EXPORTER_POD} 9100:9100 &
 
 # Application metrics
 kubectl port-forward -n ${NAMESPACE} svc/ruuvitag-adapter 8002:8002 &
@@ -47,6 +51,8 @@ echo ""
 echo "Port forwarding started for all services!"
 echo ""
 echo "Access the following URLs:"
+echo ""
+echo "  MQTT Broker:          mqtt://localhost:18830"
 echo "  Grafana:              http://localhost:3000"
 echo "  Prometheus:           http://localhost:9090"
 echo "  AlertManager:         http://localhost:9093"
@@ -57,6 +63,7 @@ echo "  TimescaleDB Sink:     http://localhost:8003/metrics"
 echo "  Kafka JMX:            http://localhost:9101/metrics"
 echo "  PostgreSQL Exporter:  http://localhost:9187/metrics"
 echo "  Mosquitto Exporter:   http://localhost:9234/metrics"
+echo "  Node Exporter:        http://localhost:9100/metrics"
 echo ""
 echo "Press Ctrl+C to stop all port forwarding"
 

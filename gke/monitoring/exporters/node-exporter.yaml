@@ -42,10 +42,18 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         fsGroup: 65534
-      
-      # Priority (lower than critical workloads)
-      priorityClassName: system-node-critical
 
+      # Node affinity
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+      
       containers:
       - name: node-exporter
         image: prom/node-exporter:v1.7.0
@@ -56,8 +64,10 @@ spec:
         args:
         - '--path.procfs=/host/proc'
         - '--path.sysfs=/host/sys'
+        - '--path.rootfs=/host/root'
         - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-        - '--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$$'
+        - '--collector.netclass.ignored-devices=^(veth.*|docker.*|br-.*|[a-f0-9]{15})$'
+        - '--collector.netdev.device-exclude=^(veth.*|docker.*|br-.*|[a-f0-9]{15})$'
         - '--web.listen-address=:9100'
 
         volumeMounts:
@@ -67,18 +77,18 @@ spec:
         - name: sys
           mountPath: /host/sys
           readOnly: true
-        - name: root  # ⭐ Added root mount
+        - name: root
           mountPath: /host/root
           readOnly: true
           mountPropagation: HostToContainer
 
         resources:
           requests:
-            memory: "30Mi"
-            cpu: "50m"
+            memory: "32Mi"
+            cpu: "10m"
           limits:
-            memory: "100Mi"
-            cpu: "200m"
+            memory: "64Mi"
+            cpu: "100m"
 
         # Probes for health checking
         livenessProbe:
@@ -86,30 +96,32 @@ spec:
             path: /
             port: 9100
           initialDelaySeconds: 30
-          periodSeconds: 30
-          timeoutSeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         
         readinessProbe:
           httpGet:
             path: /
             port: 9100
           initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
 
       volumes:
       - name: proc
         hostPath:
           path: /proc
-          type: ""
+          type: Directory
       - name: sys
         hostPath:
           path: /sys
-          type: ""
+          type: Directory
       - name: root
         hostPath:
           path: /
-          type: ""
+          type: Directory
 
 ---
 apiVersion: v1
