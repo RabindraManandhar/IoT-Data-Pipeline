@@ -236,7 +236,7 @@ spec:
       
       # Add JMX Exporter as sidecar
       - name: jmx-exporter
-        image: bitnami/jmx-exporter:latest
+        image: soldevelo/jmx-exporter:latest
         ports:
         - containerPort: 9101
           name: metrics

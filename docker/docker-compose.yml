@@ -439,7 +439,7 @@ services:
   
   # JMX Exporter for Kafka metrics
   kafka-jmx-exporter1:
-    image: bitnami/jmx-exporter:latest
+    image: soldevelo/jmx-exporter:latest
     container_name: kafka-jmx-exporter1
     ports:
       - "9101:9101"  # Separate metrics port
@@ -454,7 +454,7 @@ services:
       - kafka-net
 
   kafka-jmx-exporter2:
-    image: bitnami/jmx-exporter:latest
+    image: soldevelo/jmx-exporter:latest
     container_name: kafka-jmx-exporter2
     ports:
       - "9102:9102"  # Separate metrics port
@@ -469,7 +469,7 @@ services:
       - kafka-net
 
   kafka-jmx-exporter3:
-    image: bitnami/jmx-exporter:latest
+    image: soldevelo/jmx-exporter:latest
     container_name: kafka-jmx-exporter3
     ports:
       - "9103:9103"  # Separate metrics port
